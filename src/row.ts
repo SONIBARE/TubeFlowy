@@ -1,5 +1,6 @@
 import { cls, css, fragment, svg, circle, div } from "./infra";
 import { chevron } from "./infra/icons";
+import { store } from "./state";
 
 class MyRow extends HTMLElement {
   outerRadius = 10;
@@ -7,7 +8,7 @@ class MyRow extends HTMLElement {
   chevron!: SVGSVGElement;
   //TODO: move this to a model
   childContainer: HTMLElement | undefined;
-  isOpen = false;
+  item: Item | undefined;
 
   myCircle = () =>
     svg(
@@ -34,34 +35,51 @@ class MyRow extends HTMLElement {
       })
     );
 
-  onChevronClick = () => {
-    this.isOpen = !this.isOpen;
-    if (this.isOpen) {
-      this.chevron.classList.add(cls.chevronOpen);
-      this.childContainer = div(
-        { className: cls.childContainer },
-        renderRow("Child")
-      );
-      this.appendChild(this.childContainer);
-    } else {
-      this.chevron.classList.remove(cls.chevronOpen);
-      if (this.childContainer) {
-        this.childContainer.remove();
-        this.childContainer = undefined;
+  onItemToggled = (item: Item) => {
+    if (item.type == "folder") {
+      if (item.isCollapsedInGallery) {
+        this.chevron.classList.add(cls.chevronOpen);
+        this.childContainer = div(
+          { className: cls.childContainer },
+          fragment(store.getChildrenFor(item.id).map(renderRow))
+        );
+        this.appendChild(this.childContainer);
+      } else {
+        this.chevron.classList.remove(cls.chevronOpen);
+        if (this.childContainer) {
+          this.childContainer.remove();
+          this.childContainer = undefined;
+        }
       }
     }
   };
 
-  render(title: string) {
+  render(item: Item) {
+    this.item = item;
     this.chevron = chevron(cls.chevron);
-    this.chevron.addEventListener("click", this.onChevronClick);
-    const children = [this.chevron, this.myCircle(), title];
-    this.appendChild(div({ className: cls.row }, fragment(children)));
+    this.chevron.addEventListener("click", () =>
+      store.toggleFolderVisibility(item.id)
+    );
+
+    this.appendChild(
+      div({ className: cls.row }, this.chevron, this.myCircle(), item.title)
+    );
+
+    store.addEventListener("itemChanged." + this.item.id, this.onItemToggled);
+    this.onItemToggled(item);
   }
 
-  static create(title: string) {
+  disconnectedCallback() {
+    if (this.item)
+      store.removeEventListener(
+        "itemChanged." + this.item.id,
+        this.onItemToggled
+      );
+  }
+
+  static create(item: Item) {
     const row1 = document.createElement("tubeflowy-row") as MyRow;
-    row1.render(title);
+    row1.render(item);
     return row1;
   }
 }

@@ -6,6 +6,7 @@ export { zIndexes, tIds, cls, ClassName } from "./keys";
 // export type { ClassName } from "./projectSpecific/keys";
 export { div, fragment, img, span, input } from "./dom"; //   findFirstByClass,
 export { svg, circle, path } from "./svg"; //   findFirstByClass,
+export { EventsHandler } from "./eventsHandler";
 //   findById,
 //   fragment,
 //   DivDefinition,
