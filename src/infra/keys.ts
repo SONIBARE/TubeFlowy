@@ -1,10 +1,13 @@
 export const cls = {
+  rowsContainer: "rows-container",
   row: "row",
+  childContainer: "child-container",
   rowText: "row-text",
   rowCircle: "row-circle",
   outerCircle: "row-outer-circle",
   svgContainer: "svg-container",
   chevron: "chevron",
+  chevronOpen: "chevron-open",
   none: "",
 } as const;
 

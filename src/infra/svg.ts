@@ -9,7 +9,7 @@ interface SvgProps {
 export const svg = (
   { viewBox, style, className }: SvgProps,
   ...child: SVGElement[]
-): Node => {
+): SVGSVGElement => {
   const mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   mySvg.setAttribute("viewBox", viewBox);
   mySvg.appendChild(fragment(child));
@@ -45,6 +45,7 @@ interface PathProps {
 export const path = (props: PathProps) => {
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.setAttribute("d", props.d);
+  if (props.fill) path.setAttribute("fill", props.fill);
 
   return path;
 };
