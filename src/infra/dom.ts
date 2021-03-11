@@ -23,7 +23,6 @@ export const div = (
 export const assignStyles = (elem: HTMLElement, style: Styles) => {
   const converted = convertNumericStylesToPixels(style);
   Object.keys(converted).forEach((key: any) => {
-    console.log(key, converted[key]);
     elem.style.setProperty(key, converted[key] || null);
   });
 };
@@ -61,8 +60,11 @@ export const img = (props: ImgProps): HTMLElement => {
   return elem;
 };
 
-export const fragment = (nodes: Node[]) => {
+export const fragment = (nodes: (Node | string)[]) => {
   const fragment = document.createDocumentFragment();
-  nodes.forEach((node) => fragment.appendChild(node));
+  nodes.forEach((node) => {
+    if (typeof node === "string") fragment.append(node);
+    else fragment.appendChild(node);
+  });
   return fragment;
 };
