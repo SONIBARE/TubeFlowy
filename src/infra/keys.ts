@@ -5,9 +5,12 @@ export const cls = {
   rowText: "row-text",
   rowCircle: "row-circle",
   outerCircle: "row-outer-circle",
-  svgContainer: "svg-container",
+  lightCircle: "row-light-circle",
+  focusCircleSvg: "focus-circle-svg",
   chevron: "chevron",
   chevronOpen: "chevron-open",
+
+  transparent: "transparent",
   none: "",
 } as const;
 

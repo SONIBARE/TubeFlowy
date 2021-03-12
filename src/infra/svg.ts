@@ -1,25 +1,24 @@
 import { fragment, Styles, ClassName } from ".";
-import { assignStyles } from "./dom";
+import {
+  assignStyles,
+  ElementWithClassDefinitions,
+  assignClasses,
+} from "./dom";
 
-interface SvgProps {
-  className?: ClassName;
+interface SvgProps extends ElementWithClassDefinitions {
   viewBox: string;
   style?: Styles;
 }
-export const svg = (
-  { viewBox, style, className }: SvgProps,
-  ...child: SVGElement[]
-): SVGSVGElement => {
+export const svg = (props: SvgProps, ...child: SVGElement[]): SVGSVGElement => {
   const mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  mySvg.setAttribute("viewBox", viewBox);
+  mySvg.setAttribute("viewBox", props.viewBox);
   mySvg.appendChild(fragment(child));
-  if (className) mySvg.classList.add(className);
-  if (style) assignStyles((mySvg as unknown) as HTMLElement, style);
+  assignClasses(mySvg, props);
+  if (props.style) assignStyles((mySvg as unknown) as HTMLElement, props.style);
   return mySvg;
 };
 
-interface CircleProps {
-  className?: ClassName;
+interface CircleProps extends ElementWithClassDefinitions {
   cx: number;
   cy: number;
   r: number;
@@ -30,7 +29,7 @@ export const circle = (circleProps: CircleProps) => {
     "http://www.w3.org/2000/svg",
     "circle"
   );
-  if (circleProps.className) myCircle.classList.add(circleProps.className);
+  assignClasses(myCircle, circleProps);
   myCircle.setAttribute("cx", circleProps.cx + "");
   myCircle.setAttribute("cy", circleProps.cy + "");
   myCircle.setAttribute("r", circleProps.r + "");

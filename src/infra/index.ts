@@ -14,7 +14,8 @@ export { EventsHandler } from "./eventsHandler";
 
 // export * as dom from "./dom";
 // export * as icons from "./icons";
-// export * as anim from "./animations";
+export { colors, spacings } from "./constants";
+export { animate } from "./animations";
 // export * as utils from "./utils";
 // export { colors, spacings, typography } from "./projectSpecific/constants";
 // export * as itemEvents from "./events";

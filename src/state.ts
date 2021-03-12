@@ -20,6 +20,13 @@ class Store {
     this.events.dispatchEvent("itemChanged." + itemId, folder);
   };
 
+  isFolderOpenOnPage = (item: Item) => !!(item as any).isCollapsedInGallery;
+
+  isEmptyAndNoNeedToLoad = (item: Item) => {
+    if ("children" in item) return item.children.length === 0;
+    return true;
+  };
+
   addEventListener = (eventName: string, cb: Func<Item>) =>
     this.events.addEventListener(eventName, cb);
 

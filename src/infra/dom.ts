@@ -1,8 +1,12 @@
-import { ClassName } from "./keys";
+import { ClassMap, ClassName } from "./keys";
 import { Styles, convertNumericStylesToPixels } from "./style";
 
-interface DivProps {
-  className?: ClassName;
+export interface ElementWithClassDefinitions {
+  className?: ClassName | ClassName[];
+  classMap?: ClassMap;
+}
+
+interface DivProps extends ElementWithClassDefinitions {
   style?: Styles;
 }
 
@@ -11,20 +15,13 @@ export const div = (
   ...children: (string | Node)[]
 ): HTMLDivElement => {
   const elem = document.createElement("div");
-  if (props.className) elem.classList.add(props.className);
+  assignClasses(elem, props);
   if (props.style) assignStyles(elem, props.style);
   children.forEach((c) => {
     if (typeof c === "string") elem.append(c);
     else elem.appendChild(c);
   });
   return elem;
-};
-
-export const assignStyles = (elem: HTMLElement, style: Styles) => {
-  const converted = convertNumericStylesToPixels(style);
-  Object.keys(converted).forEach((key: any) => {
-    elem.style.setProperty(key, converted[key] || null);
-  });
 };
 
 interface InputProps {
@@ -34,7 +31,7 @@ interface InputProps {
 
 export const input = (props: InputProps): HTMLElement => {
   const elem = document.createElement("input");
-  if (props.className) elem.classList.add(props.className);
+  assignClasses(elem, props);
   elem.addEventListener("input", props.onInput);
   return elem;
 };
@@ -44,7 +41,7 @@ interface DivProps {
 }
 export const span = (props: DivProps, text: string): HTMLElement => {
   const elem = document.createElement("span");
-  if (props.className) elem.classList.add(props.className);
+  assignClasses(elem, props);
   elem.textContent = text;
   return elem;
 };
@@ -55,7 +52,7 @@ interface ImgProps {
 }
 export const img = (props: ImgProps): HTMLElement => {
   const elem = document.createElement("img");
-  if (props.className) elem.classList.add(props.className);
+  assignClasses(elem, props);
   elem.src = props.src;
   return elem;
 };
@@ -67,4 +64,26 @@ export const fragment = (nodes: (Node | string)[]) => {
     else fragment.appendChild(node);
   });
   return fragment;
+};
+
+export const assignStyles = (elem: HTMLElement, style: Styles) => {
+  const converted = convertNumericStylesToPixels(style);
+  Object.keys(converted).forEach((key: any) => {
+    elem.style.setProperty(key, converted[key] || null);
+  });
+};
+
+export const assignClasses = (
+  elem: Element,
+  classDefinitions: ElementWithClassDefinitions
+) => {
+  if (typeof classDefinitions.className === "string")
+    elem.classList.add(classDefinitions.className);
+  else if (Array.isArray(classDefinitions.className))
+    classDefinitions.className.forEach((cs) => elem.classList.add(cs));
+
+  if (classDefinitions.classMap)
+    Object.keys(classDefinitions.classMap)
+      .filter((cs) => !!(classDefinitions.classMap as any)[cs])
+      .forEach((cs) => elem.classList.add(cs));
 };
