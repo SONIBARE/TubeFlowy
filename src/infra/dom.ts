@@ -40,10 +40,8 @@ export const input = (props: InputProps): HTMLElement => {
   return elem;
 };
 
-interface DivProps {
-  className?: ClassName;
-}
-export const span = (props: DivProps, text: string): HTMLElement => {
+interface SpanProps extends HtmlElementProps {}
+export const span = (props: SpanProps, text: string): HTMLElement => {
   const elem = document.createElement("span");
   assignClasses(elem, props);
   elem.textContent = text;
@@ -81,6 +79,19 @@ export const fragment = (nodes: (Node | string)[]) => {
   return fragment;
 };
 
+interface CanvasProps extends HtmlElementProps {
+  width: number;
+  height: number;
+}
+export const canvas = (props: CanvasProps): HTMLCanvasElement => {
+  const elem = document.createElement("canvas");
+  elem.setAttribute("width", props.width + "");
+  elem.setAttribute("height", props.height + "");
+  assignHtmlElementProps(elem, props);
+  return elem;
+};
+
+//HELPERS
 export const assignHtmlElementProps = (
   elem: HTMLElement,
   props: HtmlElementProps

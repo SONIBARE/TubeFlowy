@@ -1,33 +1,23 @@
-import { focusItem } from "./focuser";
-import { cls, css, div, fragment, colors, button } from "./infra";
+import { appendHeader } from "./header";
+import { cls, css, div, fragment, colors, button, spacings } from "./infra";
 import { items } from "./playgrounds/slapstukLegacyItems";
 import { myRow } from "./row";
+import { appendSideScroll } from "./sideScroll";
 import { store } from "./state";
 
 store.setItems(items);
 
 const container = div({}, fragment(store.getRootItems().map(myRow)));
 
+appendHeader(document.body);
 document.body.appendChild(div({ className: cls.rowsContainer }, container));
-
-document.body.appendChild(
-  button({
-    text: "<",
-    className: cls.backButton,
-    onClick: () => focusItem(store.getRoot()),
-  })
-);
+appendSideScroll(document.body);
 
 css.class(cls.rowsContainer, {
-  maxWidth: 700,
+  maxWidth: spacings.maxWidth,
   position: "relative",
   margin: "0 auto",
-});
-
-css.class(cls.backButton, {
-  position: "fixed",
-  top: 20,
-  left: 20,
+  paddingBottom: `calc(100vh - ${spacings.headerHeight}px - 60px)`,
 });
 
 css.selector("*", {
@@ -37,8 +27,8 @@ css.selector("*", {
 css.tag("body", {
   fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
   margin: 0,
-  paddingTop: 20,
-  overflowY: "scroll" as any,
+  paddingTop: spacings.headerHeight + spacings.pageMarginTop,
+  overflowY: "overlay" as any,
 });
 
 css.selector("body::-webkit-scrollbar", {

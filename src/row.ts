@@ -15,14 +15,15 @@ import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
 import { store } from "./state";
 
+//TODO: consider where to place this method (common with sideScroll.ts)
+const isLightCircleTransparent = (item: Item) =>
+  store.isFolderOpenOnPage(item) || store.isEmptyAndNoNeedToLoad(item);
+
 const appendFocusCicrle = (
   item: Item,
   elem: HTMLElement,
   onClick: EmptyFunc
 ): EmptyFunc => {
-  const isLightCircleTransparent = (item: Item) =>
-    store.isFolderOpenOnPage(item) || store.isEmptyAndNoNeedToLoad(item);
-
   const lightCircle = circle({
     className: cls.lightCircle,
     cx: spacings.outerRadius,
@@ -150,6 +151,7 @@ css.class(cls.row, {
   alignItems: "center",
   fontWeight: 500,
   color: colors.darkPrimary,
+  // lineHeight: 1,
   transition: "opacity 400ms ease-out",
 });
 

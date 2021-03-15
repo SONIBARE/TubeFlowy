@@ -1,4 +1,20 @@
 export const cls = {
+  header: "header",
+  headerIcon: "header-icon",
+  headerIconContainer: "header-icon-container",
+  headerBackButton: "header-back-button",
+  headerPathSeparator: "header-path-separator",
+  headerPathText: "header-path-text",
+  headerPathTextActive: "header-path-text-active",
+  lightChevronIcon: "header-light-chevron",
+  headerContextMenu: "header-context-menu",
+  headerContextMenuItem: "header-context-menu-item",
+  headerContextMenuItemActive: "header-context-menu-item-active",
+
+  sideScroll: "side-scroll",
+  sideScrollTrack: "side-scroll-track",
+  minimapCanvas: "minimap-canvas",
+
   rowsContainer: "rows-container",
   rowsFocused: "rows-focused",
   rowsHide: "rows-hide",
@@ -12,7 +28,6 @@ export const cls = {
   chevron: "chevron",
   chevronOpen: "chevron-open",
 
-  backButton: "back-button",
   transparent: "transparent",
   none: "",
 } as const;

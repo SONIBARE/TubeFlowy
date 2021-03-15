@@ -4,7 +4,7 @@
 export { css, Styles } from "./style";
 export { zIndexes, tIds, cls, ClassName } from "./keys";
 // export type { ClassName } from "./projectSpecific/keys";
-export { div, fragment, img, span, input, button } from "./dom"; //   findFirstByClass,
+export { div, fragment, img, span, input, button, canvas } from "./dom"; //   findFirstByClass,
 export { svg, circle, path } from "./svg"; //   findFirstByClass,
 export { EventsHandler } from "./eventsHandler";
 //   findById,
