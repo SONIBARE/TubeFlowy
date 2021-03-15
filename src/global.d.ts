@@ -1,5 +1,6 @@
 type valueof<T> = T[keyof T];
 type Func<T> = (a: T) => void;
+type EmptyFunc = () => void;
 
 type Items = {
   [key: string]: Item;

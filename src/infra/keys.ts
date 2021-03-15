@@ -1,5 +1,7 @@
 export const cls = {
   rowsContainer: "rows-container",
+  rowsFocused: "rows-focused",
+  rowsHide: "rows-hide",
   row: "row",
   childContainer: "child-container",
   rowText: "row-text",
@@ -10,6 +12,7 @@ export const cls = {
   chevron: "chevron",
   chevronOpen: "chevron-open",
 
+  backButton: "back-button",
   transparent: "transparent",
   none: "",
 } as const;

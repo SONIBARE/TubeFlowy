@@ -1,3 +1,4 @@
+import { focusItem } from "./focuser";
 import {
   cls,
   css,
@@ -5,41 +6,45 @@ import {
   svg,
   circle,
   div,
-  animate,
+  anim,
   colors,
   spacings,
+  component,
 } from "./infra";
-import { assignClasses } from "./infra/dom";
+import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
-import { ClassMap } from "./infra/keys";
 import { store } from "./state";
 
-class MyRow extends HTMLElement {
-  chevron!: SVGElement;
-  lightCircle!: SVGElement;
-  childContainer: HTMLElement | undefined;
-  itemId = "";
-
-  isLightCircleTransparent = (item: Item) =>
+const appendFocusCicrle = (
+  item: Item,
+  elem: HTMLElement,
+  onClick: EmptyFunc
+): EmptyFunc => {
+  const isLightCircleTransparent = (item: Item) =>
     store.isFolderOpenOnPage(item) || store.isEmptyAndNoNeedToLoad(item);
 
-  focusCircle = (item: Item) => {
-    this.lightCircle = circle({
-      className: cls.lightCircle,
-      classMap: {
-        [cls.transparent]: this.isLightCircleTransparent(item),
-      },
-      cx: spacings.outerRadius,
-      cy: spacings.outerRadius,
-      r: spacings.outerRadius,
-      fill: colors.lightPrimary,
-    });
-    return svg(
+  const lightCircle = circle({
+    className: cls.lightCircle,
+    cx: spacings.outerRadius,
+    cy: spacings.outerRadius,
+    r: spacings.outerRadius,
+    fill: colors.lightPrimary,
+  });
+
+  const animateLightCircle = (item: Item) => {
+    if (isLightCircleTransparent(item))
+      lightCircle.classList.add(cls.transparent);
+    else lightCircle.classList.remove(cls.transparent);
+  };
+
+  elem.appendChild(
+    svg(
       {
+        onClick,
         className: cls.focusCircleSvg,
         viewBox: `0 0 ${spacings.outerRadius * 2} ${spacings.outerRadius * 2}`,
       },
-      this.lightCircle,
+      lightCircle,
       circle({
         className: cls.outerCircle,
         cx: spacings.outerRadius,
@@ -53,122 +58,91 @@ class MyRow extends HTMLElement {
         r: spacings.innerRadius,
         fill: colors.darkPrimary,
       })
-    );
-  };
+    )
+  );
 
-  appendChildren = (item: Item) => {
-    this.childContainer = div(
+  const unsub = store.addEventListener(
+    "itemChanged." + item.id,
+    animateLightCircle
+  );
+  animateLightCircle(item);
+  return unsub;
+};
+
+export const myRow = component((item: Item, elem: HTMLElement) => {
+  let childContainer: HTMLElement | undefined;
+
+  const appendChildren = (item: Item) => {
+    childContainer = div(
       { className: cls.childContainer },
-      fragment(store.getChildrenFor(item.id).map(renderRow))
+      fragment(store.getChildrenFor(item.id).map(myRow))
     );
-    this.appendChild(this.childContainer);
+    elem.appendChild(childContainer);
   };
 
-  onAnimationFinish = (item: Item) => {
-    if (!store.isFolderOpenOnPage(item) && this.childContainer) {
-      this.childContainer.remove();
-      this.childContainer = undefined;
+  const onAnimationFinish = (item: Item) => {
+    if (!store.isFolderOpenOnPage(item) && childContainer) {
+      childContainer.remove();
+      childContainer = undefined;
     }
   };
 
-  expandHeight = (elem: HTMLElement) =>
-    animate(
-      elem,
-      [
-        { height: 0, opacity: 0 },
-        { height: elem.clientHeight, opacity: 1 },
-      ],
-      { duration: 200 }
-    );
-
-  collapseHeight = (elem: HTMLElement) =>
-    animate(
-      elem,
-      [
-        { height: elem.clientHeight, opacity: 1 },
-        { height: 0, opacity: 0 },
-      ],
-      { duration: 200 }
-    );
-
-  animateChildren = (item: Item) => {
-    if (this.childContainer && this.childContainer.getAnimations()[0]) {
-      this.childContainer.getAnimations()[0].reverse();
+  const animateChildren = (item: Item) => {
+    if (childContainer && revertCurrentAnimations(childContainer)) {
     } else if (store.isFolderOpenOnPage(item)) {
-      this.appendChildren(item);
-      if (this.childContainer)
-        this.expandHeight(this.childContainer).addEventListener("finish", () =>
-          this.onAnimationFinish(item)
-        );
+      appendChildren(item);
+      if (childContainer)
+        anim
+          .expandHeight(childContainer)
+          .addEventListener("finish", () => onAnimationFinish(item));
     } else {
-      if (this.childContainer) {
-        this.collapseHeight(this.childContainer).addEventListener(
-          "finish",
-          () => this.onAnimationFinish(item)
-        );
+      if (childContainer) {
+        anim
+          .collapseHeight(childContainer)
+          .addEventListener("finish", () => onAnimationFinish(item));
       }
     }
   };
 
-  animateChevron = (item: Item) => {
-    if (store.isFolderOpenOnPage(item))
-      this.chevron.classList.add(cls.chevronOpen);
-    else this.chevron.classList.remove(cls.chevronOpen);
+  const animateChevron = (item: Item) => {
+    if (store.isFolderOpenOnPage(item)) chev.classList.add(cls.chevronOpen);
+    else chev.classList.remove(cls.chevronOpen);
   };
 
-  animateLightCircle = (item: Item) => {
-    if (this.isLightCircleTransparent(item))
-      this.lightCircle.classList.add(cls.transparent);
-    else this.lightCircle.classList.remove(cls.transparent);
+  const itemEventName = "itemChanged." + item.id;
+
+  const chev = chevron({
+    className: cls.chevron,
+    testId: "chevron-" + item.id,
+  });
+  chev.addEventListener("click", () => store.toggleFolderVisibility(item.id));
+
+  const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
+  const unsub = appendFocusCicrle(item, row, () => focusItem(item));
+  row.append(item.title);
+  row.id = "row-" + item.id;
+  elem.appendChild(row);
+
+  store.addEventListener(itemEventName, animateChildren);
+  store.addEventListener(itemEventName, animateChevron);
+
+  if (store.isFolderOpenOnPage(item)) {
+    appendChildren(item);
+  }
+
+  animateChevron(item);
+
+  return () => {
+    unsub();
+    store.removeEventListener(itemEventName, animateChildren);
+    store.removeEventListener(itemEventName, animateChevron);
   };
-
-  get itemEventName() {
-    return "itemChanged." + this.itemId;
-  }
-
-  render(item: Item) {
-    this.itemId = item.id;
-    this.chevron = chevron(cls.chevron);
-    this.chevron.addEventListener("click", () =>
-      store.toggleFolderVisibility(item.id)
-    );
-
-    this.appendChild(
-      div(
-        { className: cls.row },
-        this.chevron,
-        this.focusCircle(item),
-        item.title
-      )
-    );
-
-    store.addEventListener(this.itemEventName, this.animateChildren);
-    store.addEventListener(this.itemEventName, this.animateChevron);
-    store.addEventListener(this.itemEventName, this.animateLightCircle);
-
-    if (store.isFolderOpenOnPage(item)) this.appendChildren(item);
-    this.animateChevron(item);
-  }
-
-  disconnectedCallback() {
-    store.removeEventListener(this.itemEventName, this.animateChildren);
-    store.removeEventListener(this.itemEventName, this.animateChevron);
-    store.removeEventListener(this.itemEventName, this.animateLightCircle);
-  }
-
-  static create(item: Item) {
-    const row1 = document.createElement("tubeflowy-row") as MyRow;
-    row1.render(item);
-    return row1;
-  }
-}
-export const renderRow = MyRow.create;
-
-customElements.define("tubeflowy-row", MyRow);
+});
 
 css.class(cls.row, {
-  marginLeft: -1000,
-  paddingLeft: 1000 + spacings.rowLeftPadding,
+  marginLeft: -spacings.negativeMarginForRowAtZeroLevel,
+  paddingLeft:
+    spacings.negativeMarginForRowAtZeroLevel + spacings.rowLeftPadding,
   paddingTop: spacings.rowVecticalPadding,
   paddingBottom: spacings.rowVecticalPadding,
   display: "flex",
@@ -176,11 +150,29 @@ css.class(cls.row, {
   alignItems: "center",
   fontWeight: 500,
   color: colors.darkPrimary,
+  transition: "opacity 400ms ease-out",
+});
+
+css.parentChild(cls.rowsHide, cls.row, {
+  opacity: 0,
+});
+
+css.parentChild(cls.rowsHide, cls.childContainer, {
+  borderLeft: `${spacings.borderSize}px solid transparent`,
+});
+
+css.parentChild(cls.rowsFocused, cls.row, {
+  opacity: 1,
+});
+css.parentChild(cls.rowsFocused, cls.childContainer, {
+  borderLeft: `${spacings.borderSize}px solid  ${colors.border}`,
 });
 
 css.class(cls.childContainer, {
+  display: "block",
   marginLeft: spacings.spacePerLevel + spacings.rowLeftPadding,
   borderLeft: `${spacings.borderSize}px solid ${colors.border}`,
+  transition: "borderLeft 400ms linear",
   overflow: "hidden",
 });
 

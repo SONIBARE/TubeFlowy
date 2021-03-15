@@ -1,24 +1,18 @@
-import { fragment, Styles, ClassName } from ".";
-import {
-  assignStyles,
-  ElementWithClassDefinitions,
-  assignClasses,
-} from "./dom";
+import { fragment } from ".";
+import { ElementProps, assignClasses, assignElementProps } from "./dom";
 
-interface SvgProps extends ElementWithClassDefinitions {
+export interface SvgProps extends ElementProps {
   viewBox: string;
-  style?: Styles;
 }
 export const svg = (props: SvgProps, ...child: SVGElement[]): SVGSVGElement => {
   const mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   mySvg.setAttribute("viewBox", props.viewBox);
   mySvg.appendChild(fragment(child));
-  assignClasses(mySvg, props);
-  if (props.style) assignStyles((mySvg as unknown) as HTMLElement, props.style);
+  assignElementProps(mySvg, props);
   return mySvg;
 };
 
-interface CircleProps extends ElementWithClassDefinitions {
+interface CircleProps extends ElementProps {
   cx: number;
   cy: number;
   r: number;

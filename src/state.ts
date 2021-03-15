@@ -2,6 +2,8 @@ import { EventsHandler } from "./infra";
 
 class Store {
   items: Items = {};
+  itemIdFocused: string = "HOME";
+
   events = new EventsHandler<Item>();
   setItems = (i: Items) => {
     this.items = i;
@@ -9,15 +11,19 @@ class Store {
 
   getRootItems = (): Item[] => this.getChildrenFor("HOME");
 
+  getRoot = (): Item => this.items["HOME"];
+
   getChildrenFor = (itemId: string) => {
     const focused = this.items[itemId] as Folder;
     return focused.children.map((id) => this.items[id]);
   };
 
   toggleFolderVisibility = (itemId: string) => {
-    const folder = this.items[itemId] as Folder;
-    folder.isCollapsedInGallery = !folder.isCollapsedInGallery;
-    this.events.dispatchEvent("itemChanged." + itemId, folder);
+    const item = this.items[itemId];
+    if (item.type !== "YTvideo") {
+      item.isCollapsedInGallery = !item.isCollapsedInGallery;
+      this.events.dispatchEvent("itemChanged." + itemId, item);
+    }
   };
 
   isFolderOpenOnPage = (item: Item) => !!(item as any).isCollapsedInGallery;
@@ -27,7 +33,7 @@ class Store {
     return true;
   };
 
-  addEventListener = (eventName: string, cb: Func<Item>) =>
+  addEventListener = (eventName: string, cb: Func<Item>): EmptyFunc =>
     this.events.addEventListener(eventName, cb);
 
   removeEventListener = (eventName: string, cb: Func<Item>) =>

@@ -5,18 +5,22 @@ export interface ElementWithClassDefinitions {
   className?: ClassName | ClassName[];
   classMap?: ClassMap;
 }
-
-interface DivProps extends ElementWithClassDefinitions {
+export interface ElementProps extends ElementWithClassDefinitions {
+  onClick?: (e: Event) => void;
+  testId?: string;
+}
+export interface HtmlElementProps extends ElementProps {
   style?: Styles;
 }
+
+interface DivProps extends HtmlElementProps {}
 
 export const div = (
   props: DivProps,
   ...children: (string | Node)[]
 ): HTMLDivElement => {
   const elem = document.createElement("div");
-  assignClasses(elem, props);
-  if (props.style) assignStyles(elem, props.style);
+  assignHtmlElementProps(elem, props);
   children.forEach((c) => {
     if (typeof c === "string") elem.append(c);
     else elem.appendChild(c);
@@ -46,14 +50,25 @@ export const span = (props: DivProps, text: string): HTMLElement => {
   return elem;
 };
 
-interface ImgProps {
-  className?: ClassName;
+interface ImgProps extends ElementWithClassDefinitions {
   src: string;
 }
 export const img = (props: ImgProps): HTMLElement => {
   const elem = document.createElement("img");
   assignClasses(elem, props);
   elem.src = props.src;
+  return elem;
+};
+
+interface ButtonProps extends ElementWithClassDefinitions {
+  text: string;
+  onClick?: (e: MouseEvent) => void;
+}
+export const button = (props: ButtonProps): HTMLElement => {
+  const elem = document.createElement("button");
+  assignClasses(elem, props);
+  elem.textContent = props.text;
+  if (props.onClick) elem.addEventListener("click", props.onClick);
   return elem;
 };
 
@@ -66,11 +81,18 @@ export const fragment = (nodes: (Node | string)[]) => {
   return fragment;
 };
 
-export const assignStyles = (elem: HTMLElement, style: Styles) => {
-  const converted = convertNumericStylesToPixels(style);
-  Object.keys(converted).forEach((key: any) => {
-    elem.style.setProperty(key, converted[key] || null);
-  });
+export const assignHtmlElementProps = (
+  elem: HTMLElement,
+  props: HtmlElementProps
+) => {
+  assignElementProps(elem, props);
+  assignStyles(elem, props.style);
+};
+
+export const assignElementProps = (elem: Element, props: ElementProps) => {
+  assignClasses(elem, props);
+  if (props.onClick) elem.addEventListener("click", props.onClick);
+  if (props.testId) elem.setAttribute("data-testid", props.testId);
 };
 
 export const assignClasses = (
@@ -86,4 +108,13 @@ export const assignClasses = (
     Object.keys(classDefinitions.classMap)
       .filter((cs) => !!(classDefinitions.classMap as any)[cs])
       .forEach((cs) => elem.classList.add(cs));
+};
+
+export const assignStyles = (elem: HTMLElement, style?: Styles) => {
+  if (style) {
+    const converted = convertNumericStylesToPixels(style);
+    Object.keys(converted).forEach((key: any) => {
+      elem.style.setProperty(key, converted[key] || null);
+    });
+  }
 };

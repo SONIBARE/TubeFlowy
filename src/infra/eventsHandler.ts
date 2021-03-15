@@ -1,10 +1,14 @@
 export class EventsHandler<EventPayload> {
   events: EventsContainer<EventPayload> = {};
 
-  addEventListener = (eventName: string, callback: Func<EventPayload>) => {
+  addEventListener = (
+    eventName: string,
+    callback: Func<EventPayload>
+  ): EmptyFunc => {
     if (!this.events[eventName]) this.events[eventName] = [];
 
     this.events[eventName].push(callback);
+    return () => this.removeEventListener(eventName, callback);
   };
 
   removeEventListener = (eventName: string, callback: Func<EventPayload>) => {

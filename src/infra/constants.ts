@@ -9,6 +9,7 @@ export const spacings = {
   borderSize,
   rowLeftPadding: chevronSize / 2,
   spacePerLevel: chevronSize + outerRadius - borderSize / 2,
+  negativeMarginForRowAtZeroLevel: 1000,
   rowVecticalPadding: 4,
   spaceBetweenCircleAndText: 4,
 };

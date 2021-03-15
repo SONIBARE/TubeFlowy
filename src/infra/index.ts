@@ -4,7 +4,7 @@
 export { css, Styles } from "./style";
 export { zIndexes, tIds, cls, ClassName } from "./keys";
 // export type { ClassName } from "./projectSpecific/keys";
-export { div, fragment, img, span, input } from "./dom"; //   findFirstByClass,
+export { div, fragment, img, span, input, button } from "./dom"; //   findFirstByClass,
 export { svg, circle, path } from "./svg"; //   findFirstByClass,
 export { EventsHandler } from "./eventsHandler";
 //   findById,
@@ -15,7 +15,8 @@ export { EventsHandler } from "./eventsHandler";
 // export * as dom from "./dom";
 // export * as icons from "./icons";
 export { colors, spacings } from "./constants";
-export { animate } from "./animations";
+export * as anim from "./animations";
+export { component } from "./component";
 // export * as utils from "./utils";
 // export { colors, spacings, typography } from "./projectSpecific/constants";
 // export * as itemEvents from "./events";
