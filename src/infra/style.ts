@@ -55,6 +55,8 @@ export const css = {
     selector(`.${parentClass}:hover .${childClass}`, style),
   childHover: (parentClass: ClassName, childClass: ClassName, style: Styles) =>
     selector(`.${parentClass} .${childClass}:hover`, style),
+  childActive: (parentClass: ClassName, childClass: ClassName, style: Styles) =>
+    selector(`.${parentClass} .${childClass}:active`, style),
   afterClass: (className: ClassName, style: Styles) =>
     selector(`.${className}::after`, style),
   text: cssText,

@@ -18,11 +18,19 @@ class Store {
     return focused.children.map((id) => this.items[id]);
   };
 
+  getImageSrc = (item: Item): string => {
+    if (item.type == "YTvideo")
+      return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+    else if ("image" in item) return item.image;
+    else return "";
+  };
+
   toggleFolderVisibility = (itemId: string) => {
     const item = this.items[itemId];
     if (item.type !== "YTvideo") {
       item.isCollapsedInGallery = !item.isCollapsedInGallery;
       this.events.dispatchEvent("itemChanged." + itemId, item);
+      this.events.dispatchEvent("itemChanged", item);
     }
   };
 

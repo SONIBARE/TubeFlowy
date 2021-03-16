@@ -3,10 +3,7 @@ import { cls, colors, css, div, spacings, zIndexes } from "./infra";
 import { chevron, home, lightChevron } from "./infra/icons";
 import { store } from "./state";
 
-export const appendHeader = (container: HTMLElement) =>
-  container.appendChild(header());
-
-const header = () =>
+export const header = (): HTMLDivElement =>
   div(
     { className: cls.header },
     headerButton(

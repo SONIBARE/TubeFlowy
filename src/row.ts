@@ -1,84 +1,55 @@
-import { focusItem } from "./focuser";
+import { appendFocusCicrle } from "./focusCircle";
 import {
   cls,
   css,
   fragment,
-  svg,
-  circle,
   div,
   anim,
   colors,
   spacings,
   component,
+  timings,
+  img,
+  span,
 } from "./infra";
 import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
 import { store } from "./state";
 
-//TODO: consider where to place this method (common with sideScroll.ts)
-const isLightCircleTransparent = (item: Item) =>
-  store.isFolderOpenOnPage(item) || store.isEmptyAndNoNeedToLoad(item);
-
-const appendFocusCicrle = (
-  item: Item,
-  elem: HTMLElement,
-  onClick: EmptyFunc
-): EmptyFunc => {
-  const lightCircle = circle({
-    className: cls.lightCircle,
-    cx: spacings.outerRadius,
-    cy: spacings.outerRadius,
-    r: spacings.outerRadius,
-    fill: colors.lightPrimary,
-  });
-
-  const animateLightCircle = (item: Item) => {
-    if (isLightCircleTransparent(item))
-      lightCircle.classList.add(cls.transparent);
-    else lightCircle.classList.remove(cls.transparent);
-  };
-
-  elem.appendChild(
-    svg(
-      {
-        onClick,
-        className: cls.focusCircleSvg,
-        viewBox: `0 0 ${spacings.outerRadius * 2} ${spacings.outerRadius * 2}`,
-      },
-      lightCircle,
-      circle({
-        className: cls.outerCircle,
-        cx: spacings.outerRadius,
-        cy: spacings.outerRadius,
-        r: spacings.outerRadius,
-        fill: colors.mediumPrimary,
-      }),
-      circle({
-        cx: spacings.outerRadius,
-        cy: spacings.outerRadius,
-        r: spacings.innerRadius,
-        fill: colors.darkPrimary,
-      })
-    )
-  );
-
-  const unsub = store.addEventListener(
-    "itemChanged." + item.id,
-    animateLightCircle
-  );
-  animateLightCircle(item);
-  return unsub;
-};
-
 export const myRow = component((item: Item, elem: HTMLElement) => {
   let childContainer: HTMLElement | undefined;
 
   const appendChildren = (item: Item) => {
+    // if (item.type === "YTplaylist" && store.isFolderOpenOnPage(item)) {
+    //   // Mind Field : Season 1
+    //   childContainer = div(
+    //     { className: cls.childContainer },
+    //     div(
+    //       { className: cls.cardsContainer },
+    //       fragment(
+    //         store.getChildrenFor(item.id).map((item) =>
+    //           div(
+    //             { className: cls.card },
+    //             img({
+    //               src: store.getImageSrc(item),
+    //               className: cls.cardImage,
+    //             }),
+    //             span({ className: cls.cardText }, item.title)
+    //           )
+    //         )
+    //       ),
+    //       div({ className: cls.cardsContainerLastItemPadding })
+    //     ),
+    //     div({ className: cls.cardsContainerHeightAdjuster })
+    //   );
+    //   elem.appendChild(childContainer);
+    // } else {
     childContainer = div(
       { className: cls.childContainer },
       fragment(store.getChildrenFor(item.id).map(myRow))
     );
     elem.appendChild(childContainer);
+    // }
   };
 
   const onAnimationFinish = (item: Item) => {
@@ -119,7 +90,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
   chev.addEventListener("click", () => store.toggleFolderVisibility(item.id));
 
   const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
-  const unsub = appendFocusCicrle(item, row, () => focusItem(item));
+  const unsub = appendFocusCicrle(item, row);
   row.append(item.title);
   row.id = "row-" + item.id;
   elem.appendChild(row);
@@ -150,6 +121,7 @@ css.class(cls.row, {
   flexDirection: "row",
   alignItems: "center",
   fontWeight: 500,
+  whiteSpace: "nowrap",
   color: colors.darkPrimary,
   // lineHeight: 1,
   transition: "opacity 400ms ease-out",
@@ -175,7 +147,81 @@ css.class(cls.childContainer, {
   marginLeft: spacings.spacePerLevel + spacings.rowLeftPadding,
   borderLeft: `${spacings.borderSize}px solid ${colors.border}`,
   transition: "borderLeft 400ms linear",
+  //this break cardsContainer, need to think on how to handle this
   overflow: "hidden",
+  position: "relative",
+});
+
+css.class(cls.cardsContainer, {
+  height: (spacings.cardHeight + spacings.cardPadding) * 3 + 15,
+  overflowX: "overlay" as any,
+  display: "flex",
+  flexDirection: "column",
+  flexWrap: "wrap",
+  alignContent: "flex-start",
+});
+
+css.selector(`.${cls.cardsContainer}::-webkit-scrollbar`, {
+  height: 8,
+});
+
+css.selector(`.${cls.cardsContainer}::-webkit-scrollbar-thumb`, {
+  backgroundColor: colors.mediumPrimary,
+});
+
+css.class(cls.cardsContainerHeightAdjuster, {
+  width: 40,
+  height: 2,
+  backgroundColor: colors.lightPrimary,
+  cursor: "n-resize",
+  position: "absolute",
+  bottom: 2,
+  left: "calc(50% - 20px)",
+});
+
+css.hover(cls.cardsContainerHeightAdjuster, {
+  backgroundColor: colors.darkPrimary,
+});
+
+css.class(cls.cardsContainerLastItemPadding, {
+  height: "100%",
+  width: spacings.cardPadding,
+});
+
+css.class(cls.card, {
+  marginLeft: spacings.cardPadding,
+  marginTop: spacings.cardPadding,
+  borderRadius: 4,
+  width: spacings.cardWidth,
+  height: spacings.cardHeight,
+  // backgroundColor: colors.border,
+  backgroundColor: "white",
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "row",
+  overflow: "hidden",
+  boxShadow: "1px 1px 4px rgb(0, 0, 0, 0.3)",
+  transition: "all 200ms",
+  cursor: "pointer",
+});
+
+css.hover(cls.card, {
+  boxShadow: "1px 2px 5px 0 rgb(0, 0, 0, 0.53)",
+  backgroundColor: colors.border,
+});
+
+css.class(cls.cardImage, {
+  height: spacings.cardHeight,
+  // width: 40 * 1.5,
+  objectFit: "cover",
+});
+
+css.class(cls.cardText, {
+  flex: 1,
+  fontSize: 14,
+  lineHeight: "1.2",
+  padding: `0 ${spacings.cardTextPadding}px`,
+  paddingBottom: spacings.cardTextBottomPadding,
 });
 
 css.parentHover(cls.row, cls.chevron, {
@@ -187,7 +233,7 @@ css.class(cls.chevron, {
   width: spacings.chevronSize,
   minWidth: spacings.chevronSize,
   opacity: 0,
-  transition: "transform 200ms, opacity 100ms",
+  transition: `transform ${timings.cardExpandCollapseDuration}ms, opacity 100ms`,
   cursor: "pointer",
   color: colors.mediumPrimary,
   userSelect: "none",
@@ -225,7 +271,7 @@ css.parentHover(cls.focusCircleSvg, cls.outerCircle, {
 
 css.class(cls.lightCircle, {
   opacity: 1,
-  transition: "opacity 100ms",
+  transition: `opacity ${timings.cardExpandCollapseDuration}ms`,
 });
 
 css.class(cls.transparent, {

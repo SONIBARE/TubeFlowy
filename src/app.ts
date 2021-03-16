@@ -1,23 +1,27 @@
-import { appendHeader } from "./header";
-import { cls, css, div, fragment, colors, button, spacings } from "./infra";
+import { header } from "./header";
+import { cls, css, div, fragment, colors, spacings } from "./infra";
 import { items } from "./playgrounds/slapstukLegacyItems";
 import { myRow } from "./row";
-import { appendSideScroll } from "./sideScroll";
+import { Minimap, minimap } from "./minimap";
 import { store } from "./state";
 
 store.setItems(items);
 
-const container = div({}, fragment(store.getRootItems().map(myRow)));
-
-appendHeader(document.body);
-document.body.appendChild(div({ className: cls.rowsContainer }, container));
-appendSideScroll(document.body);
+document.body.appendChild(
+  fragment([
+    header(),
+    div(
+      { className: cls.rowsContainer },
+      div({}, fragment(store.getRootItems().map(myRow)))
+    ),
+    minimap(),
+  ])
+);
 
 css.class(cls.rowsContainer, {
-  maxWidth: spacings.maxWidth,
   position: "relative",
-  margin: "0 auto",
-  paddingBottom: `calc(100vh - ${spacings.headerHeight}px - 60px)`,
+  marginLeft: "calc((100vw - 700px) / 2)",
+  maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,
 });
 
 css.selector("*", {

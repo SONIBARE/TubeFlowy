@@ -2,6 +2,7 @@ const outerRadius = 10;
 const innerRadius = 4.5;
 const chevronSize = 16;
 const borderSize = 2;
+
 export const spacings = {
   outerRadius,
   chevronSize,
@@ -16,7 +17,18 @@ export const spacings = {
   bodyScrollWidth: 8,
   pageFontSize: 16,
   pageMarginTop: 20,
-  maxWidth: 700,
+  documentWidth: 700,
+
+  //CARDS
+  cardHeight: 48,
+  cardPadding: 14,
+  cardWidth: 280,
+  cardTextPadding: 4,
+  cardTextBottomPadding: 2,
+};
+
+export const timings = {
+  cardExpandCollapseDuration: 200,
 };
 
 export const colors = {

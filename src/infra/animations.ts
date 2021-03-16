@@ -1,3 +1,4 @@
+import { timings } from "./constants";
 import { convertNumericStylesToPixels, Styles } from "./style";
 
 export const animate = (
@@ -17,7 +18,7 @@ export const expandHeight = (elem: HTMLElement) =>
       { height: 0, opacity: 0 },
       { height: elem.clientHeight, opacity: 1 },
     ],
-    { duration: 200 }
+    { duration: timings.cardExpandCollapseDuration }
   );
 
 export const collapseHeight = (elem: HTMLElement) =>
@@ -27,7 +28,7 @@ export const collapseHeight = (elem: HTMLElement) =>
       { height: elem.clientHeight, opacity: 1 },
       { height: 0, opacity: 0 },
     ],
-    { duration: 200 }
+    { duration: timings.cardExpandCollapseDuration }
   );
 
 export const revertCurrentAnimations = (elem: HTMLElement): boolean => {

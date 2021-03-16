@@ -11,8 +11,8 @@ export const cls = {
   headerContextMenuItem: "header-context-menu-item",
   headerContextMenuItemActive: "header-context-menu-item-active",
 
-  sideScroll: "side-scroll",
-  sideScrollTrack: "side-scroll-track",
+  minimap: "minimap",
+  minimapTrack: "minimap-track",
   minimapCanvas: "minimap-canvas",
 
   rowsContainer: "rows-container",
@@ -20,6 +20,13 @@ export const cls = {
   rowsHide: "rows-hide",
   row: "row",
   childContainer: "child-container",
+  cardsContainer: "cards-container",
+  cardsContainerHeightAdjuster: "cards-container-height-adjuster",
+  cardsContainerLastItemPadding: "cards-container-last-item-padding",
+  card: "card",
+  cardText: "card-text",
+  cardImage: "card-image",
+
   rowText: "row-text",
   rowCircle: "row-circle",
   outerCircle: "row-outer-circle",
@@ -41,6 +48,7 @@ export const tIds = {};
 export const zIndexes = {
   dragAvatar: 200,
   header: 300,
+  minimap: 250,
   rightSidebar: 250,
 };
 
