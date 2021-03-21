@@ -60,10 +60,8 @@ const headerButton = (icon: SVGElement, onClick?: EmptyFunc) =>
 
 css.class(cls.header, {
   paddingLeft: 40,
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
+  gridArea: "header",
+  position: "relative",
   height: spacings.headerHeight,
   backgroundColor: "white",
   zIndex: zIndexes.header,

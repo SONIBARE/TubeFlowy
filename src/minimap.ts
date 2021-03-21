@@ -1,4 +1,3 @@
-import { header } from "./header";
 import {
   cls,
   colors,
@@ -11,7 +10,7 @@ import {
 } from "./infra";
 import { store } from "./state";
 
-const multiplier = 5;
+const multiplier = 8;
 
 const minimapStyles = {
   fontSize: spacings.pageFontSize / multiplier,
@@ -31,6 +30,7 @@ const minimapStyles = {
 };
 
 export class Minimap extends HTMLElement {
+  scrollContainer!: HTMLElement;
   canvas!: HTMLCanvasElement;
   track!: HTMLDivElement;
   ctx!: CanvasRenderingContext2D;
@@ -39,10 +39,13 @@ export class Minimap extends HTMLElement {
   width = 0;
 
   trackTop = 0;
+  trackTopPercent = 0;
   trackHeight = 0;
 
   drawCanvas = () => {
     this.ctx.clearRect(0, 0, this.width, this.height);
+    this.height = this.scrollContainer.scrollHeight / multiplier;
+    this.canvas.setAttribute("height", this.height + "");
     drawChildren(
       5,
       minimapStyles.initialCircleX,
@@ -51,44 +54,84 @@ export class Minimap extends HTMLElement {
     );
   };
 
+  onWindowResize = () => {
+    this.updateTrackHeight();
+  };
+
   private onTrackMouseDown = () => {
     document.addEventListener("mousemove", this.onMouseMove);
   };
 
   private onMouseMove = (e: MouseEvent) => {
-    if (e.buttons == 1) this.setTrackTop(this.trackTop + e.movementY);
-    else document.removeEventListener("mousemove", this.onMouseMove);
+    if (e.buttons == 1) {
+      this.setTrackTop(this.trackTop + e.movementY);
+    } else document.removeEventListener("mousemove", this.onMouseMove);
   };
 
+  //TODO: test the shit out of this code
   setTrackTop = (top: number) => {
     if (top < 0) top = 0;
 
-    const documentHeight = document.body.scrollHeight - spacings.headerHeight;
-    if ((top + this.trackHeight) * multiplier > documentHeight)
-      top = documentHeight / multiplier - this.trackHeight;
+    const documentHeight = this.scrollContainer.scrollHeight;
 
-    console.log(
-      top,
-      (top + this.trackHeight) * multiplier,
-      document.body.scrollHeight
-    );
+    const max = this.clientHeight - this.trackHeight;
+    const percent = top / max;
+    if (percent >= 1) top = max;
+
     this.trackTop = top;
-    this.track.style.top = this.trackTop + "px";
+    this.track.style.top = top + "px";
 
-    window.scrollTo({ top: Math.round(top * multiplier) });
+    const target = percent * (documentHeight - this.trackHeight * multiplier);
+
+    this.scrollContainerTo(target);
+
+    //COPY-PASTA
+    const canvasHeight = this.scrollContainer.scrollHeight / multiplier;
+    const clientHeight = this.clientHeight;
+    if (canvasHeight > clientHeight) {
+      this.canvas.style.top = -percent * (canvasHeight - clientHeight) + "px";
+    }
   };
 
-  updateTrackTopFromWindowScroll = () =>
-    this.setTrackTop(window.scrollY / multiplier);
+  onContainerScroll = () => {
+    const max = this.clientHeight - this.trackHeight;
+    const percent =
+      this.scrollContainer.scrollTop /
+      (this.scrollContainer.scrollHeight - this.clientHeight);
+
+    this.trackTop = percent * max;
+    this.track.style.top = percent * max + "px";
+
+    //COPY-PASTA
+    const canvasHeight = this.scrollContainer.scrollHeight / multiplier;
+    const clientHeight = this.clientHeight;
+    if (canvasHeight > clientHeight) {
+      this.canvas.style.top = -percent * (canvasHeight - clientHeight) + "px";
+    }
+  };
 
   updateTrackHeight = () => {
     this.trackHeight =
-      (window.innerHeight - spacings.headerHeight) / multiplier;
+      (window.innerHeight -
+        spacings.headerHeight -
+        spacings.playerFooterHeight) /
+      multiplier;
     this.track.style.height = this.trackHeight + "px";
   };
 
+  private scrollContainerTo = (top: number) => {
+    //ok, this is kind of dumm, but I want to update scroll position without triggering scroll events on the container
+    //I'm listening only to user scroll events (mouse wheel, page down, arrow up type of events)
+    this.scrollContainer.removeEventListener("scroll", this.onContainerScroll);
+    this.scrollContainer.scrollTo({ top });
+
+    requestAnimationFrame(() => {
+      this.scrollContainer.addEventListener("scroll", this.onContainerScroll);
+    });
+  };
+
   render() {
-    this.height = window.innerHeight - spacings.headerHeight;
+    this.height = this.scrollContainer.scrollHeight / multiplier;
     this.width = 120;
     this.canvas = canvas({
       className: cls.minimapCanvas,
@@ -97,29 +140,38 @@ export class Minimap extends HTMLElement {
     });
 
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+
     this.drawCanvas();
 
     this.track = div({
       className: cls.minimapTrack,
       onMouseDown: this.onTrackMouseDown,
     });
-    this.setTrackTop(0);
-    this.updateTrackHeight();
+
     const children = fragment([this.canvas, this.track]);
     this.appendChild(children);
     this.classList.add(cls.minimap);
+  }
+
+  connectedCallback() {
+    this.scrollContainer.addEventListener("scroll", this.onContainerScroll);
+
+    requestAnimationFrame(() => {
+      this.updateTrackHeight();
+      this.setTrackTop(0);
+    });
   }
 }
 
 customElements.define("sp-minimap", Minimap);
 
-export const minimap = (): Minimap => {
+export const minimap = (scrollContainer: HTMLElement): Minimap => {
   const minimap = document.createElement("sp-minimap") as Minimap;
+  minimap.scrollContainer = scrollContainer;
   store.addEventListener("itemChanged", minimap.drawCanvas);
 
   //memory leaks on case of multipage
-  window.addEventListener("resize", minimap.updateTrackHeight);
-  window.addEventListener("scroll", minimap.updateTrackTopFromWindowScroll);
+  window.addEventListener("resize", minimap.onWindowResize);
 
   minimap.render();
   return minimap;
@@ -192,13 +244,16 @@ const drawCircle = (circle: Circle, ctx: CanvasRenderingContext2D) => {
 };
 
 css.class(cls.minimap, {
-  position: "fixed",
-  top: spacings.headerHeight,
-  bottom: 0,
-  right: spacings.bodyScrollWidth,
+  position: "relative",
+  gridArea: "rightSidebar",
+  // top: spacings.headerHeight,
+  // bottom: 0,
+  // right: spacings.bodyScrollWidth,
   width: 120,
   boxShadow: "-2px 2px 2px rgba(0,0,0,0.2)",
   zIndex: zIndexes.minimap,
+  userSelect: "none",
+  overflow: "hidden",
 });
 
 css.class(cls.minimapTrack, {
@@ -222,5 +277,9 @@ css.childActive(cls.minimap, cls.minimapTrack, {
 });
 
 css.class(cls.minimapCanvas, {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: 0,
   pointerEvents: "none",
 });

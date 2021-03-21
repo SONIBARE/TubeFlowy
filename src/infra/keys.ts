@@ -1,4 +1,6 @@
 export const cls = {
+  page: "page",
+
   header: "header",
   headerIcon: "header-icon",
   headerIconContainer: "header-icon-container",
@@ -19,6 +21,7 @@ export const cls = {
   rowsFocused: "rows-focused",
   rowsHide: "rows-hide",
   row: "row",
+  playIcon: "play-icon",
   childContainer: "child-container",
   cardsContainer: "cards-container",
   cardsContainerHeightAdjuster: "cards-container-height-adjuster",
@@ -35,12 +38,15 @@ export const cls = {
   chevron: "chevron",
   chevronOpen: "chevron-open",
 
+  playerFooter: "player-footer",
+
   transparent: "transparent",
   none: "",
 } as const;
 
 export const ids = {
   root: "root",
+  youtubeIframe: "youtube-iframe",
 } as const;
 
 export const tIds = {};
@@ -50,6 +56,8 @@ export const zIndexes = {
   header: 300,
   minimap: 250,
   rightSidebar: 250,
+  iframePlayer: 400,
+  playerFooter: 300,
 };
 
 type valueof<T> = T[keyof T];

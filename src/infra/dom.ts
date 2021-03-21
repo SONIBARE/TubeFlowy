@@ -9,6 +9,7 @@ export interface ElementProps extends ElementWithClassDefinitions {
   onClick?: (e: Event) => void;
   onMouseDown?: (e: Event) => void;
   testId?: string;
+  id?: string;
 }
 export interface HtmlElementProps extends ElementProps {
   style?: Styles;
@@ -106,6 +107,7 @@ export const assignElementProps = (elem: Element, props: ElementProps) => {
   if (props.onClick) elem.addEventListener("click", props.onClick);
   if (props.onMouseDown) elem.addEventListener("mousedown", props.onMouseDown);
   if (props.testId) elem.setAttribute("data-testid", props.testId);
+  if (props.id) elem.setAttribute("id", props.id);
 };
 
 export const assignClasses = (

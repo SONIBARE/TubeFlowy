@@ -13,7 +13,7 @@ export { EventsHandler } from "./eventsHandler";
 //   EventsDefinition,
 
 // export * as dom from "./dom";
-// export * as icons from "./icons";
+export * as icons from "./icons";
 export { colors, spacings, timings } from "./constants";
 export * as anim from "./animations";
 export { component } from "./component";

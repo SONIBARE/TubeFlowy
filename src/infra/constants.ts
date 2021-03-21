@@ -19,6 +19,8 @@ export const spacings = {
   pageMarginTop: 20,
   documentWidth: 700,
 
+  playerFooterHeight: 49,
+
   //CARDS
   cardHeight: 48,
   cardPadding: 14,

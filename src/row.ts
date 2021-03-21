@@ -1,4 +1,4 @@
-import { appendFocusCicrle } from "./focusCircle";
+import { appendFocusCicrle } from "./rowIcon";
 import {
   cls,
   css,
@@ -148,7 +148,6 @@ css.class(cls.childContainer, {
   borderLeft: `${spacings.borderSize}px solid ${colors.border}`,
   transition: "borderLeft 400ms linear",
   //this break cardsContainer, need to think on how to handle this
-  overflow: "hidden",
   position: "relative",
 });
 
@@ -245,35 +244,4 @@ css.hover(cls.chevron, {
 
 css.class(cls.chevronOpen, {
   transform: "rotateZ(90deg)",
-});
-
-//FOCUS CIRCLES
-
-css.class(cls.focusCircleSvg, {
-  marginRight: spacings.spaceBetweenCircleAndText,
-  cursor: "pointer",
-  width: spacings.outerRadius * 2,
-  minWidth: spacings.outerRadius * 2,
-  height: spacings.outerRadius * 2,
-});
-
-css.class(cls.outerCircle, {
-  opacity: 0,
-  transition: "transform 100ms",
-  transform: "scale(0.5)",
-  transformOrigin: "50%",
-});
-
-css.parentHover(cls.focusCircleSvg, cls.outerCircle, {
-  transform: "scale(1)",
-  opacity: 1,
-});
-
-css.class(cls.lightCircle, {
-  opacity: 1,
-  transition: `opacity ${timings.cardExpandCollapseDuration}ms`,
-});
-
-css.class(cls.transparent, {
-  opacity: 0,
 });
