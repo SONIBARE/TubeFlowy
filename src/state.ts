@@ -41,6 +41,10 @@ class Store {
     return true;
   };
 
+  redrawCanvas = () => {
+    this.events.dispatchEvent("redrawMinimap", undefined as any);
+  };
+
   addEventListener = (eventName: string, cb: Func<Item>): EmptyFunc =>
     this.events.addEventListener(eventName, cb);
 

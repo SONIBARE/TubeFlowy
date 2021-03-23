@@ -9,8 +9,6 @@ import {
   spacings,
   component,
   timings,
-  img,
-  span,
 } from "./infra";
 import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
@@ -57,6 +55,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
       childContainer.remove();
       childContainer = undefined;
     }
+    store.redrawCanvas();
   };
 
   const animateChildren = (item: Item) => {

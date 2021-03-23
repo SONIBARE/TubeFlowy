@@ -23,14 +23,7 @@ describe("Minimap specs", () => {
   afterEach(clearBody);
 
   beforeEach(() => {
-    const rock = folder("rock");
-    const music: Item = folder("music", [rock.id]);
-    const home = folder("HOME", [music.id]);
-    store.setItems({
-      [home.id]: home,
-      [music.id]: music,
-      [rock.id]: rock,
-    });
+    store.setItems({ HOME: folder("HOME") });
     container = document.createElement("div");
     scrollTo = jest.fn();
     container.scrollTo = scrollTo;
@@ -45,6 +38,7 @@ describe("Minimap specs", () => {
   it("by default track top should be zero", () => {
     expect(map.track.style.top).toBe("0px");
   });
+
   describe("", () => {
     const windowHeight = 768;
     const minimapHeight =
@@ -110,6 +104,40 @@ describe("Minimap specs", () => {
   });
 });
 
+describe("Having a content shorter than minimap", () => {
+  let map: Minimap;
+  let scrollTo: jest.Mock;
+  let container: HTMLElement;
+
+  afterEach(clearBody);
+
+  beforeEach(() => {
+    store.setItems({ HOME: folder("HOME") });
+    container = document.createElement("div");
+    scrollTo = jest.fn();
+    container.scrollTo = scrollTo;
+    jest.spyOn(container, "scrollHeight", "get").mockImplementation(() => 1000);
+    map = minimap(container);
+    document.body.appendChild(map);
+    const windowHeight = 768;
+    const minimapHeight =
+      windowHeight - spacings.headerHeight - spacings.playerFooterHeight;
+    jest
+      .spyOn(map, "clientHeight", "get")
+      .mockImplementation(() => minimapHeight);
+  });
+
+  it("moving minimap track down by 10px should scroll and move canvas", () => {
+    scrollTo.mockClear();
+    mouseDownAndMoveBy(map.track, {
+      movementX: 0,
+      movementY: 10,
+    });
+    expect(scrollTo).toHaveBeenCalledWith({ top: 80 });
+    expect(map.track.style.top).toBe("10px");
+    expect(map.canvas.style.top).toBe("0px");
+  });
+});
 interface MoveEventProps {
   movementX: number;
   movementY: number;

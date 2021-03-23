@@ -74,7 +74,7 @@ export class Minimap extends HTMLElement {
 
     const documentHeight = this.scrollContainer.scrollHeight;
 
-    const max = this.clientHeight - this.trackHeight;
+    const max = this.getMaxTrackPosition();
     const percent = top / max;
     if (percent >= 1) top = max;
 
@@ -93,8 +93,15 @@ export class Minimap extends HTMLElement {
     }
   };
 
+  getMaxTrackPosition = () => {
+    const canvasHeight = this.scrollContainer.scrollHeight / multiplier;
+    const minimapHeight = this.clientHeight;
+    if (canvasHeight > minimapHeight) return minimapHeight - this.trackHeight;
+    else return canvasHeight - this.trackHeight;
+  };
+
   onContainerScroll = () => {
-    const max = this.clientHeight - this.trackHeight;
+    const max = this.getMaxTrackPosition();
     const percent =
       this.scrollContainer.scrollTop /
       (this.scrollContainer.scrollHeight - this.clientHeight);
@@ -168,7 +175,7 @@ customElements.define("sp-minimap", Minimap);
 export const minimap = (scrollContainer: HTMLElement): Minimap => {
   const minimap = document.createElement("sp-minimap") as Minimap;
   minimap.scrollContainer = scrollContainer;
-  store.addEventListener("itemChanged", minimap.drawCanvas);
+  store.addEventListener("redrawMinimap", minimap.drawCanvas);
 
   //memory leaks on case of multipage
   window.addEventListener("resize", minimap.onWindowResize);
