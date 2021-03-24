@@ -1,5 +1,5 @@
-const outerRadius = 10;
-const innerRadius = 4.5;
+const outerRadius = 16;
+const innerRadius = 6;
 const chevronSize = 16;
 const borderSize = 2;
 
@@ -12,9 +12,9 @@ export const spacings = {
   spacePerLevel: chevronSize + outerRadius - borderSize / 2,
   negativeMarginForRowAtZeroLevel: 1000,
   rowVecticalPadding: 4,
-  spaceBetweenCircleAndText: 4,
+  spaceBetweenCircleAndText: 8,
   headerHeight: 48,
-  bodyScrollWidth: 8,
+  bodyScrollWidth: 6,
   pageFontSize: 16,
   pageMarginTop: 20,
   documentWidth: 700,

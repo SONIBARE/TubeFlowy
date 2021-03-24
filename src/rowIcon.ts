@@ -7,6 +7,9 @@ import {
   spacings,
   css,
   timings,
+  img,
+  Styles,
+  div,
 } from "./infra";
 
 import { store } from "./state";
@@ -21,18 +24,29 @@ export const appendFocusCicrle = (
   item: Item,
   parent: HTMLElement
 ): EmptyFunc => {
-  if (item.type === "YTvideo") {
+  if (
+    item.type === "YTplaylist" ||
+    item.type === "YTchannel" ||
+    item.type === "YTvideo"
+  ) {
     const unsub = store.addEventListener(
       "itemChanged." + item.id,
       () => undefined
     );
-
-    parent.appendChild(
-      icons.play({
-        className: [cls.focusCircleSvg, cls.playIcon],
-        onClick: () => play(item.videoId),
-      })
+    const image = div({
+      classMap: {
+        [cls.channelImage]: item.type == "YTchannel",
+        [cls.playlistImage]:
+          item.type == "YTplaylist" || item.type == "YTvideo",
+      },
+      onClick: () => item.type == "YTvideo" && play(item.videoId),
+    });
+    image.style.setProperty(
+      "background-image",
+      `url(${store.getImageSrc(item)})`
     );
+    parent.appendChild(image);
+
     return unsub;
   } else {
     const lightCircle = circle({
@@ -116,10 +130,40 @@ css.class(cls.transparent, {
 });
 
 css.class(cls.playIcon, {
-  padding: 5,
+  padding: 8,
   color: colors.darkPrimary,
 });
 
 css.hover(cls.playIcon, {
   color: "purple",
+});
+
+const imageSize = spacings.outerRadius * 2;
+
+const imageStyles: Styles = {
+  width: imageSize,
+  height: imageSize,
+  marginRight: spacings.spaceBetweenCircleAndText,
+  boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.1)`,
+  backgroundSize: "cover",
+  backgroundPosition: `50% 50%`,
+  cursor: "pointer",
+};
+
+css.class(cls.playlistImage, {
+  ...imageStyles,
+  borderRadius: 4,
+});
+
+css.hover(cls.playlistImage, {
+  boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.5)`,
+});
+
+css.class(cls.channelImage, {
+  ...imageStyles,
+  borderRadius: imageSize,
+});
+
+css.hover(cls.channelImage, {
+  boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.5)`,
 });

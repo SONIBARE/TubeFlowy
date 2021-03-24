@@ -147,6 +147,7 @@ css.class(cls.childContainer, {
   borderLeft: `${spacings.borderSize}px solid ${colors.border}`,
   transition: "borderLeft 400ms linear",
   //this break cardsContainer, need to think on how to handle this
+  overflow: "hidden",
   position: "relative",
 });
 

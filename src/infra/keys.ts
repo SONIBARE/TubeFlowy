@@ -29,7 +29,8 @@ export const cls = {
   card: "card",
   cardText: "card-text",
   cardImage: "card-image",
-
+  playlistImage: "playlist-image",
+  channelImage: "channle-image",
   rowText: "row-text",
   rowCircle: "row-circle",
   outerCircle: "row-outer-circle",

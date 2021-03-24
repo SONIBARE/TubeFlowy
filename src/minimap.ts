@@ -20,7 +20,7 @@ const minimapStyles = {
       spacings.rowVecticalPadding +
       1) /
     multiplier,
-  distanceBetweenCircles: 29 / multiplier, //hardcoded for now, need to account for line height and text wrap
+  distanceBetweenCircles: 40 / multiplier, //hardcoded for now, need to account for line height and text wrap
   distancePerLevel:
     (spacings.spacePerLevel + spacings.outerRadius) / multiplier,
   spaceBetweenCircleCenterAndText:
