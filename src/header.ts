@@ -198,5 +198,6 @@ css.parentHover(cls.headerPathSeparator, cls.headerContextMenu, {
 });
 
 css.class(cls.saveButton, {
-  marginLeft: 120,
+  marginLeft: "auto",
+  marginRight: 10,
 });
