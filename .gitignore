@@ -3,3 +3,4 @@ node_modules
 dist
 package-lock.json
 playgrounds
+src/api/config.ts

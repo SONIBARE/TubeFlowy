@@ -1,22 +1,24 @@
-import { anim, cls, fragment, spacings } from "./infra";
+import { anim, cls, fragment, ids, spacings } from "./infra";
 import { store } from "./state";
 import { myRow } from "./row";
+import { Minimap } from "./minimap";
 
 export const focusItem = (item: Item) => {
-  if (item.id === "HOME") unfocusToRoot();
-  else {
-    const elem = document.getElementById("row-" + item.id);
+  focusWithoutAnimation(item);
+};
 
-    if (!elem) {
-      throw new Error("Focusing on not-rendered items is not yet supported");
-    }
-    narrowFocusItem(item, elem);
-  }
+const focusWithoutAnimation = (item: Item) => {
+  store.itemIdFocused = item.id;
+  const container = findScrollableContainer();
+  const minimap = findMinimap();
+  container.innerHTML = ``;
+  container.appendChild(fragment(store.getChildrenFor(item.id).map(myRow)));
+  minimap.drawCanvas();
 };
 
 const narrowFocusItem = (item: Item, row: HTMLElement) => {
   store.itemIdFocused = item.id;
-  const container = getScrollableContainer();
+  const container = findScrollableContainer();
 
   container.classList.add(cls.rowsHide);
 
@@ -52,7 +54,7 @@ const narrowFocusItem = (item: Item, row: HTMLElement) => {
 };
 
 const unfocusToRoot = () => {
-  const container = getScrollableContainer();
+  const container = findScrollableContainer();
   container.innerHTML = ``;
   container.appendChild(fragment(store.getRootItems().map(myRow)));
   const row = document.getElementById(
@@ -79,6 +81,9 @@ const unfocusToRoot = () => {
   );
 };
 
-const getScrollableContainer = (): HTMLElement =>
+const findScrollableContainer = (): HTMLElement =>
   document.getElementsByClassName(cls.rowsContainer)[0]
     .firstChild as HTMLElement;
+
+const findMinimap = (): Minimap =>
+  document.getElementById(ids.minimap) as Minimap;

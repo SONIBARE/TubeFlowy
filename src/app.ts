@@ -5,6 +5,8 @@ import { myRow } from "./row";
 import { minimap } from "./minimap";
 import { store } from "./state";
 import { playerFooter } from "./player/playerFooter";
+import * as database from "./api/loginService";
+import { focusItem } from "./focuser";
 
 const copy = items;
 Object.keys(copy).forEach((key) => {
@@ -13,7 +15,23 @@ Object.keys(copy).forEach((key) => {
     item.isCollapsedInGallery = true;
   }
 });
-store.setItems(items);
+
+database.initFirebase(() => undefined);
+database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
+  const items: Items = JSON.parse(data.itemsSerialized);
+  store.setItems(items);
+
+  focusItem(items[data.selectedItemId]);
+});
+
+store.setItems({
+  HOME: {
+    type: "folder",
+    children: [],
+    id: "HOME",
+    title: "Home",
+  },
+});
 
 const scrollContainer = div(
   { className: cls.rowsContainer },
@@ -62,10 +80,4 @@ css.tag("body", {
 
 css.selector(`.${cls.rowsContainer}::-webkit-scrollbar`, {
   width: 0,
-});
-
-css.selector(`.${cls.rowsContainer}::-webkit-scrollbar-thumb`, {
-  // backgroundColor: colors.mediumPrimary,
-  // borderTopLeftRadius: 4,
-  // borderBottomLeftRadius: 4,
 });

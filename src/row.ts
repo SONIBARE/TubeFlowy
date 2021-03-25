@@ -148,6 +148,13 @@ css.class(cls.childContainer, {
   transition: "borderLeft 400ms linear",
   //this break cardsContainer, need to think on how to handle this
   overflow: "hidden",
+
+  marginTop: -spacings.rowVecticalPadding,
+  paddingTop: spacings.rowVecticalPadding,
+
+  marginBottom: -spacings.rowVecticalPadding,
+  paddingBottom: spacings.rowVecticalPadding,
+
   position: "relative",
 });
 

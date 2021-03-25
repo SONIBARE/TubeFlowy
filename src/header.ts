@@ -50,7 +50,7 @@ export const header = (): HTMLDivElement =>
       })
     ),
     div(
-      { className: [cls.headerPathText, cls.headerPathTextActive] },
+      { className: [cls.headerPathText, cls.headerPathTextCurrent] },
       "Fuck Me"
     )
   );
@@ -121,7 +121,7 @@ css.class(cls.lightChevronIcon, {
   transition: "transform 200ms",
 });
 css.class(cls.headerPathSeparator, {
-  width: 16,
+  width: 20,
   paddingTop: 2,
   alignSelf: "stretch",
   display: "flex",
@@ -130,17 +130,13 @@ css.class(cls.headerPathSeparator, {
   position: "relative",
 });
 
-css.hover(cls.headerPathSeparator, {
-  //   backgroundColor: colors.buttonHover,
-});
-
 css.parentHover(cls.headerPathSeparator, cls.lightChevronIcon, {
   transform: "rotateZ(90deg)",
 });
 
 css.class(cls.headerPathText, {
   fontSize: 14,
-  padding: "0 2px",
+  padding: "0 4px",
   cursor: "pointer",
   alignSelf: "stretch",
   display: "flex",
@@ -156,10 +152,11 @@ css.active(cls.headerPathText, {
   backgroundColor: colors.lightPrimary,
 });
 
-css.class2(cls.headerPathText, cls.headerPathTextActive, {
+css.class2(cls.headerPathText, cls.headerPathTextCurrent, {
   textDecoration: "none",
-  cursor: "inherit",
+  cursor: "initial",
   fontWeight: "bold",
+  backgroundColor: "inherit",
 });
 
 css.class(cls.headerContextMenu, {

@@ -7,6 +7,7 @@ import {
   canvas,
   zIndexes,
   fragment,
+  ids,
 } from "./infra";
 import { store } from "./state";
 
@@ -49,7 +50,7 @@ export class Minimap extends HTMLElement {
     drawChildren(
       5,
       minimapStyles.initialCircleX,
-      store.getChildrenFor("HOME"),
+      store.getFocusChildren(),
       this.ctx
     );
   };
@@ -174,6 +175,7 @@ customElements.define("sp-minimap", Minimap);
 
 export const minimap = (scrollContainer: HTMLElement): Minimap => {
   const minimap = document.createElement("sp-minimap") as Minimap;
+  minimap.id = ids.minimap;
   minimap.scrollContainer = scrollContainer;
   store.addEventListener("redrawMinimap", minimap.drawCanvas);
 

@@ -11,6 +11,8 @@ class Store {
 
   getRootItems = (): Item[] => this.getChildrenFor("HOME");
 
+  getFocusChildren = (): Item[] => this.getChildrenFor(this.itemIdFocused);
+
   getRoot = (): Item => this.items["HOME"];
 
   getChildrenFor = (itemId: string) => {

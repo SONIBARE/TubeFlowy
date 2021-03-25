@@ -7,7 +7,7 @@ export const cls = {
   headerBackButton: "header-back-button",
   headerPathSeparator: "header-path-separator",
   headerPathText: "header-path-text",
-  headerPathTextActive: "header-path-text-active",
+  headerPathTextCurrent: "header-path-text-active",
   lightChevronIcon: "header-light-chevron",
   headerContextMenu: "header-context-menu",
   headerContextMenuItem: "header-context-menu-item",
@@ -47,6 +47,7 @@ export const cls = {
 
 export const ids = {
   root: "root",
+  minimap: "minimap",
   youtubeIframe: "youtube-iframe",
 } as const;
 
