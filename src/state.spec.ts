@@ -16,6 +16,7 @@ describe("having a store with two items", () => {
       store.addEventListener("item-play", onPlay);
       store.play("v1");
     });
+
     it("event item-play should be triggered", () => {
       expect(onPlay).toHaveBeenCalledWith(v1);
     });

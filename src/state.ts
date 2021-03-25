@@ -1,3 +1,5 @@
+import { JavascriptModulesPlugin } from "webpack";
+import { PersistedState, saveUserSettings } from "./api/loginService";
 import { EventsHandler } from "./infra";
 
 class Store {
@@ -60,6 +62,16 @@ class Store {
   //Play
   play = (itemId: string) => {
     this.events.dispatchEvent("item-play", this.items[itemId]);
+  };
+
+  //Persistance
+  save = () => {
+    const persisted: PersistedState = {
+      focusedStack: [],
+      itemsSerialized: JSON.stringify(store.items),
+      selectedItemId: store.itemIdFocused,
+    };
+    saveUserSettings(persisted, "nLHkgavG6YXJWlP4YkzJ9t4zW692");
   };
 
   addEventListener = (eventName: string, cb: Func<Item>): EmptyFunc =>

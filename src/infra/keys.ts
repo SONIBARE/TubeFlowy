@@ -12,6 +12,7 @@ export const cls = {
   headerContextMenu: "header-context-menu",
   headerContextMenuItem: "header-context-menu-item",
   headerContextMenuItemActive: "header-context-menu-item-active",
+  saveButton: "save-button",
 
   minimap: "minimap",
   minimapTrack: "minimap-track",

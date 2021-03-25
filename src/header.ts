@@ -1,5 +1,5 @@
 import { focusItem } from "./focuser";
-import { cls, colors, css, div, spacings, zIndexes } from "./infra";
+import { button, cls, colors, css, div, spacings, zIndexes } from "./infra";
 import { chevron, home, lightChevron } from "./infra/icons";
 import { store } from "./state";
 
@@ -52,7 +52,8 @@ export const header = (): HTMLDivElement =>
     div(
       { className: [cls.headerPathText, cls.headerPathTextCurrent] },
       "Fuck Me"
-    )
+    ),
+    button({ className: cls.saveButton, text: "Save", onClick: store.save })
   );
 
 const headerButton = (icon: SVGElement, onClick?: EmptyFunc) =>
@@ -194,4 +195,8 @@ css.parentHover(cls.headerPathSeparator, cls.headerContextMenu, {
   pointerEvents: "all",
   opacity: 1,
   transform: "translateZ(0)",
+});
+
+css.class(cls.saveButton, {
+  marginLeft: 120,
 });
