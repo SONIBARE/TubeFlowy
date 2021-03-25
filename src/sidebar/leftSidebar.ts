@@ -79,6 +79,14 @@ css.class(cls.leftSidebar, {
   overflowY: "overlay" as any,
 });
 
+css.selector(`.${cls.leftSidebar}::-webkit-scrollbar`, {
+  width: 4,
+});
+
+css.selector(`.${cls.leftSidebar}::-webkit-scrollbar-thumb`, {
+  backgroundColor: colors.mediumPrimary,
+});
+
 css.hover(cls.leftSidebar, {
   width: 250,
 });
