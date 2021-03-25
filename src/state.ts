@@ -36,7 +36,17 @@ class Store {
     }
   };
 
-  isFolderOpenOnPage = (item: Item) => !!(item as any).isCollapsedInGallery;
+  isFolderOpenOnPage = (item: Item) =>
+    this.isContainer(item) && !item.isCollapsedInGallery;
+
+  isContainer = (item: Item): item is ItemContainer => {
+    return (
+      item.type == "YTchannel" ||
+      item.type == "folder" ||
+      item.type == "search" ||
+      item.type == "YTplaylist"
+    );
+  };
 
   isEmptyAndNoNeedToLoad = (item: Item) => {
     if ("children" in item) return item.children.length === 0;

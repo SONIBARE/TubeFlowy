@@ -142,6 +142,7 @@ const imageSize = spacings.outerRadius * 2;
 
 const imageStyles: Styles = {
   width: imageSize,
+  minWidth: imageSize,
   height: imageSize,
   marginRight: spacings.spaceBetweenCircleAndText,
   boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.1)`,
