@@ -261,6 +261,7 @@ css.class(cls.minimap, {
   // top: spacings.headerHeight,
   // bottom: 0,
   // right: spacings.bodyScrollWidth,
+  backgroundColor: "white",
   width: 120,
   boxShadow: "-2px 2px 2px rgba(0,0,0,0.2)",
   zIndex: zIndexes.minimap,

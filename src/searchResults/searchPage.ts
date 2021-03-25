@@ -40,7 +40,15 @@ css.class(cls.searchResults, {
 });
 
 css.class(cls.searchResultsOpen, {
-  width: 400,
+  width: "calc(100vw / 2)",
+});
+
+css.selector(`.${cls.searchResults}::-webkit-scrollbar`, {
+  width: 6,
+});
+
+css.selector(`.${cls.searchResults}::-webkit-scrollbar-thumb`, {
+  backgroundColor: colors.mediumPrimary,
 });
 
 const mapReponseItem = (resItem: ResponseItem): Item => {

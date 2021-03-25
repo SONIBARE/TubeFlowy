@@ -80,7 +80,7 @@ css.class(cls.leftSidebar, {
 });
 
 css.selector(`.${cls.leftSidebar}::-webkit-scrollbar`, {
-  width: 4,
+  width: 6,
 });
 
 css.selector(`.${cls.leftSidebar}::-webkit-scrollbar-thumb`, {

@@ -1,6 +1,5 @@
 import { header } from "./header";
 import { cls, css, div, fragment, spacings } from "./infra";
-import { myRow } from "./row";
 import { minimap } from "./minimap";
 import { store } from "./state";
 import { playerFooter } from "./player/playerFooter";
@@ -62,7 +61,7 @@ css.class(cls.rowsContainer, {
   gridArea: "gallery",
   position: "relative",
   overflowX: "hidden",
-  paddingLeft: 40,
+  paddingLeft: 20,
   // marginLeft: "calc((100vw - 700px) / 2)",
   // maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,
 });

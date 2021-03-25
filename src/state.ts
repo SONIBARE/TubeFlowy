@@ -1,5 +1,6 @@
 import { JavascriptModulesPlugin } from "webpack";
 import { PersistedState, saveUserSettings } from "./api/loginService";
+import { createPersistedState } from "./api/stateLoader";
 import { EventsHandler } from "./infra";
 
 class Store {
@@ -90,11 +91,7 @@ class Store {
 
   //Persistance
   save = () => {
-    const persisted: PersistedState = {
-      focusedStack: [],
-      itemsSerialized: JSON.stringify(store.items),
-      selectedItemId: store.itemIdFocused,
-    };
+    const persisted: PersistedState = createPersistedState();
     saveUserSettings(persisted, "nLHkgavG6YXJWlP4YkzJ9t4zW692");
   };
 
