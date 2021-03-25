@@ -12,6 +12,7 @@ export const cls = {
   headerContextMenu: "header-context-menu",
   headerContextMenuItem: "header-context-menu-item",
   headerContextMenuItemActive: "header-context-menu-item-active",
+  headerPullRight: "header-pull-right",
   saveButton: "save-button",
 
   minimap: "minimap",
@@ -26,6 +27,7 @@ export const cls = {
   leftSidebarChevronHidden: "left-sidebar-row-chevron-hidden",
 
   rowsContainer: "rows-container",
+  rowsScrollContainer: "rows-scroll-container",
   rowsFocused: "rows-focused",
   rowsHide: "rows-hide",
   row: "row",
@@ -48,6 +50,9 @@ export const cls = {
   chevronOpen: "chevron-open",
 
   playerFooter: "player-footer",
+
+  searchResults: "search-results",
+  searchResultsOpen: "search-results-open",
 
   transparent: "transparent",
   none: "",

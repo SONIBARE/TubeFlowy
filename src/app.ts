@@ -7,6 +7,7 @@ import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
 import { focusItem } from "./focuser";
 import { leftNavigationSidebar } from "./sidebar/leftSidebar";
+import { searchResults } from "./searchResults/searchPage";
 
 database.initFirebase(() => undefined);
 database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
@@ -25,19 +26,25 @@ store.itemsLoaded({
   },
 });
 
-const scrollContainer = div(
+const scrollContainer = div({ className: cls.rowsScrollContainer });
+const container = div(
   { className: cls.rowsContainer },
-  div({}, fragment(store.getRootItems().map(myRow)))
+  scrollContainer,
+  minimap(scrollContainer)
 );
 
 const page = div(
   { className: cls.page },
-  fragment([header(), scrollContainer, leftNavigationSidebar(), playerFooter()])
+  fragment([
+    header(),
+    container,
+    searchResults(),
+    leftNavigationSidebar(),
+    playerFooter(),
+  ])
 );
 
 document.body.appendChild(page);
-
-page.appendChild(minimap(scrollContainer));
 
 css.class(cls.page, {
   height: "100vh",
@@ -54,13 +61,17 @@ css.class(cls.page, {
 css.class(cls.rowsContainer, {
   gridArea: "gallery",
   position: "relative",
-  overflowY: "overlay" as any,
   overflowX: "hidden",
-  paddingTop: spacings.pageMarginTop,
   paddingLeft: 40,
-  paddingBottom: 60,
   // marginLeft: "calc((100vw - 700px) / 2)",
   // maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,
+});
+
+css.class(cls.rowsScrollContainer, {
+  paddingBottom: 60,
+  paddingTop: spacings.pageMarginTop,
+  maxHeight: "100%",
+  overflowY: "overlay" as any,
 });
 
 css.selector("*", {
@@ -72,6 +83,6 @@ css.tag("body", {
   margin: 0,
 });
 
-css.selector(`.${cls.rowsContainer}::-webkit-scrollbar`, {
+css.selector(`.${cls.rowsScrollContainer}::-webkit-scrollbar`, {
   width: 0,
 });

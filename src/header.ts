@@ -1,29 +1,38 @@
 import { focusItem } from "./focuser";
-import { button, cls, colors, css, div, spacings, zIndexes } from "./infra";
-import { chevron, home, lightChevron } from "./infra/icons";
+import {
+  button,
+  cls,
+  colors,
+  css,
+  div,
+  spacings,
+  zIndexes,
+  icons,
+} from "./infra";
+import { showSearchPanel } from "./searchResults/searchPage";
 import { store } from "./state";
 
 export const header = (): HTMLDivElement =>
   div(
     { className: cls.header },
     headerButton(
-      chevron({
+      icons.chevron({
         className: [cls.headerIcon, cls.headerBackButton],
       }),
       () => focusItem(store.getRoot())
     ),
-    headerButton(chevron({ className: cls.headerIcon })),
-    headerButton(home({ className: cls.headerIcon })),
+    headerButton(icons.chevron({ className: cls.headerIcon })),
+    headerButton(icons.home({ className: cls.headerIcon })),
     div(
       { className: cls.headerPathSeparator },
-      lightChevron({
+      icons.lightChevron({
         className: cls.lightChevronIcon,
       })
     ),
     div({ className: cls.headerPathText }, "Music"),
     div(
       { className: cls.headerPathSeparator },
-      lightChevron({
+      icons.lightChevron({
         className: cls.lightChevronIcon,
       }),
       div(
@@ -45,13 +54,21 @@ export const header = (): HTMLDivElement =>
     div({ className: cls.headerPathText }, "Metal"),
     div(
       { className: cls.headerPathSeparator },
-      lightChevron({
+      icons.lightChevron({
         className: cls.lightChevronIcon,
       })
     ),
     div(
       { className: [cls.headerPathText, cls.headerPathTextCurrent] },
       "Fuck Me"
+    ),
+
+    div(
+      {
+        className: [cls.headerIconContainer, cls.headerPullRight],
+        onClick: showSearchPanel,
+      },
+      icons.search({ className: [cls.headerIcon] })
     ),
     button({ className: cls.saveButton, text: "Save", onClick: store.save })
   );
@@ -198,6 +215,9 @@ css.parentHover(cls.headerPathSeparator, cls.headerContextMenu, {
 });
 
 css.class(cls.saveButton, {
+  margin: "0 10px",
+});
+
+css.class(cls.headerPullRight, {
   marginLeft: "auto",
-  marginRight: 10,
 });

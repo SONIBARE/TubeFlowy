@@ -253,8 +253,11 @@ const drawCircle = (circle: Circle, ctx: CanvasRenderingContext2D) => {
 };
 
 css.class(cls.minimap, {
-  position: "relative",
-  gridArea: "rightSidebar",
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  // gridArea: "rightSidebar",
   // top: spacings.headerHeight,
   // bottom: 0,
   // right: spacings.bodyScrollWidth,

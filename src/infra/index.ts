@@ -18,6 +18,7 @@ export { colors, spacings, timings } from "./constants";
 export * as anim from "./animations";
 export { component } from "./component";
 export * as utils from "./utils";
+export { debounce } from "./debounce";
 // export { colors, spacings, typography } from "./projectSpecific/constants";
 // export * as itemEvents from "./events";
 // import * as dom from "./dom";

@@ -9,7 +9,24 @@ class Store {
   events = new EventsHandler<Item>();
   itemsLoaded = (newItems: Items) => {
     this.items = newItems;
+    this.items["SEARCH"] = {
+      type: "search",
+      title: "Search",
+      children: [],
+      id: "SEARCH",
+      searchTerm: "",
+    };
     this.events.dispatchEvent("items-loaded", undefined as any);
+  };
+
+  setSearchItems = (searchResults: Item[]) => {
+    (this.items["SEARCH"] as SearchContainer).children = searchResults.map(
+      (i) => i.id
+    );
+
+    searchResults.forEach((item) => {
+      this.items[item.id] = item;
+    });
   };
 
   getRootItems = (): Item[] => this.getChildrenFor("HOME");
