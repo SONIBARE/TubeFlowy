@@ -18,6 +18,7 @@ const folder = (id: string, children?: string[]): Folder => ({
   title: id,
   type: "folder",
   children: children || [],
+  isCollapsedInGallery: true,
 });
 describe("Having an app", () => {
   beforeEach(() => {
@@ -47,7 +48,7 @@ describe("Having an app", () => {
   it("with an open music folder shows rock content ", () => {
     const rock = folder("rock");
     const music = folder("music", [rock.id]);
-    music.isCollapsedInGallery = true;
+    music.isCollapsedInGallery = false;
     const home = folder("HOME", [music.id]);
     store.setItems({
       [home.id]: home,

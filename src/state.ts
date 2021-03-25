@@ -57,6 +57,11 @@ class Store {
     this.events.dispatchEvent("redrawMinimap", undefined as any);
   };
 
+  //Play
+  play = (itemId: string) => {
+    this.events.dispatchEvent("item-play", this.items[itemId]);
+  };
+
   addEventListener = (eventName: string, cb: Func<Item>): EmptyFunc =>
     this.events.addEventListener(eventName, cb);
 

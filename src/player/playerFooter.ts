@@ -1,8 +1,18 @@
 import { css, div, spacings } from "../infra";
 import { cls, ids, zIndexes } from "../infra/keys";
+import { store } from "../state";
+import { play } from "./youtubePlayer";
 
-export const playerFooter = () =>
-  div({ className: cls.playerFooter }, div({ id: ids.youtubeIframe }));
+export const playerFooter = () => {
+  const container = div({ className: cls.playerFooter });
+  store.addEventListener("item-play", (item) => {
+    if (!container.firstChild)
+      container.appendChild(div({ id: ids.youtubeIframe }));
+
+    if (item.type === "YTvideo") play(item.videoId);
+  });
+  return container;
+};
 
 css.id(ids.youtubeIframe, {
   position: "fixed",
@@ -14,7 +24,6 @@ css.id(ids.youtubeIframe, {
   transform: "translate3d(0, 0, 0)",
   transition: "opacity 200ms ease-out, transform 200ms ease-out",
   zIndex: zIndexes.iframePlayer,
-  pointerEvents: "none",
 });
 
 css.class(cls.playerFooter, {

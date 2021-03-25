@@ -14,7 +14,6 @@ import {
 
 import { store } from "./state";
 import { focusItem } from "./focuser";
-import { play } from "./player/youtubePlayer";
 
 //TODO: consider where to place this method (common with sideScroll.ts)
 const isLightCircleTransparent = (item: Item) =>
@@ -39,7 +38,7 @@ export const appendFocusCicrle = (
         [cls.playlistImage]:
           item.type == "YTplaylist" || item.type == "YTvideo",
       },
-      onClick: () => item.type == "YTvideo" && play(item.videoId),
+      onClick: () => item.type == "YTvideo" && store.play(item.id),
     });
     image.style.setProperty(
       "background-image",
