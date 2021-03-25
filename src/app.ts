@@ -1,20 +1,11 @@
 import { header } from "./header";
-import { cls, css, div, fragment, colors, spacings } from "./infra";
-import { items } from "./playgrounds/slapstukLegacyItems";
+import { cls, css, div, fragment, spacings } from "./infra";
 import { myRow } from "./row";
 import { minimap } from "./minimap";
 import { store } from "./state";
 import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
 import { focusItem } from "./focuser";
-
-const copy = items;
-Object.keys(copy).forEach((key) => {
-  const item = items[key];
-  if (item.type === "folder") {
-    item.isCollapsedInGallery = true;
-  }
-});
 
 database.initFirebase(() => undefined);
 database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
