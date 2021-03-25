@@ -72,11 +72,13 @@ export const button = (props: ButtonProps): HTMLElement => {
   return elem;
 };
 
-export const fragment = (nodes: (Node | string)[]) => {
+export const fragment = (
+  nodes: (Node | string | undefined)[]
+): DocumentFragment => {
   const fragment = document.createDocumentFragment();
   nodes.forEach((node) => {
     if (typeof node === "string") fragment.append(node);
-    else fragment.appendChild(node);
+    else if (typeof node !== "undefined") fragment.appendChild(node);
   });
   return fragment;
 };

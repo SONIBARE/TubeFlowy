@@ -29,7 +29,7 @@ describe("Having an app", () => {
     const rock = folder("rock");
     const music: Item = folder("music", [rock.id]);
     const home = folder("HOME", [music.id]);
-    store.setItems({
+    store.itemsLoaded({
       [home.id]: home,
       [music.id]: music,
       [rock.id]: rock,
@@ -50,7 +50,7 @@ describe("Having an app", () => {
     const music = folder("music", [rock.id]);
     music.isCollapsedInGallery = false;
     const home = folder("HOME", [music.id]);
-    store.setItems({
+    store.itemsLoaded({
       [home.id]: home,
       [music.id]: music,
       [rock.id]: rock,

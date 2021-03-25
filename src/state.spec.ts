@@ -7,7 +7,7 @@ const home = folder("HOME", [v1.id, v2.id]);
 
 describe("having a store with two items", () => {
   beforeEach(() => {
-    store.setItems(createItemsFromArray([v1, v2, home]));
+    store.itemsLoaded(createItemsFromArray([v1, v2, home]));
   });
   describe("when I click play first item", () => {
     let onPlay: jest.Mock;

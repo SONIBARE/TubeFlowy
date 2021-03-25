@@ -18,6 +18,13 @@ export const cls = {
   minimapTrack: "minimap-track",
   minimapCanvas: "minimap-canvas",
 
+  leftSidebar: "left-sidebar",
+  leftSidebarRow: "left-sidebar-row",
+  leftSidebarRowChildren: "left-sidebar-row-children",
+  leftSidebarChevron: "left-sidebar-row-chevron",
+  leftSidebarChevronOpen: "left-sidebar-row-chevron-open",
+  leftSidebarChevronHidden: "left-sidebar-row-chevron-hidden",
+
   rowsContainer: "rows-container",
   rowsFocused: "rows-focused",
   rowsHide: "rows-hide",

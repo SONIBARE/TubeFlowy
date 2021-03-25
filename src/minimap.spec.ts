@@ -23,7 +23,7 @@ describe("Minimap specs", () => {
   afterEach(clearBody);
 
   beforeEach(() => {
-    store.setItems({ HOME: folder("HOME") });
+    store.itemsLoaded({ HOME: folder("HOME") });
     container = document.createElement("div");
     scrollTo = jest.fn();
     container.scrollTo = scrollTo;
@@ -112,7 +112,7 @@ describe("Having a content shorter than minimap", () => {
   afterEach(clearBody);
 
   beforeEach(() => {
-    store.setItems({ HOME: folder("HOME") });
+    store.itemsLoaded({ HOME: folder("HOME") });
     container = document.createElement("div");
     scrollTo = jest.fn();
     container.scrollTo = scrollTo;

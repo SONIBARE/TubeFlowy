@@ -6,16 +6,17 @@ import { store } from "./state";
 import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
 import { focusItem } from "./focuser";
+import { leftNavigationSidebar } from "./sidebar/leftSidebar";
 
 database.initFirebase(() => undefined);
 database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
   const items: Items = JSON.parse(data.itemsSerialized);
-  store.setItems(items);
+  store.itemsLoaded(items);
 
   focusItem(items[data.selectedItemId]);
 });
 
-store.setItems({
+store.itemsLoaded({
   HOME: {
     type: "folder",
     children: [],
@@ -31,8 +32,9 @@ const scrollContainer = div(
 
 const page = div(
   { className: cls.page },
-  fragment([header(), scrollContainer, playerFooter()])
+  fragment([header(), scrollContainer, leftNavigationSidebar(), playerFooter()])
 );
+
 document.body.appendChild(page);
 
 page.appendChild(minimap(scrollContainer));
@@ -55,6 +57,7 @@ css.class(cls.rowsContainer, {
   overflowY: "overlay" as any,
   overflowX: "hidden",
   paddingTop: spacings.pageMarginTop,
+  paddingLeft: 40,
   paddingBottom: 60,
   // marginLeft: "calc((100vw - 700px) / 2)",
   // maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,

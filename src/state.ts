@@ -7,8 +7,9 @@ class Store {
   itemIdFocused: string = "HOME";
 
   events = new EventsHandler<Item>();
-  setItems = (i: Items) => {
-    this.items = i;
+  itemsLoaded = (newItems: Items) => {
+    this.items = newItems;
+    this.events.dispatchEvent("items-loaded", undefined as any);
   };
 
   getRootItems = (): Item[] => this.getChildrenFor("HOME");
@@ -37,6 +38,12 @@ class Store {
       this.events.dispatchEvent("itemChanged", item);
     }
   };
+
+  isOpenAtSidebar = (item: Item) =>
+    this.isContainer(item) &&
+    (typeof item.isOpenFromSidebar != "undefined"
+      ? item.isOpenFromSidebar
+      : false);
 
   isFolderOpenOnPage = (item: Item) =>
     this.isContainer(item) && !item.isCollapsedInGallery;
