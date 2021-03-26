@@ -1,4 +1,4 @@
-import { anim, cls, fragment, ids, spacings } from "./infra";
+import { anim, cls, div, fragment, ids, spacings } from "./infra";
 import { store } from "./state";
 import { myRow } from "./row";
 import { Minimap } from "./minimap";
@@ -12,6 +12,7 @@ const focusWithoutAnimation = (item: Item) => {
   const container = findScrollableContainer();
   const minimap = findMinimap();
   container.innerHTML = ``;
+  container.appendChild(div({ className: cls.pageTitle }, item.title));
   container.appendChild(fragment(store.getChildrenFor(item.id).map(myRow)));
   minimap.drawCanvas();
 };

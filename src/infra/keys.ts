@@ -27,6 +27,7 @@ export const cls = {
   leftSidebarChevronHidden: "left-sidebar-row-chevron-hidden",
 
   rowsContainer: "rows-container",
+  pageTitle: "page-title",
   rowsScrollContainer: "rows-scroll-container",
   rowsFocused: "rows-focused",
   rowsHide: "rows-hide",

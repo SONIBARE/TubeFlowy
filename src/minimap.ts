@@ -15,8 +15,9 @@ const multiplier = 8;
 
 const minimapStyles = {
   fontSize: spacings.pageFontSize / multiplier,
-  initialCircleX:
+  initialCircleY:
     (spacings.pageMarginTop +
+      31 + //31 is taken from header font size of 23pt multiplied by line height
       spacings.outerRadius +
       spacings.rowVecticalPadding +
       1) /
@@ -47,9 +48,15 @@ export class Minimap extends HTMLElement {
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.height = this.scrollContainer.scrollHeight / multiplier;
     this.canvas.setAttribute("height", this.height + "");
+    drawTitle(
+      22 / multiplier,
+      minimapStyles.initialCircleY - minimapStyles.bigR - 2,
+      store.items[store.itemIdFocused],
+      this.ctx
+    );
     drawChildren(
       5,
-      minimapStyles.initialCircleX,
+      minimapStyles.initialCircleY,
       store.getFocusChildren(),
       this.ctx
     );
@@ -236,6 +243,17 @@ const drawItem = (
     x + minimapStyles.spaceBetweenCircleCenterAndText,
     y + 1 // plus 1 is a eye picked shift to account for line height (picked for multiplier 7)
   );
+};
+
+const drawTitle = (
+  x: number,
+  y: number,
+  item: Item,
+  ctx: CanvasRenderingContext2D
+) => {
+  ctx.font = `${spacings.pageTitleFontSize / multiplier}px "Segoe UI Semibold"`;
+  ctx.fillStyle = colors.darkPrimary;
+  ctx.fillText(item.title, x, y);
 };
 
 interface Circle {

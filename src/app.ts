@@ -57,6 +57,12 @@ css.class(cls.page, {
     "player player player"`,
 });
 
+css.class(cls.pageTitle, {
+  fontSize: 23,
+  marginLeft: 22,
+  fontWeight: "bold",
+});
+
 css.class(cls.rowsContainer, {
   gridArea: "gallery",
   position: "relative",

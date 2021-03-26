@@ -16,6 +16,7 @@ export const spacings = {
   headerHeight: 48,
   bodyScrollWidth: 6,
   pageFontSize: 16,
+  pageTitleFontSize: 23,
   pageMarginTop: 20,
   documentWidth: 700,
 

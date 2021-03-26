@@ -12,6 +12,7 @@ export interface ElementProps extends ElementWithClassDefinitions {
   id?: string;
 }
 export interface HtmlElementProps extends ElementProps {
+  contentEditable?: boolean;
   style?: Styles;
 }
 
@@ -30,14 +31,13 @@ export const div = (
   return elem;
 };
 
-interface InputProps {
-  className?: ClassName;
+interface InputProps extends HtmlElementProps {
   onInput: (e: Event) => void;
 }
 
 export const input = (props: InputProps): HTMLElement => {
   const elem = document.createElement("input");
-  assignClasses(elem, props);
+  assignHtmlElementProps(elem, props);
   elem.addEventListener("input", props.onInput);
   return elem;
 };
@@ -45,28 +45,27 @@ export const input = (props: InputProps): HTMLElement => {
 interface SpanProps extends HtmlElementProps {}
 export const span = (props: SpanProps, text: string): HTMLElement => {
   const elem = document.createElement("span");
-  assignClasses(elem, props);
+  assignHtmlElementProps(elem, props);
   elem.textContent = text;
   return elem;
 };
 
-interface ImgProps extends ElementWithClassDefinitions {
+interface ImgProps extends HtmlElementProps {
   src: string;
 }
 export const img = (props: ImgProps): HTMLElement => {
   const elem = document.createElement("img");
-  assignClasses(elem, props);
+  assignHtmlElementProps(elem, props);
   elem.src = props.src;
   return elem;
 };
 
-interface ButtonProps extends ElementWithClassDefinitions {
+interface ButtonProps extends HtmlElementProps {
   text: string;
-  onClick?: (e: MouseEvent) => void;
 }
 export const button = (props: ButtonProps): HTMLElement => {
   const elem = document.createElement("button");
-  assignClasses(elem, props);
+  assignHtmlElementProps(elem, props);
   elem.textContent = props.text;
   if (props.onClick) elem.addEventListener("click", props.onClick);
   return elem;
@@ -100,8 +99,15 @@ export const assignHtmlElementProps = (
   elem: HTMLElement,
   props: HtmlElementProps
 ) => {
-  assignElementProps(elem, props);
   assignStyles(elem, props.style);
+  assignHtmlProps(elem, props);
+};
+
+const assignHtmlProps = (elem: HTMLElement, props: HtmlElementProps) => {
+  if (typeof props.contentEditable !== "undefined")
+    elem.setAttribute("contenteditable", props.contentEditable + "");
+
+  assignElementProps(elem, props);
 };
 
 export const assignElementProps = (elem: Element, props: ElementProps) => {

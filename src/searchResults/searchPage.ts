@@ -19,9 +19,8 @@ export const searchResults = () => {
     findYoutubeVideos(input.value).then((results) => {
       const items = results.items.map(mapReponseItem);
       store.setSearchItems(items);
-      container.appendChild(
-        fragment(store.getChildrenFor("SEARCH").map(myRow))
-      );
+      content.innerHTML = ``;
+      content.appendChild(fragment(store.getChildrenFor("SEARCH").map(myRow)));
     });
   };
   input.addEventListener("input", debounce(search, 600));

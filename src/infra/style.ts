@@ -35,10 +35,12 @@ export const css = {
     selector(`.${c1}.${c2}.${c3}`, style),
   parentChild: (c1: ClassName, c2: ClassName, style: Styles) =>
     selector(`.${c1} .${c2}`, style),
-  onParentHover: (c1: ClassName, c2: ClassName, style: Styles) =>
-    selector(`.${c1}:hover .${c2}`, style),
   parentChildTag: (c1: ClassName, tag: Tag, style: Styles) =>
     selector(`.${c1} ${tag}`, style),
+
+  //pseudoclasses
+  onParentHover: (c1: ClassName, c2: ClassName, style: Styles) =>
+    selector(`.${c1}:hover .${c2}`, style),
   onClassParentHoverForTag: (c1: ClassName, tag: Tag, style: Styles) =>
     selector(`.${c1}:hover ${tag}`, style),
   active: (className: ClassName, style: Styles) =>
@@ -57,8 +59,13 @@ export const css = {
     selector(`.${parentClass} .${childClass}:hover`, style),
   childActive: (parentClass: ClassName, childClass: ClassName, style: Styles) =>
     selector(`.${parentClass} .${childClass}:active`, style),
+
+  //pseudoelements
+  selection: (className: ClassName, style: Styles) =>
+    selector(`.${className}::selection`, style),
   afterClass: (className: ClassName, style: Styles) =>
     selector(`.${className}::after`, style),
+
   text: cssText,
   selector,
 };

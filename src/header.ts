@@ -22,7 +22,9 @@ export const header = (): HTMLDivElement =>
       () => focusItem(store.getRoot())
     ),
     headerButton(icons.chevron({ className: cls.headerIcon })),
-    headerButton(icons.home({ className: cls.headerIcon })),
+    headerButton(icons.home({ className: cls.headerIcon }), () =>
+      focusItem(store.getRoot())
+    ),
     div(
       { className: cls.headerPathSeparator },
       icons.lightChevron({

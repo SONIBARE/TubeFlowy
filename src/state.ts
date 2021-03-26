@@ -1,4 +1,3 @@
-import { JavascriptModulesPlugin } from "webpack";
 import { PersistedState, saveUserSettings } from "./api/loginService";
 import { createPersistedState } from "./api/stateLoader";
 import { EventsHandler } from "./infra";

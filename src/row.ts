@@ -9,6 +9,7 @@ import {
   spacings,
   component,
   timings,
+  span,
 } from "./infra";
 import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
@@ -90,7 +91,9 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
 
   const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
   const unsub = appendFocusCicrle(item, row);
-  row.append(item.title);
+  row.append(
+    span({ className: cls.rowText, contentEditable: true }, item.title)
+  );
   row.id = "row-" + item.id;
   elem.appendChild(row);
 
@@ -251,4 +254,12 @@ css.hover(cls.chevron, {
 
 css.class(cls.chevronOpen, {
   transform: "rotateZ(90deg)",
+});
+
+css.class(cls.rowText, {
+  outline: "none",
+});
+
+css.selection(cls.rowText, {
+  background: colors.lightPrimary,
 });
