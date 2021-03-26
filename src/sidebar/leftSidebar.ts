@@ -21,14 +21,14 @@ const sidebarRow = (item: Item): DocumentFragment => {
 
   return fragment([
     div(
-      { className: cls.leftSidebarRow, onClick: onRowClick },
+      { className: cls.leftSidebarRow, events: { click: onRowClick } },
       icons.chevron({
         className: cls.leftSidebarChevron,
         classMap: {
           [cls.leftSidebarChevronOpen]: isOpen,
           [cls.leftSidebarChevronHidden]: !hasAnyNonChildren,
         },
-        onClick: onChevronClick,
+        events: { click: onChevronClick },
       }),
       item.title
     ),

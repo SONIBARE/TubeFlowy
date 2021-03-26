@@ -60,6 +60,8 @@ css.class(cls.page, {
 css.class(cls.pageTitle, {
   fontSize: 23,
   marginLeft: 22,
+  marginBottom: 10,
+  marginTop: 10,
   fontWeight: "bold",
 });
 

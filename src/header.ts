@@ -22,7 +22,7 @@ export const header = (): HTMLDivElement => {
           {
             className: cls.headerContextMenuItem,
             classMap: { [cls.headerContextMenuItemActive]: subItem == item },
-            onClick: () => focusItem(subItem),
+            events: { click: () => focusItem(subItem) },
           },
           subItem.title
         );
@@ -41,8 +41,10 @@ export const header = (): HTMLDivElement => {
       div(
         {
           className: cls.headerPathSeparator,
-          onMouseEnter: onEnter,
-          onMouseLeave: onLeave,
+          events: {
+            mouseenter: onEnter,
+            mouseleave: onLeave,
+          },
         },
         icons.lightChevron({
           className: cls.lightChevronIcon,
@@ -50,7 +52,10 @@ export const header = (): HTMLDivElement => {
         contextMenu
       ),
       div(
-        { className: cls.headerPathText, onClick: () => focusItem(item) },
+        {
+          className: cls.headerPathText,
+          events: { click: () => focusItem(item) },
+        },
         item.title
       ),
     ];
@@ -94,16 +99,20 @@ export const header = (): HTMLDivElement => {
     div(
       {
         className: [cls.headerIconContainer, cls.headerPullRight],
-        onClick: showSearchPanel,
+        events: { click: showSearchPanel },
       },
       icons.search({ className: [cls.headerIcon] })
     ),
-    button({ className: cls.saveButton, text: "Save", onClick: store.save })
+    button({
+      className: cls.saveButton,
+      text: "Save",
+      events: { click: store.save },
+    })
   );
 };
 
 const headerButton = (icon: SVGElement, onClick?: EmptyFunc) =>
-  div({ className: cls.headerIconContainer, onClick }, icon);
+  div({ className: cls.headerIconContainer, events: { click: onClick } }, icon);
 
 css.class(cls.header, {
   paddingLeft: 40,

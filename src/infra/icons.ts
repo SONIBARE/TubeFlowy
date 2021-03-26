@@ -1,5 +1,5 @@
 import { ElementProps } from "./dom";
-import { svg, path, PathProps, SvgProps } from "./svg";
+import { svg, path } from "./svg";
 
 export const chevron = (props: ElementProps): SVGSVGElement =>
   svg(

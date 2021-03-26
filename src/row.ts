@@ -92,7 +92,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
   const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
   const unsub = appendFocusCicrle(item, row);
   row.append(
-    span({ className: cls.rowText, contentEditable: true }, item.title)
+    div({ className: cls.rowText, contentEditable: true }, item.title)
   );
   row.id = "row-" + item.id;
   elem.appendChild(row);
@@ -258,6 +258,8 @@ css.class(cls.chevronOpen, {
 
 css.class(cls.rowText, {
   outline: "none",
+  lineHeight: 40,
+  flex: 1,
 });
 
 css.selection(cls.rowText, {

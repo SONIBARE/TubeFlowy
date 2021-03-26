@@ -1,3 +1,4 @@
+import { SlapstukEvents } from "./elementEvents";
 import { ClassMap, ClassName } from "./keys";
 import { Styles, convertNumericStylesToPixels } from "./style";
 
@@ -6,15 +7,12 @@ export interface ElementWithClassDefinitions {
   classMap?: ClassMap;
 }
 export interface ElementProps extends ElementWithClassDefinitions {
-  onClick?: (e: Event) => void;
-  onMouseDown?: (e: Event) => void;
+  events?: Partial<SlapstukEvents>;
   testId?: string;
   id?: string;
 }
 export interface HtmlElementProps extends ElementProps {
   contentEditable?: boolean;
-  onMouseEnter?: (e: MouseEvent) => void;
-  onMouseLeave?: (e: MouseEvent) => void;
   style?: Styles;
 }
 
@@ -69,7 +67,6 @@ export const button = (props: ButtonProps): HTMLElement => {
   const elem = document.createElement("button");
   assignHtmlElementProps(elem, props);
   elem.textContent = props.text;
-  if (props.onClick) elem.addEventListener("click", props.onClick);
   return elem;
 };
 
@@ -110,17 +107,11 @@ const assignHtmlProps = (elem: HTMLElement, props: HtmlElementProps) => {
     elem.setAttribute("contenteditable", props.contentEditable + "");
 
   assignElementProps(elem, props);
-  if (props.onMouseEnter)
-    elem.addEventListener("mouseenter", props.onMouseEnter);
-  if (props.onMouseLeave)
-    elem.addEventListener("mouseleave", props.onMouseLeave);
 };
 
 export const assignElementProps = (elem: Element, props: ElementProps) => {
   assignClasses(elem, props);
-  if (props.onClick) elem.addEventListener("click", props.onClick);
-
-  if (props.onMouseDown) elem.addEventListener("mousedown", props.onMouseDown);
+  if (props.events) assignEvents(elem, props.events);
   if (props.testId) elem.setAttribute("data-testid", props.testId);
   if (props.id) elem.setAttribute("id", props.id);
 };
@@ -138,6 +129,12 @@ export const assignClasses = (
     Object.keys(classDefinitions.classMap)
       .filter((cs) => !!(classDefinitions.classMap as any)[cs])
       .forEach((cs) => elem.classList.add(cs));
+};
+
+const assignEvents = (elem: Element, events: Partial<SlapstukEvents>) => {
+  Object.entries(events).forEach(([event, handler]) => {
+    if (handler) elem.addEventListener(event, handler as (e: Event) => void);
+  });
 };
 
 export const assignStyles = (elem: HTMLElement, style?: Styles) => {

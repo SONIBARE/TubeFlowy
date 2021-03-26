@@ -38,7 +38,7 @@ export const appendFocusCicrle = (
         [cls.playlistImage]:
           item.type == "YTplaylist" || item.type == "YTvideo",
       },
-      onClick: () => item.type == "YTvideo" && store.play(item.id),
+      events: { click: () => item.type == "YTvideo" && store.play(item.id) },
     });
     image.style.setProperty(
       "background-image",
@@ -65,7 +65,7 @@ export const appendFocusCicrle = (
     parent.appendChild(
       svg(
         {
-          onClick: () => focusItem(item),
+          events: { click: () => focusItem(item) },
           className: cls.focusCircleSvg,
           viewBox: `0 0 ${spacings.outerRadius * 2} ${
             spacings.outerRadius * 2

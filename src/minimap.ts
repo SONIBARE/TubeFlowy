@@ -17,7 +17,7 @@ const minimapStyles = {
   fontSize: spacings.pageFontSize / multiplier,
   initialCircleY:
     (spacings.pageMarginTop +
-      31 + //31 is taken from header font size of 23pt multiplied by line height
+      51 + //51 is taken from header font size of 23pt multiplied by line height
       spacings.outerRadius +
       spacings.rowVecticalPadding +
       1) /
@@ -160,7 +160,9 @@ export class Minimap extends HTMLElement {
 
     this.track = div({
       className: cls.minimapTrack,
-      onMouseDown: this.onTrackMouseDown,
+      events: {
+        mousedown: this.onTrackMouseDown,
+      },
     });
 
     const children = fragment([this.canvas, this.track]);
