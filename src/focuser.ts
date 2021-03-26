@@ -15,6 +15,7 @@ const focusWithoutAnimation = (item: Item) => {
   container.appendChild(div({ className: cls.pageTitle }, item.title));
   container.appendChild(fragment(store.getChildrenFor(item.id).map(myRow)));
   minimap.drawCanvas();
+  store.onElementFocused(item);
 };
 
 const narrowFocusItem = (item: Item, row: HTMLElement) => {

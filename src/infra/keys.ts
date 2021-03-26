@@ -3,6 +3,7 @@ export const cls = {
 
   header: "header",
   headerIcon: "header-icon",
+  headerIconInactive: "header-icon-inactive",
   headerIconContainer: "header-icon-container",
   headerBackButton: "header-back-button",
   headerPathSeparator: "header-path-separator",
@@ -10,6 +11,7 @@ export const cls = {
   headerPathTextCurrent: "header-path-text-active",
   lightChevronIcon: "header-light-chevron",
   headerContextMenu: "header-context-menu",
+  headerContextMenuVisible: "header-context-menu-visible",
   headerContextMenuItem: "header-context-menu-item",
   headerContextMenuItemActive: "header-context-menu-item-active",
   headerPullRight: "header-pull-right",

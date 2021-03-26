@@ -13,6 +13,8 @@ export interface ElementProps extends ElementWithClassDefinitions {
 }
 export interface HtmlElementProps extends ElementProps {
   contentEditable?: boolean;
+  onMouseEnter?: (e: MouseEvent) => void;
+  onMouseLeave?: (e: MouseEvent) => void;
   style?: Styles;
 }
 
@@ -108,11 +110,16 @@ const assignHtmlProps = (elem: HTMLElement, props: HtmlElementProps) => {
     elem.setAttribute("contenteditable", props.contentEditable + "");
 
   assignElementProps(elem, props);
+  if (props.onMouseEnter)
+    elem.addEventListener("mouseenter", props.onMouseEnter);
+  if (props.onMouseLeave)
+    elem.addEventListener("mouseleave", props.onMouseLeave);
 };
 
 export const assignElementProps = (elem: Element, props: ElementProps) => {
   assignClasses(elem, props);
   if (props.onClick) elem.addEventListener("click", props.onClick);
+
   if (props.onMouseDown) elem.addEventListener("mousedown", props.onMouseDown);
   if (props.testId) elem.setAttribute("data-testid", props.testId);
   if (props.id) elem.setAttribute("id", props.id);

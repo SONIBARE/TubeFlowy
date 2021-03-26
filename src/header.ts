@@ -8,12 +8,80 @@ import {
   spacings,
   zIndexes,
   icons,
+  fragment,
 } from "./infra";
 import { showSearchPanel } from "./searchResults/searchPage";
-import { store } from "./state";
+import { getNodePath, store } from "./state";
 
-export const header = (): HTMLDivElement =>
-  div(
+export const header = (): HTMLDivElement => {
+  const pathText = (item: Item, previousItem: Item): HTMLElement[] => {
+    const onEnter = () => {
+      contextMenu.innerHTML = ``;
+      const row = (subItem: Item) =>
+        div(
+          {
+            className: cls.headerContextMenuItem,
+            classMap: { [cls.headerContextMenuItemActive]: subItem == item },
+            onClick: () => focusItem(subItem),
+          },
+          subItem.title
+        );
+      contextMenu.appendChild(
+        fragment(store.getChildrenFor(previousItem.id).map(row))
+      );
+      contextMenu.classList.add(cls.headerContextMenuVisible);
+    };
+
+    const onLeave = () => {
+      contextMenu.classList.remove(cls.headerContextMenuVisible);
+    };
+    const contextMenu = div({ className: cls.headerContextMenu });
+
+    return [
+      div(
+        {
+          className: cls.headerPathSeparator,
+          onMouseEnter: onEnter,
+          onMouseLeave: onLeave,
+        },
+        icons.lightChevron({
+          className: cls.lightChevronIcon,
+        }),
+        contextMenu
+      ),
+      div(
+        { className: cls.headerPathText, onClick: () => focusItem(item) },
+        item.title
+      ),
+    ];
+  };
+  let htmlParts: HTMLElement[] = [];
+
+  const onFocused = (item: Item) => {
+    if (item.id == "HOME") home.classList.add(cls.headerIconInactive);
+    else home.classList.remove(cls.headerIconInactive);
+
+    const parts = getNodePath(store.items, item.id);
+    const htmlPartsUnflattered: HTMLElement[][] = [];
+    for (let index = 1; index < parts.length; index++) {
+      const item = parts[index];
+      const prevItem = parts[index - 1];
+      htmlPartsUnflattered.push(pathText(item, prevItem));
+    }
+    htmlParts.forEach((p) => p.remove());
+
+    htmlParts = htmlPartsUnflattered.flat().reverse();
+    htmlParts.forEach((p) => {
+      home.insertAdjacentElement("afterend", p);
+    });
+  };
+
+  const home = headerButton(icons.home({ className: cls.headerIcon }), () =>
+    focusItem(store.getRoot())
+  );
+  store.addElementFocusedListener(onFocused);
+
+  return div(
     { className: cls.header },
     headerButton(
       icons.chevron({
@@ -22,49 +90,7 @@ export const header = (): HTMLDivElement =>
       () => focusItem(store.getRoot())
     ),
     headerButton(icons.chevron({ className: cls.headerIcon })),
-    headerButton(icons.home({ className: cls.headerIcon }), () =>
-      focusItem(store.getRoot())
-    ),
-    div(
-      { className: cls.headerPathSeparator },
-      icons.lightChevron({
-        className: cls.lightChevronIcon,
-      })
-    ),
-    div({ className: cls.headerPathText }, "Music"),
-    div(
-      { className: cls.headerPathSeparator },
-      icons.lightChevron({
-        className: cls.lightChevronIcon,
-      }),
-      div(
-        { className: cls.headerContextMenu },
-        div({ className: cls.headerContextMenuItem }, "Some Music children"),
-        div({ className: cls.headerContextMenuItem }, "Some Music children"),
-        div(
-          {
-            className: [
-              cls.headerContextMenuItem,
-              cls.headerContextMenuItemActive,
-            ],
-          },
-          "Some Music children"
-        ),
-        div({ className: cls.headerContextMenuItem }, "Some Music children")
-      )
-    ),
-    div({ className: cls.headerPathText }, "Metal"),
-    div(
-      { className: cls.headerPathSeparator },
-      icons.lightChevron({
-        className: cls.lightChevronIcon,
-      })
-    ),
-    div(
-      { className: [cls.headerPathText, cls.headerPathTextCurrent] },
-      "Fuck Me"
-    ),
-
+    home,
     div(
       {
         className: [cls.headerIconContainer, cls.headerPullRight],
@@ -74,6 +100,7 @@ export const header = (): HTMLDivElement =>
     ),
     button({ className: cls.saveButton, text: "Save", onClick: store.save })
   );
+};
 
 const headerButton = (icon: SVGElement, onClick?: EmptyFunc) =>
   div({ className: cls.headerIconContainer, onClick }, icon);
@@ -129,6 +156,11 @@ css.active(cls.headerIconContainer, {
 css.class(cls.headerIcon, {
   height: 22,
   width: 22,
+});
+
+css.class(cls.headerIconInactive, {
+  color: colors.mediumPrimary,
+  pointerEvents: "none",
 });
 
 css.class(cls.headerBackButton, {
@@ -210,7 +242,7 @@ css.class(cls.headerContextMenuItemActive, {
   fontWeight: "bold",
 });
 
-css.parentHover(cls.headerPathSeparator, cls.headerContextMenu, {
+css.class(cls.headerContextMenuVisible, {
   pointerEvents: "all",
   opacity: 1,
   transform: "translateZ(0)",

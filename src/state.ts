@@ -94,6 +94,13 @@ class Store {
     saveUserSettings(persisted, "nLHkgavG6YXJWlP4YkzJ9t4zW692");
   };
 
+  //TODO: ugly event, consider to add typing to a payload
+  onElementFocused = (item: Item) =>
+    this.events.dispatchEvent("item-focused", item);
+
+  addElementFocusedListener = (cb: (item: Item) => void) =>
+    this.events.addEventListener("item-focused", cb);
+
   addEventListener = (eventName: string, cb: Func<Item>): EmptyFunc =>
     this.events.addEventListener(eventName, cb);
 
@@ -105,3 +112,25 @@ export const store = new Store();
 
 //@ts-expect-error
 global.store = store;
+
+export const findParentId = (items: Items, childId: string) =>
+  Object.keys(items).find((parentKey) => {
+    const item = items[parentKey];
+    if ("children" in item) return item.children.indexOf(childId) > -1;
+  }) as string;
+
+export const getParent = (
+  items: Items,
+  item: Item | undefined
+): Item | undefined => (item ? items[findParentId(items, item.id)] : undefined);
+
+export const getNodePath = (items: Items, nodeId: string): Item[] => {
+  const path: Item[] = [];
+  let parentId = nodeId;
+  while (parentId) {
+    path.push(items[parentId]);
+    parentId = findParentId(items, parentId);
+  }
+  path.reverse();
+  return path;
+};
