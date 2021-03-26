@@ -60,9 +60,10 @@ css.class(cls.page, {
 css.class(cls.pageTitle, {
   fontSize: 23,
   marginLeft: 22,
-  marginBottom: 10,
+  marginBottom: 5,
   marginTop: 10,
   fontWeight: "bold",
+  outline: "none",
 });
 
 css.class(cls.rowsContainer, {

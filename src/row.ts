@@ -91,9 +91,48 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
 
   const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
   const unsub = appendFocusCicrle(item, row);
+
   row.append(
-    div({ className: cls.rowText, contentEditable: true }, item.title)
+    div(
+      {
+        className: cls.rowText,
+        contentEditable: true,
+        events: {
+          input: ({ currentTarget }) => {
+            store.setTitle(
+              item,
+              (currentTarget as HTMLElement).textContent || ""
+            );
+          },
+          keydown: (e) => {
+            if (e.key === "Backspace" && e.shiftKey && e.ctrlKey) {
+              store.removeItem(item);
+              elem.remove();
+            }
+            if (e.key === "Enter") {
+              e.preventDefault();
+              const newItem: Item = {
+                id: Math.random() + "",
+                type: "folder",
+                title: "",
+                children: [],
+                isCollapsedInGallery: true,
+              };
+              store.insertItemAfter(newItem, item.id);
+              const row = myRow(newItem);
+              const text = row.getElementsByClassName(
+                cls.rowText
+              )[0] as HTMLElement;
+              elem.insertAdjacentElement("afterend", row);
+              placeCarentAtBeginingOfElement(text);
+            }
+          },
+        },
+      },
+      item.title
+    )
   );
+
   row.id = "row-" + item.id;
   elem.appendChild(row);
 
@@ -258,10 +297,24 @@ css.class(cls.chevronOpen, {
 
 css.class(cls.rowText, {
   outline: "none",
-  lineHeight: 40,
+  lineHeight: 41 - 8,
   flex: 1,
 });
 
 css.selection(cls.rowText, {
   background: colors.lightPrimary,
 });
+
+//utility
+const placeCarentAtBeginingOfElement = (elem: HTMLElement) => {
+  var range = document.createRange();
+  var sel = window.getSelection();
+
+  range.setStart(elem, 0);
+  range.collapse(true);
+  if (sel) {
+    console.log("sel");
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+};

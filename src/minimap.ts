@@ -17,7 +17,7 @@ const minimapStyles = {
   fontSize: spacings.pageFontSize / multiplier,
   initialCircleY:
     (spacings.pageMarginTop +
-      51 + //51 is taken from header font size of 23pt multiplied by line height
+      46 + //46 is taken from header font size of 23pt multiplied by line height
       spacings.outerRadius +
       spacings.rowVecticalPadding +
       1) /

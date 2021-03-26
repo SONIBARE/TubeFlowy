@@ -12,7 +12,23 @@ const focusWithoutAnimation = (item: Item) => {
   const container = findScrollableContainer();
   const minimap = findMinimap();
   container.innerHTML = ``;
-  container.appendChild(div({ className: cls.pageTitle }, item.title));
+  container.appendChild(
+    div(
+      {
+        className: cls.pageTitle,
+        contentEditable: true,
+        events: {
+          input: ({ currentTarget }) => {
+            store.setTitle(
+              item,
+              (currentTarget as HTMLElement).textContent || ""
+            );
+          },
+        },
+      },
+      item.title
+    )
+  );
   container.appendChild(fragment(store.getChildrenFor(item.id).map(myRow)));
   minimap.drawCanvas();
   store.onElementFocused(item);

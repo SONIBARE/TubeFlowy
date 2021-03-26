@@ -56,6 +56,17 @@ class Store {
     }
   };
 
+  insertItemAfter = (newItem: Item, insertAfter: string) => {
+    const parentId = findParentId(this.items, insertAfter);
+    const parent = this.items[parentId];
+    if (this.isContainer(parent)) {
+      parent.children = parent.children
+        .map((id) => (id == insertAfter ? [id, newItem.id] : [id]))
+        .flat();
+      this.items[newItem.id] = newItem;
+    }
+  };
+
   isOpenAtSidebar = (item: Item) =>
     this.isContainer(item) &&
     (typeof item.isOpenFromSidebar != "undefined"
@@ -86,6 +97,18 @@ class Store {
   //Play
   play = (itemId: string) => {
     this.events.dispatchEvent("item-play", this.items[itemId]);
+  };
+
+  removeItem = (item: Item) => {
+    const parentId = findParentId(this.items, item.id);
+    const parent = this.items[parentId];
+    if (this.isContainer(parent)) {
+      parent.children = parent.children.filter((id) => id != item.id);
+    }
+    delete this.items[item.id];
+  };
+  setTitle = (item: Item, title: string) => {
+    item.title = title;
   };
 
   //Persistance
