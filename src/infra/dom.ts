@@ -13,6 +13,7 @@ export interface ElementProps extends ElementWithClassDefinitions {
 }
 export interface HtmlElementProps extends ElementProps {
   contentEditable?: boolean;
+  draggable?: boolean;
   style?: Styles;
 }
 
@@ -105,7 +106,8 @@ export const assignHtmlElementProps = (
 const assignHtmlProps = (elem: HTMLElement, props: HtmlElementProps) => {
   if (typeof props.contentEditable !== "undefined")
     elem.setAttribute("contenteditable", props.contentEditable + "");
-
+  if (typeof props.draggable !== "undefined")
+    elem.setAttribute("draggable", props.draggable + "");
   assignElementProps(elem, props);
 };
 

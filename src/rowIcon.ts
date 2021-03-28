@@ -3,15 +3,13 @@ import {
   svg,
   circle,
   colors,
-  icons,
   spacings,
   css,
   timings,
-  img,
   Styles,
   div,
 } from "./infra";
-
+import * as dnd from "./dnd";
 import { store } from "./state";
 import { focusItem } from "./focuser";
 
@@ -38,7 +36,11 @@ export const appendFocusCicrle = (
         [cls.playlistImage]:
           item.type == "YTplaylist" || item.type == "YTvideo",
       },
-      events: { click: () => item.type == "YTvideo" && store.play(item.id) },
+      events: {
+        click: () => item.type == "YTvideo" && store.play(item.id),
+        mousedown: (e) => dnd.onItemMouseDown(item, e),
+      },
+      draggable: false,
     });
     image.style.setProperty(
       "background-image",
@@ -65,7 +67,10 @@ export const appendFocusCicrle = (
     parent.appendChild(
       svg(
         {
-          events: { click: () => focusItem(item) },
+          events: {
+            click: () => focusItem(item),
+            mousedown: (e) => dnd.onItemMouseDown(item, e),
+          },
           className: cls.focusCircleSvg,
           viewBox: `0 0 ${spacings.outerRadius * 2} ${
             spacings.outerRadius * 2

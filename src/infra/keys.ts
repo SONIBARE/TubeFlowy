@@ -57,6 +57,11 @@ export const cls = {
   searchResults: "search-results",
   searchResultsOpen: "search-results-open",
 
+  //dnd
+  dragAvatar: "drag-avatar",
+  dragDestination: "drag-destination",
+  dragDestinationBulp: "drag-destination-bulp",
+
   transparent: "transparent",
   none: "",
 } as const;

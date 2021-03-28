@@ -15,6 +15,7 @@ import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
 import { store } from "./state";
 import { loadItemChildren } from "./api/youtube";
+import * as dnd from "./dnd";
 
 export const myRow = component((item: Item, elem: HTMLElement) => {
   let childContainer: HTMLElement | undefined;
@@ -100,56 +101,62 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
     events: { click: onChevronClick },
   });
 
-  const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
+  const row = div(
+    {
+      className: cls.row,
+      testId: "row-" + item.id,
+      events: { mousemove: (e) => dnd.onItemMouseMove(item, e) },
+    },
+    chev
+  );
   const unsub = appendFocusCicrle(item, row);
 
-  row.append(
-    div(
-      {
-        className: cls.rowText,
-        contentEditable: true,
-        events: {
-          input: ({ currentTarget }) => {
-            store.setTitle(
-              item,
-              (currentTarget as HTMLElement).textContent || ""
-            );
-          },
-          keydown: (e) => {
-            if (e.key === "Backspace" && e.shiftKey && e.ctrlKey) {
-              store.removeItem(item);
-              elem.remove();
-            }
-            if (e.key == "ArrowUp") {
-              e.preventDefault();
-              const previous = elem.previousElementSibling;
-              if (previous) playCaretAtTextAtRow(previous as HTMLElement);
-            }
-            if (e.key == "ArrowDown") {
-              e.preventDefault();
-              const next = elem.nextElementSibling;
-              if (next) playCaretAtTextAtRow(next as HTMLElement);
-            }
-            if (e.key === "Enter") {
-              e.preventDefault();
-              const newItem: Item = {
-                id: Math.random() + "",
-                type: "folder",
-                title: "",
-                children: [],
-                isCollapsedInGallery: true,
-              };
-              store.insertItemAfter(newItem, item.id);
-              const row = myRow(newItem);
-              elem.insertAdjacentElement("afterend", row);
-              playCaretAtTextAtRow(row);
-            }
-          },
+  const rowText = div(
+    {
+      className: cls.rowText,
+      contentEditable: true,
+      events: {
+        input: ({ currentTarget }) => {
+          store.setTitle(
+            item,
+            (currentTarget as HTMLElement).textContent || ""
+          );
+        },
+        keydown: (e) => {
+          if (e.key === "Backspace" && e.shiftKey && e.ctrlKey) {
+            store.removeItem(item);
+            elem.remove();
+          }
+          if (e.key == "ArrowUp") {
+            e.preventDefault();
+            const previous = elem.previousElementSibling;
+            if (previous) playCaretAtTextAtRow(previous as HTMLElement);
+          }
+          if (e.key == "ArrowDown") {
+            e.preventDefault();
+            const next = elem.nextElementSibling;
+            if (next) playCaretAtTextAtRow(next as HTMLElement);
+          }
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const newItem: Item = {
+              id: Math.random() + "",
+              type: "folder",
+              title: "",
+              children: [],
+              isCollapsedInGallery: true,
+            };
+            store.insertItemAfter(newItem, item.id);
+            const row = myRow(newItem);
+            elem.insertAdjacentElement("afterend", row);
+            playCaretAtTextAtRow(row);
+          }
         },
       },
-      item.title
-    )
+    },
+    item.title
   );
+  row.append(rowText);
 
   row.id = "row-" + item.id;
   elem.appendChild(row);
@@ -207,7 +214,8 @@ css.class(cls.childContainer, {
   borderLeft: `${spacings.borderSize}px solid ${colors.border}`,
   transition: "borderLeft 400ms linear",
   //this break cardsContainer, need to think on how to handle this
-  overflow: "hidden",
+  //also if enabled break collapse\expand animation
+  // overflow: "hidden",
 
   marginTop: -spacings.rowVecticalPadding,
   paddingTop: spacings.rowVecticalPadding,

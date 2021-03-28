@@ -70,7 +70,7 @@ css.class(cls.rowsContainer, {
   gridArea: "gallery",
   position: "relative",
   overflowX: "hidden",
-  paddingLeft: 20,
+  paddingLeft: spacings.rowsContainerLeftPadding,
   // marginLeft: "calc((100vw - 700px) / 2)",
   // maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,
 });

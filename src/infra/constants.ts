@@ -19,7 +19,7 @@ export const spacings = {
   pageTitleFontSize: 23,
   pageMarginTop: 20,
   documentWidth: 700,
-
+  rowsContainerLeftPadding: 20,
   playerFooterHeight: 49,
 
   //CARDS
