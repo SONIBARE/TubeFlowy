@@ -14,6 +14,7 @@ import {
 import { revertCurrentAnimations } from "./infra/animations";
 import { chevron } from "./infra/icons";
 import { store } from "./state";
+import { loadItemChildren } from "./api/youtube";
 
 export const myRow = component((item: Item, elem: HTMLElement) => {
   let childContainer: HTMLElement | undefined;
@@ -83,11 +84,21 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
 
   const itemEventName = "itemChanged." + item.id;
 
+  const onChevronClick = () => {
+    if (store.isNeedsToBeLoaded(item)) {
+      loadItemChildren(item).then((r) => {
+        store.itemLoaded(item.id, r);
+        store.toggleFolderVisibility(item.id);
+      });
+    } else {
+      store.toggleFolderVisibility(item.id);
+    }
+  };
   const chev = chevron({
     className: cls.chevron,
     testId: "chevron-" + item.id,
+    events: { click: onChevronClick },
   });
-  chev.addEventListener("click", () => store.toggleFolderVisibility(item.id));
 
   const row = div({ className: cls.row, testId: "row-" + item.id }, chev);
   const unsub = appendFocusCicrle(item, row);
@@ -109,6 +120,16 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
               store.removeItem(item);
               elem.remove();
             }
+            if (e.key == "ArrowUp") {
+              e.preventDefault();
+              const previous = elem.previousElementSibling;
+              if (previous) playCaretAtTextAtRow(previous as HTMLElement);
+            }
+            if (e.key == "ArrowDown") {
+              e.preventDefault();
+              const next = elem.nextElementSibling;
+              if (next) playCaretAtTextAtRow(next as HTMLElement);
+            }
             if (e.key === "Enter") {
               e.preventDefault();
               const newItem: Item = {
@@ -120,11 +141,8 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
               };
               store.insertItemAfter(newItem, item.id);
               const row = myRow(newItem);
-              const text = row.getElementsByClassName(
-                cls.rowText
-              )[0] as HTMLElement;
               elem.insertAdjacentElement("afterend", row);
-              placeCarentAtBeginingOfElement(text);
+              playCaretAtTextAtRow(row);
             }
           },
         },
@@ -305,15 +323,21 @@ css.selection(cls.rowText, {
   background: colors.lightPrimary,
 });
 
+const playCaretAtTextAtRow = (row: HTMLElement) => {
+  const text = row.getElementsByClassName(cls.rowText)[0] as HTMLElement;
+  placeCarentAtBeginingOfElement(text);
+};
+
 //utility
+
 const placeCarentAtBeginingOfElement = (elem: HTMLElement) => {
   var range = document.createRange();
   var sel = window.getSelection();
 
+  console.log(elem);
   range.setStart(elem, 0);
   range.collapse(true);
   if (sel) {
-    console.log("sel");
     sel.removeAllRanges();
     sel.addRange(range);
   }

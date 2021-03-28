@@ -1,5 +1,6 @@
 import { PersistedState, saveUserSettings } from "./api/loginService";
 import { createPersistedState } from "./api/stateLoader";
+import { LoadingItemsReponse } from "./api/youtube";
 import { EventsHandler } from "./infra";
 
 class Store {
@@ -17,6 +18,20 @@ class Store {
       searchTerm: "",
     };
     this.events.dispatchEvent("items-loaded", undefined as any);
+  };
+
+  itemLoaded = (parentId: string, response: LoadingItemsReponse) => {
+    const parent = this.items[parentId];
+    const items = response.items;
+    if (store.isContainer(parent)) {
+      if (parent.type === "YTchannel" || parent.type == "YTplaylist")
+        parent.nextPageToken = response.nextPageToken;
+
+      parent.children = items.map((i) => i.id);
+      items.forEach((i) => {
+        this.items[i.id] = i;
+      });
+    }
   };
 
   setSearchItems = (searchResults: Item[]) => {
@@ -72,6 +87,30 @@ class Store {
     (typeof item.isOpenFromSidebar != "undefined"
       ? item.isOpenFromSidebar
       : false);
+
+  isNeedsToBeLoaded = (item: Item): boolean =>
+    (this.isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
+    (this.isSearch(item) && item.children.length == 0 && !item.isLoading) ||
+    (this.isChannel(item) && item.children.length == 0 && !item.isLoading);
+
+  isFolder = (item: Item): item is Folder => {
+    return item.type == "folder";
+  };
+  isPlaylist = (item: Item): item is YoutubePlaylist => {
+    return item.type == "YTplaylist";
+  };
+
+  isVideo = (item: Item): item is YoutubeVideo => {
+    return item.type == "YTvideo";
+  };
+
+  isChannel = (item: Item): item is YoutubeChannel => {
+    return item.type == "YTchannel";
+  };
+
+  isSearch = (item: Item): item is SearchContainer => {
+    return item.type == "search";
+  };
 
   isFolderOpenOnPage = (item: Item) =>
     this.isContainer(item) && !item.isCollapsedInGallery;
