@@ -169,6 +169,8 @@ const finishDrag = () => {
     dragDestination.remove();
     dragDestination = undefined;
   }
+  itemUnderElement = undefined;
+  itemBeingDraggedElement = undefined;
 
   document.body.style.removeProperty("user-select");
   document.body.style.removeProperty("cursor");
