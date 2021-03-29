@@ -1,4 +1,5 @@
 import { ids } from "../infra/keys";
+import { playNextTrack } from "./playerFooter";
 
 var player: any;
 var videoRequested: string | undefined;
@@ -46,11 +47,8 @@ global.onYouTubeIframeAPIReady = () => {
 };
 
 function onPlayerStateChange(event: any) {
-  if (event.data == PlayerState.playing) {
-    console.log("started", event);
-  }
   if (event.data === PlayerState.ended) {
-    // controller.onVideoEnd();
+    playNextTrack();
   }
 }
 
