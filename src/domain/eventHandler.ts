@@ -15,7 +15,7 @@ export class EventsHandler<TypeDefinitions> {
     callback: (value: TypeDefinitions[T]) => void
   ): EmptyFunc => {
     this.addEventCb(eventName, callback, entityId);
-    return () => this.removeEventCb(eventName, callback);
+    return () => this.removeEventCb(eventName, callback, entityId);
   };
 
   dispatchEvent = <T extends keyof TypeDefinitions>(
