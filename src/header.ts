@@ -12,6 +12,7 @@ import {
 } from "./infra";
 import { showSearchPanel } from "./searchResults/searchPage";
 import { items, events } from "./domain";
+import { saveState } from "./api/stateLoader";
 
 export const header = (): HTMLDivElement => {
   const pathText = (item: Item, previousItem: Item): HTMLElement[] => {
@@ -106,7 +107,7 @@ export const header = (): HTMLDivElement => {
     button({
       className: cls.saveButton,
       text: "Save",
-      events: { click: items.save },
+      events: { click: saveState },
     })
   );
 };

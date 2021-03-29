@@ -54,7 +54,7 @@ export class EventsHandler<TypeDefinitions> {
     this.events[eventName][entityId].push(cb);
   };
 
-  removeEventCb = <T extends keyof TypeDefinitions>(
+  private removeEventCb = <T extends keyof TypeDefinitions>(
     eventName: T,
     callback: (value: TypeDefinitions[T]) => void,
     entityId = general

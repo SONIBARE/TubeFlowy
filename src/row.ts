@@ -349,7 +349,6 @@ const placeCarentAtBeginingOfElement = (elem: HTMLElement) => {
   var range = document.createRange();
   var sel = window.getSelection();
 
-  console.log(elem);
   range.setStart(elem, 0);
   range.collapse(true);
   if (sel) {

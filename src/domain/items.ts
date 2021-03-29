@@ -1,7 +1,5 @@
 import { events } from "./events";
 import { LoadingItemsReponse } from "../api/youtube";
-import { PersistedState, saveUserSettings } from "../api/loginService";
-import { createPersistedState } from "../api/stateLoader";
 
 let items: Items = {};
 let itemIdFocused = "HOME";
@@ -104,13 +102,6 @@ export const removeItem = (item: Item) => {
 };
 export const setTitle = (item: Item, title: string) => {
   item.title = title;
-};
-
-//Persistance
-//TODO: remove from here
-export const save = () => {
-  const persisted: PersistedState = createPersistedState();
-  saveUserSettings(persisted, "nLHkgavG6YXJWlP4YkzJ9t4zW692");
 };
 
 //DND

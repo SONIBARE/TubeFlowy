@@ -1,20 +1,16 @@
 import { header } from "./header";
-import { cls, css, div, fragment, spacings, span } from "./infra";
+import { cls, css, div, fragment, spacings } from "./infra";
 import { minimap } from "./minimap";
-import { items, events } from "./domain";
+import { items } from "./domain";
 import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
-import { focusItem } from "./focuser";
 import { leftNavigationSidebar } from "./sidebar/leftSidebar";
 import { searchResults } from "./searchResults/searchPage";
+import * as stateLoader from "./api/stateLoader";
 
 database.initFirebase(() => undefined);
-database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
-  const loadedItems: Items = JSON.parse(data.itemsSerialized);
-  items.itemsLoaded(loadedItems);
 
-  focusItem(loadedItems[data.selectedItemId]);
-});
+stateLoader.loadRemoteState();
 
 //TODO: refactor this, show loader and render without need for home item
 items.itemsLoaded({
@@ -72,8 +68,6 @@ css.class(cls.rowsContainer, {
   position: "relative",
   overflowX: "hidden",
   paddingLeft: spacings.rowsContainerLeftPadding,
-  // marginLeft: "calc((100vw - 700px) / 2)",
-  // maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,
 });
 
 css.class(cls.rowsScrollContainer, {
