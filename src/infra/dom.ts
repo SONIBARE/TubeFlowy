@@ -64,7 +64,7 @@ export const img = (props: ImgProps): HTMLElement => {
 interface ButtonProps extends HtmlElementProps {
   text: string;
 }
-export const button = (props: ButtonProps): HTMLElement => {
+export const button = (props: ButtonProps): HTMLButtonElement => {
   const elem = document.createElement("button");
   assignHtmlElementProps(elem, props);
   elem.textContent = props.text;

@@ -7,17 +7,20 @@ import { play } from "./youtubePlayer";
 let itemIdBeingPlayed: string = "";
 let isYoutubePlayerShown = true;
 let footer: HTMLElement;
+let toggleButton: HTMLButtonElement;
 export const playerFooter = () => {
-  footer = div(
-    {
-      className: cls.playerFooter,
-      classMap: { [cls.yotuubePlayerhidden]: !isYoutubePlayerShown },
-    },
-    button({ text: "hide", events: { click: onPlayerToggleClicked } })
-  );
+  footer = div({
+    className: cls.playerFooter,
+    classMap: { [cls.yotuubePlayerhidden]: !isYoutubePlayerShown },
+  });
   store.addEventListener("item-play", (item) => {
     const player = document.getElementById(ids.youtubeIframe);
     if (!player) {
+      toggleButton = button({
+        text: isYoutubePlayerShown ? "hide" : "show",
+        events: { click: onPlayerToggleClicked },
+      });
+      footer.appendChild(toggleButton);
       footer.appendChild(div({ id: ids.youtubeIframe }));
     }
 
@@ -31,8 +34,13 @@ export const playerFooter = () => {
 
 const onPlayerToggleClicked = () => {
   isYoutubePlayerShown = !isYoutubePlayerShown;
-  if (isYoutubePlayerShown) footer.classList.remove(cls.yotuubePlayerhidden);
-  else footer.classList.add(cls.yotuubePlayerhidden);
+  if (isYoutubePlayerShown) {
+    footer.classList.remove(cls.yotuubePlayerhidden);
+    toggleButton.textContent = "hide";
+  } else {
+    toggleButton.textContent = "show";
+    footer.classList.add(cls.yotuubePlayerhidden);
+  }
 };
 
 export const playNextTrack = () => {
