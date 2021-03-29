@@ -1,4 +1,3 @@
-import { appendFocusCicrle } from "./rowIcon";
 import {
   cls,
   css,
@@ -9,10 +8,9 @@ import {
   spacings,
   component,
   timings,
-  span,
+  icons,
 } from "./infra";
-import { revertCurrentAnimations } from "./infra/animations";
-import { chevron } from "./infra/icons";
+import { appendFocusCicrle } from "./rowIcon";
 import { store } from "./state";
 import { loadItemChildren } from "./api/youtube";
 import * as dnd from "./dnd";
@@ -62,7 +60,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
   };
 
   const animateChildren = (item: Item) => {
-    if (childContainer && revertCurrentAnimations(childContainer)) {
+    if (childContainer && anim.revertCurrentAnimations(childContainer)) {
     } else if (store.isFolderOpenOnPage(item)) {
       appendChildren(item);
       if (childContainer)
@@ -95,7 +93,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
       store.toggleFolderVisibility(item.id);
     }
   };
-  const chev = chevron({
+  const chev = icons.chevron({
     className: cls.chevron,
     testId: "chevron-" + item.id,
     events: { click: onChevronClick },
