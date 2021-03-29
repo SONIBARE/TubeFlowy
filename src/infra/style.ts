@@ -37,6 +37,10 @@ export const css = {
     selector(`.${c1} .${c2}`, style),
   parentChildTag: (c1: ClassName, tag: Tag, style: Styles) =>
     selector(`.${c1} ${tag}`, style),
+  parentIdChild: (id1: string, c2: ClassName, style: Styles) =>
+    selector(`#${id1} .${c2}`, style),
+  parentChildId: (c1: ClassName, id2: string, style: Styles) =>
+    selector(`.${c1} #${id2}`, style),
 
   //pseudoclasses
   onParentHover: (c1: ClassName, c2: ClassName, style: Styles) =>

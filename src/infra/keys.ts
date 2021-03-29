@@ -53,6 +53,7 @@ export const cls = {
   chevronOpen: "chevron-open",
 
   playerFooter: "player-footer",
+  yotuubePlayerhidden: "youtube-player-hidden",
 
   searchResults: "search-results",
   searchResultsOpen: "search-results-open",
