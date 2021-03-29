@@ -1,5 +1,5 @@
 import { header } from "./header";
-import { cls, css, div, fragment, spacings } from "./infra";
+import { cls, css, div, fragment, spacings, span } from "./infra";
 import { minimap } from "./minimap";
 import { items, events } from "./domain";
 import { playerFooter } from "./player/playerFooter";
@@ -79,7 +79,9 @@ css.class(cls.rowsContainer, {
 css.class(cls.rowsScrollContainer, {
   paddingBottom: 60,
   paddingTop: spacings.pageMarginTop,
-  maxHeight: "100%",
+  maxHeight: `calc(100vh - ${
+    spacings.playerFooterHeight + spacings.headerHeight
+  }px)`,
   overflowY: "overlay" as any,
 });
 
