@@ -1,2 +1,2 @@
-export * as events from "./events";
+export { events } from "./events";
 export * as items from "./items";

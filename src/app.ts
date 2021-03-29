@@ -1,7 +1,7 @@
 import { header } from "./header";
 import { cls, css, div, fragment, spacings } from "./infra";
 import { minimap } from "./minimap";
-import { store } from "./state";
+import { items, events } from "./domain";
 import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
 import { focusItem } from "./focuser";
@@ -10,13 +10,14 @@ import { searchResults } from "./searchResults/searchPage";
 
 database.initFirebase(() => undefined);
 database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
-  const items: Items = JSON.parse(data.itemsSerialized);
-  store.itemsLoaded(items);
+  const loadedItems: Items = JSON.parse(data.itemsSerialized);
+  items.itemsLoaded(loadedItems);
 
-  focusItem(items[data.selectedItemId]);
+  focusItem(loadedItems[data.selectedItemId]);
 });
 
-store.itemsLoaded({
+//TODO: refactor this, show loader and render without need for home item
+items.itemsLoaded({
   HOME: {
     type: "folder",
     children: [],

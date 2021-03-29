@@ -1,7 +1,7 @@
 import { findYoutubeVideos, ResponseItem } from "../api/youtubeRequest";
 import { cls, colors, css, debounce, div, fragment } from "../infra";
 import { myRow } from "../row";
-import { store } from "../state";
+import { items } from "../domain";
 
 export const showSearchPanel = () => {
   container.classList.toggle(cls.searchResultsOpen);
@@ -17,10 +17,10 @@ export const searchResults = () => {
 
   const search = () => {
     findYoutubeVideos(input.value).then((results) => {
-      const items = results.items.map(mapReponseItem);
-      store.setSearchItems(items);
+      const searchItems = results.items.map(mapReponseItem);
+      items.setSearchItems(searchItems);
       content.innerHTML = ``;
-      content.appendChild(fragment(store.getChildrenFor("SEARCH").map(myRow)));
+      content.appendChild(fragment(items.getChildrenFor("SEARCH").map(myRow)));
     });
   };
   input.addEventListener("input", debounce(search, 600));

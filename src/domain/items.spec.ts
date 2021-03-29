@@ -1,19 +1,20 @@
-import { store } from "./state";
-import { createItemsFromArray, folder, video } from "./testUtils";
+import * as items from "./items";
+import { events } from "./events";
+import { createItemsFromArray, folder, video } from "../testUtils";
 
 describe("having a store with two items", () => {
   const v1 = video("v1", "videoId1");
   const v2 = video("v2", "videoId1");
   const home = folder("HOME", [v1.id, v2.id]);
   beforeEach(() => {
-    store.itemsLoaded(createItemsFromArray([v1, v2, home]));
+    items.itemsLoaded(createItemsFromArray([v1, v2, home]));
   });
   describe("when I click play first item", () => {
     let onPlay: jest.Mock;
     beforeEach(() => {
       onPlay = jest.fn();
-      store.addEventListener("item-play", onPlay);
-      store.play("v1");
+      events.addEventListener("item-play", onPlay);
+      items.play("v1");
     });
 
     it("event item-play should be triggered", () => {
@@ -42,38 +43,38 @@ describe("Having a folder and a bunch of videos", () => {
     const f1 = folder("f1", [v11.id, v12.id]);
     const v3 = video("v3", "videoId3");
     const home = folder("HOME", [f1.id, v3.id]);
-    store.itemsLoaded(createItemsFromArray([v11, v12, v3, f1, home]));
+    items.itemsLoaded(createItemsFromArray([v11, v12, v3, f1, home]));
   });
 
   it("moving v3 after v1.1 should place v3 after v1.1", () => {
-    store.moveItemAfter("v3", "v1.1");
-    store.getChildrenFor("f1");
-    expect(store.getChildrenFor("f1").map((i) => i.id)).toEqual([
+    items.moveItemAfter("v3", "v1.1");
+    items.getChildrenFor("f1");
+    expect(items.getChildrenFor("f1").map((i) => i.id)).toEqual([
       "v1.1",
       "v3",
       "v1.2",
     ]);
-    expect(store.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
+    expect(items.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
   });
 
   it("moving v3 after v1.1 should place v3 after v1.1", () => {
-    store.moveItemBefore("v3", "v1.1");
-    store.getChildrenFor("f1");
-    expect(store.getChildrenFor("f1").map((i) => i.id)).toEqual([
+    items.moveItemBefore("v3", "v1.1");
+    items.getChildrenFor("f1");
+    expect(items.getChildrenFor("f1").map((i) => i.id)).toEqual([
       "v3",
       "v1.1",
       "v1.2",
     ]);
-    expect(store.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
+    expect(items.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
   });
   it("moving v3 after v1.1 should place v3 after v1.1", () => {
-    store.moveItemInside("v3", "f1");
-    store.getChildrenFor("f1");
-    expect(store.getChildrenFor("f1").map((i) => i.id)).toEqual([
+    items.moveItemInside("v3", "f1");
+    items.getChildrenFor("f1");
+    expect(items.getChildrenFor("f1").map((i) => i.id)).toEqual([
       "v3",
       "v1.1",
       "v1.2",
     ]);
-    expect(store.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
+    expect(items.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
   });
 });

@@ -11,7 +11,7 @@ import {
   icons,
 } from "./infra";
 import { appendFocusCicrle } from "./rowIcon";
-import { store } from "./state";
+import { events, items } from "./domain";
 import { loadItemChildren } from "./api/youtube";
 import * as dnd from "./dnd";
 
@@ -45,23 +45,23 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
     // } else {
     childContainer = div(
       { className: cls.childContainer },
-      fragment(store.getChildrenFor(item.id).map(myRow))
+      fragment(items.getChildrenFor(item.id).map(myRow))
     );
     elem.appendChild(childContainer);
     // }
   };
 
   const onAnimationFinish = (item: Item) => {
-    if (!store.isFolderOpenOnPage(item) && childContainer) {
+    if (!items.isFolderOpenOnPage(item) && childContainer) {
       childContainer.remove();
       childContainer = undefined;
     }
-    store.redrawCanvas();
+    items.redrawCanvas();
   };
 
   const animateChildren = (item: Item) => {
     if (childContainer && anim.revertCurrentAnimations(childContainer)) {
-    } else if (store.isFolderOpenOnPage(item)) {
+    } else if (items.isFolderOpenOnPage(item)) {
       appendChildren(item);
       if (childContainer)
         anim
@@ -77,20 +77,18 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
   };
 
   const animateChevron = (item: Item) => {
-    if (store.isFolderOpenOnPage(item)) chev.classList.add(cls.chevronOpen);
+    if (items.isFolderOpenOnPage(item)) chev.classList.add(cls.chevronOpen);
     else chev.classList.remove(cls.chevronOpen);
   };
 
-  const itemEventName = "itemChanged." + item.id;
-
   const onChevronClick = () => {
-    if (store.isNeedsToBeLoaded(item)) {
+    if (items.isNeedsToBeLoaded(item)) {
       loadItemChildren(item).then((r) => {
-        store.itemLoaded(item.id, r);
-        store.toggleFolderVisibility(item.id);
+        items.itemLoaded(item.id, r);
+        items.toggleFolderVisibility(item.id);
       });
     } else {
-      store.toggleFolderVisibility(item.id);
+      items.toggleFolderVisibility(item.id);
     }
   };
   const chev = icons.chevron({
@@ -115,14 +113,14 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
       contentEditable: true,
       events: {
         input: ({ currentTarget }) => {
-          store.setTitle(
+          items.setTitle(
             item,
             (currentTarget as HTMLElement).textContent || ""
           );
         },
         keydown: (e) => {
           if (e.key === "Backspace" && e.shiftKey && e.ctrlKey) {
-            store.removeItem(item);
+            items.removeItem(item);
             elem.remove();
           }
           if (e.key == "ArrowUp") {
@@ -144,7 +142,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
               children: [],
               isCollapsedInGallery: true,
             };
-            store.insertItemAfter(newItem, item.id);
+            items.insertItemAfter(newItem, item.id);
             const row = myRow(newItem);
             elem.insertAdjacentElement("afterend", row);
             playCaretAtTextAtRow(row);
@@ -162,10 +160,18 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
 
   elem.appendChild(row);
 
-  store.addEventListener(itemEventName, animateChildren);
-  store.addEventListener(itemEventName, animateChevron);
+  const unsub1 = events.addCompoundEventListener(
+    "item-collapse",
+    item.id,
+    animateChildren
+  );
+  const unsub2 = events.addCompoundEventListener(
+    "item-collapse",
+    item.id,
+    animateChevron
+  );
 
-  if (store.isFolderOpenOnPage(item)) {
+  if (items.isFolderOpenOnPage(item)) {
     appendChildren(item);
   }
 
@@ -173,8 +179,8 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
 
   return () => {
     unsub();
-    store.removeEventListener(itemEventName, animateChildren);
-    store.removeEventListener(itemEventName, animateChevron);
+    unsub1();
+    unsub2();
   };
 });
 

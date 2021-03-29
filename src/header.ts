@@ -11,7 +11,7 @@ import {
   fragment,
 } from "./infra";
 import { showSearchPanel } from "./searchResults/searchPage";
-import { getNodePath, store } from "./state";
+import { items, events } from "./domain";
 
 export const header = (): HTMLDivElement => {
   const pathText = (item: Item, previousItem: Item): HTMLElement[] => {
@@ -27,7 +27,7 @@ export const header = (): HTMLDivElement => {
           subItem.title
         );
       contextMenu.appendChild(
-        fragment(store.getChildrenFor(previousItem.id).map(row))
+        fragment(items.getChildrenFor(previousItem.id).map(row))
       );
       contextMenu.classList.add(cls.headerContextMenuVisible);
     };
@@ -66,7 +66,7 @@ export const header = (): HTMLDivElement => {
     if (item.id == "HOME") home.classList.add(cls.headerIconInactive);
     else home.classList.remove(cls.headerIconInactive);
 
-    const parts = getNodePath(store.items, item.id);
+    const parts = items.getNodePath(item.id);
     const htmlPartsUnflattered: HTMLElement[][] = [];
     for (let index = 1; index < parts.length; index++) {
       const item = parts[index];
@@ -82,9 +82,9 @@ export const header = (): HTMLDivElement => {
   };
 
   const home = headerButton(icons.home({ className: cls.headerIcon }), () =>
-    focusItem(store.getRoot())
+    focusItem(items.getRoot())
   );
-  store.addElementFocusedListener(onFocused);
+  events.addEventListener("item-focused", onFocused);
 
   return div(
     { className: cls.header },
@@ -92,7 +92,7 @@ export const header = (): HTMLDivElement => {
       icons.chevron({
         className: [cls.headerIcon, cls.headerBackButton],
       }),
-      () => focusItem(store.getRoot())
+      () => focusItem(items.getRoot())
     ),
     headerButton(icons.chevron({ className: cls.headerIcon })),
     home,
@@ -106,7 +106,7 @@ export const header = (): HTMLDivElement => {
     button({
       className: cls.saveButton,
       text: "Save",
-      events: { click: store.save },
+      events: { click: items.save },
     })
   );
 };

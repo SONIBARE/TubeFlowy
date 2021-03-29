@@ -1,6 +1,6 @@
 import { button, css, div, spacings } from "../infra";
 import { cls, ids, zIndexes } from "../infra/keys";
-import { store, getParent } from "../state";
+import { items, events } from "../domain";
 import { play } from "./youtubePlayer";
 
 //move this to a store
@@ -13,7 +13,7 @@ export const playerFooter = () => {
     className: cls.playerFooter,
     classMap: { [cls.yotuubePlayerhidden]: !isYoutubePlayerShown },
   });
-  store.addEventListener("item-play", (item) => {
+  events.addEventListener("item-play", (item) => {
     const player = document.getElementById(ids.youtubeIframe);
     if (!player) {
       toggleButton = button({
@@ -45,12 +45,12 @@ const onPlayerToggleClicked = () => {
 
 export const playNextTrack = () => {
   if (itemIdBeingPlayed) {
-    const parentItem = getParent(store.items, itemIdBeingPlayed);
+    const parentItem = items.getParent(itemIdBeingPlayed);
     if (parentItem) {
       const index = parentItem.children.indexOf(itemIdBeingPlayed);
       if (index < parentItem.children.length - 1) {
         const nextItem = parentItem.children[index + 1];
-        const item = store.items[nextItem];
+        const item = items.getItem(nextItem);
         if (item.type == "YTvideo") {
           itemIdBeingPlayed = item.id;
           play(item.videoId);
