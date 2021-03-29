@@ -8,6 +8,7 @@ class Store {
   itemIdFocused: string = "HOME";
 
   events = new EventsHandler<Item>();
+
   itemsLoaded = (newItems: Items) => {
     this.items = newItems;
     this.items["SEARCH"] = {
@@ -42,6 +43,45 @@ class Store {
     searchResults.forEach((item) => {
       this.items[item.id] = item;
     });
+  };
+
+  moveItemAfter = (itemIdToMove: string, itemIdToMoveAfter: string) => {
+    const itemToMoveParent = getParent(this.items, itemIdToMove);
+    const itemToAfterParent = getParent(this.items, itemIdToMoveAfter);
+    if (itemToMoveParent && itemToAfterParent) {
+      itemToMoveParent.children = itemToMoveParent.children.filter(
+        (id) => id != itemIdToMove
+      );
+      itemToAfterParent.children = itemToAfterParent.children
+        .map((i) => (i === itemIdToMoveAfter ? [i, itemIdToMove] : [i]))
+        .flat();
+    }
+  };
+
+  moveItemBefore = (itemIdToMove: string, itemIdToMoveBefore: string) => {
+    const itemToMoveParent = getParent(this.items, itemIdToMove);
+    const itemToBeforeParent = getParent(this.items, itemIdToMoveBefore);
+    if (itemToMoveParent && itemToBeforeParent) {
+      itemToMoveParent.children = itemToMoveParent.children.filter(
+        (id) => id != itemIdToMove
+      );
+      itemToBeforeParent.children = itemToBeforeParent.children
+        .map((i) => (i === itemIdToMoveBefore ? [itemIdToMove, i] : [i]))
+        .flat();
+    }
+  };
+
+  moveItemInside = (itemIdToMove: string, itemIdToMoveInside: string) => {
+    const itemToMoveParent = getParent(this.items, itemIdToMove);
+    const itemToMoveInside = this.items[itemIdToMoveInside] as ItemContainer;
+    if (itemToMoveParent && itemToMoveInside) {
+      itemToMoveParent.children = itemToMoveParent.children.filter(
+        (id) => id != itemIdToMove
+      );
+      itemToMoveInside.children = [itemIdToMove].concat(
+        itemToMoveInside.children
+      );
+    }
   };
 
   getRootItems = (): Item[] => this.getChildrenFor("HOME");
@@ -183,8 +223,9 @@ export const findParentId = (items: Items, childId: string) =>
 
 export const getParent = (
   items: Items,
-  item: Item | undefined
-): Item | undefined => (item ? items[findParentId(items, item.id)] : undefined);
+  itemId: string | undefined
+): ItemContainer | undefined =>
+  itemId ? (items[findParentId(items, itemId)] as ItemContainer) : undefined;
 
 export const getNodePath = (items: Items, nodeId: string): Item[] => {
   const path: Item[] = [];

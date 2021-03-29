@@ -9,7 +9,6 @@ import {
   Styles,
   div,
 } from "./infra";
-import * as dnd from "./dnd";
 import { store } from "./state";
 import { focusItem } from "./focuser";
 
@@ -19,7 +18,8 @@ const isLightCircleTransparent = (item: Item) =>
 
 export const appendFocusCicrle = (
   item: Item,
-  parent: HTMLElement
+  parent: HTMLElement,
+  onMouseDown: (e: MouseEvent) => void
 ): EmptyFunc => {
   if (
     item.type === "YTplaylist" ||
@@ -38,7 +38,7 @@ export const appendFocusCicrle = (
       },
       events: {
         click: () => item.type == "YTvideo" && store.play(item.id),
-        mousedown: (e) => dnd.onItemMouseDown(item, e),
+        mousedown: onMouseDown,
       },
       draggable: false,
     });
@@ -69,7 +69,7 @@ export const appendFocusCicrle = (
         {
           events: {
             click: () => focusItem(item),
-            mousedown: (e) => dnd.onItemMouseDown(item, e),
+            mousedown: onMouseDown,
           },
           className: cls.focusCircleSvg,
           viewBox: `0 0 ${spacings.outerRadius * 2} ${

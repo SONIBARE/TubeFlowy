@@ -105,11 +105,11 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
     {
       className: cls.row,
       testId: "row-" + item.id,
-      events: { mousemove: (e) => dnd.onItemMouseMove(item, e) },
+      events: { mousemove: (e) => dnd.onItemMouseMove(item, elem, e) },
     },
     chev
   );
-  const unsub = appendFocusCicrle(item, row);
+  const onMouseDown = (e: MouseEvent) => dnd.onItemMouseDown(item, elem, e);
 
   const rowText = div(
     {
@@ -156,9 +156,12 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
     },
     item.title
   );
+  const unsub = appendFocusCicrle(item, row, onMouseDown);
+
   row.append(rowText);
 
   row.id = "row-" + item.id;
+
   elem.appendChild(row);
 
   store.addEventListener(itemEventName, animateChildren);

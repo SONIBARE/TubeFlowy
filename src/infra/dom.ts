@@ -143,7 +143,8 @@ export const assignStyles = (elem: HTMLElement, style?: Styles) => {
   if (style) {
     const converted = convertNumericStylesToPixels(style);
     Object.keys(converted).forEach((key: any) => {
-      elem.style.setProperty(key, converted[key] || null);
+      const val = converted[key];
+      if (val) elem.style[key] = val;
     });
   }
 };

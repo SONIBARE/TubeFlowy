@@ -1,38 +1,53 @@
-import { doc } from "prettier";
 import { cls, colors, css, div, spacings } from "./infra";
 import { appendFocusCicrle } from "./rowIcon";
+import { store } from "./state";
 
 //DND state
 let initialMousePosition: Vector;
 let dragAvatar: HTMLElement | undefined;
 let dragDestination: HTMLElement | undefined;
 let itemBeingDragged: Item;
+let itemBeingDraggedElement: HTMLElement | undefined;
 
-export const onItemMouseDown = (item: Item, e: MouseEvent) => {
+let itemUnderElement: HTMLElement | undefined;
+let itemUnder: Item;
+
+type DropPlacement = "before" | "after" | "inside";
+let dropPlacement: DropPlacement;
+
+export const onItemMouseDown = (
+  item: Item,
+  itemElem: HTMLElement,
+  e: MouseEvent
+) => {
   document.body.style.userSelect = "none";
   document.body.style.cursor = "grabbing";
+
+  itemBeingDraggedElement = itemElem;
   itemBeingDragged = item;
   initialMousePosition = getScreenPosiiton(e);
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 };
 
-export const onItemMouseMove = (item: Item, e: MouseEvent) => {
+export const onItemMouseMove = (
+  item: Item,
+  itemUnderElem: HTMLElement,
+  e: MouseEvent
+) => {
   if (dragAvatar) {
-    const getLevel = (row: HTMLElement) => {
-      let level = 0;
-      let parent: HTMLElement | null = row;
-      while (parent != null) {
-        if (parent.classList.contains(cls.childContainer)) level += 1;
-        parent = parent.parentElement;
-      }
-      return level;
-    };
-
+    itemUnder = item;
+    itemUnderElement = itemUnderElem;
     if (!dragDestination) {
       dragDestination = div(
         { className: cls.dragDestination },
-        div({ className: cls.dragDestinationBulp })
+        div({
+          className: cls.dragDestinationBulp,
+          style: {
+            borderRadius:
+              item.type === "folder" || item.type === "YTchannel" ? 5 : 1,
+          },
+        })
       );
       document.body.appendChild(dragDestination);
     }
@@ -50,7 +65,7 @@ const onMouseMove = (e: MouseEvent) => {
       const dist = distance(initialMousePosition, getScreenPosiiton(e));
       if (dist > 5) {
         dragAvatar = div({ className: cls.dragAvatar });
-        appendFocusCicrle(itemBeingDragged, dragAvatar);
+        appendFocusCicrle(itemBeingDragged, dragAvatar, () => undefined);
         document.body.appendChild(dragAvatar);
         updateDragAvatarPosition(dragAvatar, e);
       }
@@ -58,7 +73,7 @@ const onMouseMove = (e: MouseEvent) => {
       updateDragAvatarPosition(dragAvatar, e);
     }
   } else {
-    onMouseUp();
+    finishDrag();
   }
 };
 
@@ -74,21 +89,30 @@ const updateDragDestinationPosition = (
 ) => {
   const rect = rowUnder.getBoundingClientRect();
   const baseLevel = spacings.rowsContainerLeftPadding;
-  let isInside = 1;
-  if (
-    e.pageX >
-    baseLevel +
-      rect.left +
-      spacings.negativeMarginForRowAtZeroLevel +
-      spacings.rowsContainerLeftPadding +
-      spacings.spacePerLevel
-  )
-    isInside = 2;
 
-  if (e.pageY > rect.top + rect.height / 2) {
+  const isOnTheLowerHalf = e.pageY > rect.top + rect.height / 2;
+
+  let isInside = 1;
+
+  if (isOnTheLowerHalf) {
+    dropPlacement = "after";
     dragDestination.style.top = rect.bottom - 1 + "px";
   } else {
     dragDestination.style.top = rect.top - 1 + "px";
+    dropPlacement = "before";
+  }
+
+  if (
+    e.pageX >
+      baseLevel +
+        rect.left +
+        spacings.negativeMarginForRowAtZeroLevel +
+        spacings.rowsContainerLeftPadding +
+        spacings.spacePerLevel &&
+    isOnTheLowerHalf
+  ) {
+    dropPlacement = "inside";
+    isInside = 2;
   }
   //TODO: there is a small error in this calculation (when placing inside)
   //postponing resolution, since I don't believe this visual accuracy matters now
@@ -102,6 +126,41 @@ const updateDragDestinationPosition = (
 };
 
 const onMouseUp = () => {
+  drop();
+  finishDrag();
+};
+
+const drop = () => {
+  if (itemUnderElement && itemBeingDraggedElement) {
+    if (dropPlacement === "after") {
+      store.moveItemAfter(itemBeingDragged.id, itemUnder.id);
+      itemUnderElement.insertAdjacentElement(
+        "afterend",
+        itemBeingDraggedElement
+      );
+    } else if (dropPlacement === "before") {
+      store.moveItemBefore(itemBeingDragged.id, itemUnder.id);
+      itemUnderElement.insertAdjacentElement(
+        "beforebegin",
+        itemBeingDraggedElement
+      );
+    } else {
+      store.moveItemInside(itemBeingDragged.id, itemUnder.id);
+      //asumes node is open
+      const children = itemUnderElement.getElementsByClassName(
+        cls.childContainer
+      )[0];
+
+      if (children)
+        children.insertAdjacentElement("afterbegin", itemBeingDraggedElement);
+      else {
+        itemBeingDraggedElement.remove();
+      }
+    }
+  }
+};
+
+const finishDrag = () => {
   if (dragAvatar) {
     dragAvatar.remove();
     dragAvatar = undefined;
@@ -110,6 +169,7 @@ const onMouseUp = () => {
     dragDestination.remove();
     dragDestination = undefined;
   }
+
   document.body.style.removeProperty("user-select");
   document.body.style.removeProperty("cursor");
   document.removeEventListener("mousemove", onMouseMove);
@@ -147,7 +207,6 @@ css.class(cls.dragDestinationBulp, {
   position: "absolute",
   height: 8,
   width: 8,
-  borderRadius: 1,
   left: 0,
   top: -3,
   backgroundColor: colors.darkPrimary,
