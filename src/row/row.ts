@@ -135,14 +135,7 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
           }
           if (e.key === "Enter") {
             e.preventDefault();
-            const newItem: Item = {
-              id: Math.random() + "",
-              type: "folder",
-              title: "",
-              children: [],
-              isCollapsedInGallery: true,
-            };
-            items.insertItemAfter(newItem, item.id);
+            const newItem: Item = items.createNewItemAfter(item.id);
             const row = myRow(newItem);
             elem.insertAdjacentElement("afterend", row);
             playCaretAtTextAtRow(row);
@@ -170,12 +163,11 @@ export const myRow = component((item: Item, elem: HTMLElement) => {
     item.id,
     animateChevron
   );
+  animateChevron(item);
 
   if (items.isFolderOpenOnPage(item)) {
     appendChildren(item);
   }
-
-  animateChevron(item);
 
   return () => {
     unsub();

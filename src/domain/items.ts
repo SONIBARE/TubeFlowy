@@ -72,15 +72,17 @@ export const toggleFolderVisibility = (itemId: string) => {
 };
 
 //check duplicated for moveItemInside
-export const insertItemAfter = (newItem: Item, insertAfter: string) => {
-  const parentId = findParentId(insertAfter);
-  const parent = items[parentId];
-  if (isContainer(parent)) {
-    parent.children = parent.children
-      .map((id) => (id == insertAfter ? [id, newItem.id] : [id]))
-      .flat();
-    items[newItem.id] = newItem;
-  }
+export const createNewItemAfter = (insertAfter: string): Item => {
+  const newItem: Item = {
+    id: Math.random() + "",
+    type: "folder",
+    title: "",
+    children: [],
+    isCollapsedInGallery: true,
+  };
+  items[newItem.id] = newItem;
+  moveItemAfter(newItem.id, insertAfter);
+  return newItem;
 };
 
 export const redrawCanvas = () => {
@@ -111,10 +113,12 @@ export const moveItemAfter = (
 ) => {
   const itemToMoveParent = getParent(itemIdToMove);
   const itemToAfterParent = getParent(itemIdToMoveAfter);
-  if (itemToMoveParent && itemToAfterParent) {
+  if (itemToMoveParent) {
     itemToMoveParent.children = itemToMoveParent.children.filter(
       (id) => id != itemIdToMove
     );
+  }
+  if (itemToAfterParent) {
     itemToAfterParent.children = itemToAfterParent.children
       .map((i) => (i === itemIdToMoveAfter ? [i, itemIdToMove] : [i]))
       .flat();
