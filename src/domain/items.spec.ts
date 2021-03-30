@@ -1,6 +1,6 @@
 import * as items from "./items";
 import { events } from "./events";
-import { createItemsFromArray, folder, video } from "../testUtils";
+import { createItemsFromArray, folder, video } from "./testUtils";
 
 describe("having a store with two items", () => {
   const v1 = video("v1", "videoId1");

@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
 import { myRow } from "./row";
-import { items, events } from "./domain";
+import { items, events } from "../domain";
 
-jest.mock("./infra/animations", () => ({
+jest.mock("../infra/animations", () => ({
   expandHeight: () => ({
     addEventListener: (event: string, cb: EmptyFunc) => cb(),
   }),

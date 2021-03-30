@@ -1,6 +1,6 @@
 import { cls, div, fragment, ids } from "./infra";
 import { items, events } from "./domain";
-import { myRow } from "./row";
+import { myRow } from "./row/row";
 import { Minimap } from "./minimap";
 
 export const focusItem = (item: Item) => {

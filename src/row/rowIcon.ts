@@ -8,9 +8,9 @@ import {
   timings,
   Styles,
   div,
-} from "./infra";
-import { events, items } from "./domain";
-import { focusItem } from "./focuser";
+} from "../infra";
+import { events, items } from "../domain";
+import { focusItem } from "../focuser";
 
 //TODO: consider where to place this method (common with sideScroll.ts)
 const isLightCircleTransparent = (item: Item) =>

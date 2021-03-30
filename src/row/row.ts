@@ -9,11 +9,11 @@ import {
   component,
   timings,
   icons,
-} from "./infra";
+} from "../infra";
+import { events, items } from "../domain";
+import { loadItemChildren } from "../api/youtube";
+import * as dnd from "../dnd";
 import { appendFocusCicrle } from "./rowIcon";
-import { events, items } from "./domain";
-import { loadItemChildren } from "./api/youtube";
-import * as dnd from "./dnd";
 
 export const myRow = component((item: Item, elem: HTMLElement) => {
   let childContainer: HTMLElement | undefined;

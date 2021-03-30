@@ -1,6 +1,6 @@
 import { findYoutubeVideos, ResponseItem } from "../api/youtubeRequest";
 import { cls, colors, css, debounce, div, fragment } from "../infra";
-import { myRow } from "../row";
+import { myRow } from "../row/row";
 import { items } from "../domain";
 
 export const showSearchPanel = () => {

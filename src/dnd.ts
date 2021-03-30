@@ -1,5 +1,5 @@
 import { cls, colors, css, div, spacings } from "./infra";
-import { appendFocusCicrle } from "./rowIcon";
+import { appendFocusCicrle } from "./row/rowIcon";
 import { events, items } from "./domain";
 
 //DND state
