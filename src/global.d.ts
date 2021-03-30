@@ -62,3 +62,6 @@ type YoutubeVideo = {
   type: "YTvideo";
   videoId: string;
 } & CommonItemProperties;
+
+//DND
+type DropPlacement = "before" | "after" | "inside";

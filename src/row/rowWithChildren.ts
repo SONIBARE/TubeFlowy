@@ -6,70 +6,116 @@ import {
   anim,
   colors,
   spacings,
-  component,
   timings,
 } from "../infra";
 import { events, items } from "../domain";
 import { playCaretAtTextAtRow, renderRow } from "./row";
 
-export const rowWithChildren = component((item: Item, elem: HTMLElement) => {
-  let childContainer: HTMLElement | undefined;
+export class RowWithChildren extends HTMLElement {
+  unsub!: EmptyFunc;
+  item!: Item;
+  render(item: Item) {
+    this.item = item;
+    const elem = this;
+    let childContainer: HTMLElement | undefined;
 
-  const appendChildren = (item: Item) => {
-    childContainer = div(
-      { className: cls.childContainer },
-      fragment(items.getChildrenFor(item.id).map(rowWithChildren))
-    );
-    elem.appendChild(childContainer);
-  };
+    const appendChildren = (item: Item) => {
+      childContainer = div(
+        { className: cls.childContainer },
+        fragment(items.getChildrenFor(item.id).map(rowWithChildren))
+      );
+      elem.appendChild(childContainer);
+    };
 
-  const onAnimationFinish = (item: Item) => {
-    if (!items.isFolderOpenOnPage(item) && childContainer) {
-      childContainer.remove();
-      childContainer = undefined;
-    }
-    items.redrawCanvas();
-  };
-
-  const animateChildren = (item: Item) => {
-    if (childContainer && anim.revertCurrentAnimations(childContainer)) {
-    } else if (items.isFolderOpenOnPage(item)) {
-      appendChildren(item);
-      if (childContainer)
-        anim
-          .expandHeight(childContainer)
-          .addEventListener("finish", () => onAnimationFinish(item));
-    } else {
-      if (childContainer) {
-        anim
-          .collapseHeight(childContainer)
-          .addEventListener("finish", () => onAnimationFinish(item));
+    const onAnimationFinish = (item: Item) => {
+      if (!items.isFolderOpenOnPage(item) && childContainer) {
+        childContainer.remove();
+        childContainer = undefined;
       }
-    }
-  };
-  const row = renderRow(item, elem);
+      items.redrawCanvas();
+    };
 
-  row.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const newItem: Item = items.createNewItemAfter(item.id);
-      const row = rowWithChildren(newItem);
-      elem.insertAdjacentElement("afterend", row);
-      playCaretAtTextAtRow(row);
-    }
-  });
-  elem.appendChild(row);
+    const animateChildren = (item: Item) => {
+      if (childContainer && anim.revertCurrentAnimations(childContainer)) {
+      } else if (items.isFolderOpenOnPage(item)) {
+        appendChildren(item);
+        if (childContainer)
+          anim
+            .expandHeight(childContainer)
+            .addEventListener("finish", () => onAnimationFinish(item));
+      } else {
+        if (childContainer) {
+          anim
+            .collapseHeight(childContainer)
+            .addEventListener("finish", () => onAnimationFinish(item));
+        }
+      }
+    };
+    const row = renderRow(item, elem);
 
-  if (items.isFolderOpenOnPage(item)) {
-    appendChildren(item);
+    row.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const newItem: Item = items.createNewItemAfter(item.id);
+        const row = rowWithChildren(newItem);
+        elem.insertAdjacentElement("afterend", row);
+        playCaretAtTextAtRow(row);
+      }
+    });
+    elem.appendChild(row);
+
+    if (items.isFolderOpenOnPage(item)) {
+      appendChildren(item);
+    }
+
+    this.unsub = events.addCompoundEventListener(
+      "item-collapse",
+      item.id,
+      animateChildren
+    );
   }
 
-  return events.addCompoundEventListener(
-    "item-collapse",
-    item.id,
-    animateChildren
-  );
-});
+  moveItemRelativeTo(
+    dropPlacement: DropPlacement,
+    relativeTo: RowWithChildren
+  ) {
+    const itemBeingDragged = this.item;
+    const itemUnder = relativeTo.item;
+
+    const copy = () => rowWithChildren(itemBeingDragged);
+
+    //here I take item out from the dom and place it in a different place
+    //I don't want to unsubscribe from app events, so I halt
+    if (dropPlacement === "after") {
+      items.moveItemAfter(itemBeingDragged.id, itemUnder.id);
+      this.remove();
+      relativeTo.insertAdjacentElement("afterend", copy());
+    } else if (dropPlacement === "before") {
+      items.moveItemBefore(itemBeingDragged.id, itemUnder.id);
+      this.remove();
+      relativeTo.insertAdjacentElement("beforebegin", copy());
+    } else {
+      items.moveItemInside(itemBeingDragged.id, itemUnder.id);
+      //asumes node is open
+      const children = relativeTo.getElementsByClassName(cls.childContainer)[0];
+
+      this.remove();
+      if (children) children.insertAdjacentElement("afterbegin", copy());
+    }
+  }
+
+  disconnectedCallback() {
+    if (this.unsub) this.unsub();
+  }
+}
+
+customElements.define("slp-item", RowWithChildren);
+
+export const rowWithChildren = (item: Item) => {
+  const elem = document.createElement("slp-item") as RowWithChildren;
+  elem.render(item);
+  return elem;
+};
 
 css.class(cls.row, {
   marginLeft: -spacings.negativeMarginForRowAtZeroLevel,

@@ -16,7 +16,6 @@ export { EventsHandler } from "./eventsHandler";
 export * as icons from "./icons";
 export { colors, spacings, timings } from "./constants";
 export * as anim from "./animations";
-export { component } from "./component";
 export * as utils from "./utils";
 export { debounce } from "./debounce";
 export { compose } from "./functions";

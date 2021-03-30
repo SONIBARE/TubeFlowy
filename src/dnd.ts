@@ -1,23 +1,21 @@
 import { cls, colors, css, div, spacings } from "./infra";
 import { appendFocusCicrle } from "./row/rowIcon";
-import { events, items } from "./domain";
+import { RowWithChildren } from "./row/rowWithChildren";
 
 //DND state
 let initialMousePosition: Vector;
 let dragAvatar: HTMLElement | undefined;
 let dragDestination: HTMLElement | undefined;
 let itemBeingDragged: Item;
-let itemBeingDraggedElement: HTMLElement | undefined;
+let itemBeingDraggedElement: RowWithChildren | undefined;
 
-let itemUnderElement: HTMLElement | undefined;
-let itemUnder: Item;
+let itemUnderElement: RowWithChildren | undefined;
 
-type DropPlacement = "before" | "after" | "inside";
 let dropPlacement: DropPlacement;
 
 export const onItemMouseDown = (
   item: Item,
-  itemElem: HTMLElement,
+  itemElem: RowWithChildren,
   e: MouseEvent
 ) => {
   document.body.style.userSelect = "none";
@@ -32,11 +30,10 @@ export const onItemMouseDown = (
 
 export const onItemMouseMove = (
   item: Item,
-  itemUnderElem: HTMLElement,
+  itemUnderElem: RowWithChildren,
   e: MouseEvent
 ) => {
   if (dragAvatar) {
-    itemUnder = item;
     itemUnderElement = itemUnderElem;
     if (!dragDestination) {
       dragDestination = div(
@@ -132,31 +129,7 @@ const onMouseUp = () => {
 
 const drop = () => {
   if (itemUnderElement && itemBeingDraggedElement) {
-    if (dropPlacement === "after") {
-      items.moveItemAfter(itemBeingDragged.id, itemUnder.id);
-      itemUnderElement.insertAdjacentElement(
-        "afterend",
-        itemBeingDraggedElement
-      );
-    } else if (dropPlacement === "before") {
-      items.moveItemBefore(itemBeingDragged.id, itemUnder.id);
-      itemUnderElement.insertAdjacentElement(
-        "beforebegin",
-        itemBeingDraggedElement
-      );
-    } else {
-      items.moveItemInside(itemBeingDragged.id, itemUnder.id);
-      //asumes node is open
-      const children = itemUnderElement.getElementsByClassName(
-        cls.childContainer
-      )[0];
-
-      if (children)
-        children.insertAdjacentElement("afterbegin", itemBeingDraggedElement);
-      else {
-        itemBeingDraggedElement.remove();
-      }
-    }
+    itemBeingDraggedElement.moveItemRelativeTo(dropPlacement, itemUnderElement);
   }
 };
 

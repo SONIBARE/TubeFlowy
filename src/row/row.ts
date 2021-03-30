@@ -3,11 +3,12 @@ import { events, items } from "../domain";
 import { loadItemChildren } from "../api/youtube";
 import * as dnd from "../dnd";
 import { appendFocusCicrle } from "./rowIcon";
+import { RowWithChildren } from "./rowWithChildren";
 
 class Row extends HTMLElement {
   onUnsub!: () => void;
 
-  render(item: Item, rowWithChildren: HTMLElement) {
+  render(item: Item, rowWithChildren: RowWithChildren) {
     const animateChevron = (item: Item) => {
       if (items.isFolderOpenOnPage(item)) chev.classList.add(cls.chevronOpen);
       else chev.classList.remove(cls.chevronOpen);
@@ -89,7 +90,7 @@ class Row extends HTMLElement {
 
 customElements.define("slp-row", Row);
 
-export const renderRow = (item: Item, rowWithChildren: HTMLElement) => {
+export const renderRow = (item: Item, rowWithChildren: RowWithChildren) => {
   const elem = document.createElement("slp-row") as Row;
   elem.render(item, rowWithChildren);
   return elem;
