@@ -128,9 +128,10 @@ export const assignClasses = (
     classDefinitions.className.forEach((cs) => elem.classList.add(cs));
 
   if (classDefinitions.classMap)
-    Object.keys(classDefinitions.classMap)
-      .filter((cs) => !!(classDefinitions.classMap as any)[cs])
-      .forEach((cs) => elem.classList.add(cs));
+    Object.keys(classDefinitions.classMap).forEach((cs) => {
+      if ((classDefinitions.classMap as any)[cs]) elem.classList.add(cs);
+      else elem.classList.remove(cs);
+    });
 };
 
 const assignEvents = (elem: Element, events: Partial<SlapstukEvents>) => {

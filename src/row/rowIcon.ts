@@ -7,6 +7,7 @@ import {
   css,
   timings,
   Styles,
+  dom,
   div,
 } from "../infra";
 import { events, items } from "../domain";
@@ -27,11 +28,6 @@ export const appendFocusCicrle = (
     item.type === "YTvideo"
   ) {
     const image = div({
-      classMap: {
-        [cls.channelImage]: item.type == "YTchannel",
-        [cls.playlistImage]:
-          item.type == "YTplaylist" || item.type == "YTvideo",
-      },
       events: {
         click: () => item.type == "YTvideo" && items.play(item.id),
         mousedown: onMouseDown,
@@ -44,7 +40,23 @@ export const appendFocusCicrle = (
     );
     parent.appendChild(image);
 
-    return () => undefined;
+    const assignImageClasses = () =>
+      dom.assignClasses(image, {
+        classMap: {
+          [cls.channelImage]: item.type == "YTchannel",
+          [cls.squareImage]:
+            item.type == "YTplaylist" || item.type == "YTvideo",
+          [cls.closedContainerImage]:
+            !items.isFolderOpenOnPage(item) && item.type == "YTplaylist",
+        },
+      });
+
+    assignImageClasses();
+    return events.addCompoundEventListener(
+      "item-collapse",
+      item.id,
+      assignImageClasses
+    );
   } else {
     const lightCircle = circle({
       className: cls.lightCircle,
@@ -152,13 +164,21 @@ const imageStyles: Styles = {
   cursor: "pointer",
 };
 
-css.class(cls.playlistImage, {
+css.class(cls.squareImage, {
   ...imageStyles,
   borderRadius: 4,
 });
 
-css.hover(cls.playlistImage, {
+css.hover(cls.squareImage, {
   boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.5)`,
+});
+
+css.class(cls.closedContainerImage, {
+  boxShadow: `0 0 2px 3px ${colors.mediumPrimary}`,
+});
+
+css.hover(cls.closedContainerImage, {
+  boxShadow: `0 0 2px 3px ${colors.mediumPrimary}, inset 0 0 0 2px rgba(0,0,0,0.5)`,
 });
 
 css.class(cls.channelImage, {
