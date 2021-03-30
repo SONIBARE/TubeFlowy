@@ -15,8 +15,8 @@ export const expandHeight = (elem: HTMLElement) =>
   animate(
     elem,
     [
-      { height: 0, opacity: 0 },
-      { height: elem.clientHeight, opacity: 1 },
+      { height: 0, opacity: 0, overflow: "hidden" },
+      { height: elem.clientHeight, opacity: 1, overflow: "hidden" },
     ],
     { duration: timings.cardExpandCollapseDuration }
   );
@@ -25,8 +25,8 @@ export const collapseHeight = (elem: HTMLElement) =>
   animate(
     elem,
     [
-      { height: elem.clientHeight, opacity: 1 },
-      { height: 0, opacity: 0 },
+      { height: elem.clientHeight, opacity: 1, overflow: "hidden" },
+      { height: 0, opacity: 0, overflow: "hidden" },
     ],
     { duration: timings.cardExpandCollapseDuration }
   );
