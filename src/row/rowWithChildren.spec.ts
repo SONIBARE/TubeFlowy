@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
-import { myRow } from "./row";
+import { rowWithChildren } from "./rowWithChildren";
 import { items, events } from "../domain";
 
 jest.mock("../infra/animations", () => ({
@@ -34,7 +34,7 @@ describe("Having an app", () => {
       [music.id]: music,
       [rock.id]: rock,
     });
-    document.body.appendChild(myRow(music));
+    document.body.appendChild(rowWithChildren(music));
     expect(get("row-music")).toBeInTheDocument();
     expect(query("row-rock")).not.toBeInTheDocument();
     fireEvent.click(get("chevron-music"));
@@ -56,7 +56,7 @@ describe("Having an app", () => {
       [music.id]: music,
       [rock.id]: rock,
     });
-    document.body.appendChild(myRow(music));
+    document.body.appendChild(rowWithChildren(music));
     expect(query("row-rock")).toBeInTheDocument();
   });
 });

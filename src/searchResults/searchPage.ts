@@ -1,6 +1,6 @@
 import { findYoutubeVideos, ResponseItem } from "../api/youtubeRequest";
 import { cls, colors, css, debounce, div, fragment } from "../infra";
-import { myRow } from "../row/row";
+import { rowWithChildren } from "../row/rowWithChildren";
 import { items } from "../domain";
 
 export const showSearchPanel = () => {
@@ -20,7 +20,9 @@ export const searchResults = () => {
       const searchItems = results.items.map(mapReponseItem);
       items.setSearchItems(searchItems);
       content.innerHTML = ``;
-      content.appendChild(fragment(items.getChildrenFor("SEARCH").map(myRow)));
+      content.appendChild(
+        fragment(items.getChildrenFor("SEARCH").map(rowWithChildren))
+      );
     });
   };
   input.addEventListener("input", debounce(search, 600));
