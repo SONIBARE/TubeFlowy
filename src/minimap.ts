@@ -9,7 +9,7 @@ import {
   fragment,
   ids,
 } from "./infra";
-import { store } from "./state";
+import { items, events } from "./domain";
 
 const multiplier = 8;
 
@@ -51,13 +51,13 @@ export class Minimap extends HTMLElement {
     drawTitle(
       22 / multiplier,
       minimapStyles.initialCircleY - minimapStyles.bigR - 2,
-      store.items[store.itemIdFocused],
+      items.getFocusedItem(),
       this.ctx
     );
     drawChildren(
       5,
       minimapStyles.initialCircleY,
-      store.getFocusChildren(),
+      items.getFocusChildren(),
       this.ctx
     );
   };
@@ -186,7 +186,7 @@ export const minimap = (scrollContainer: HTMLElement): Minimap => {
   const minimap = document.createElement("sp-minimap") as Minimap;
   minimap.id = ids.minimap;
   minimap.scrollContainer = scrollContainer;
-  store.addEventListener("redrawMinimap", minimap.drawCanvas);
+  events.addEventListener("redraw-canvas", minimap.drawCanvas);
 
   //memory leaks on case of multipage
   window.addEventListener("resize", minimap.onWindowResize);
@@ -198,19 +198,19 @@ export const minimap = (scrollContainer: HTMLElement): Minimap => {
 const drawChildren = (
   x: number,
   y: number,
-  items: Item[],
+  itemsToDraw: Item[],
   ctx: CanvasRenderingContext2D
 ): number => {
   let counter = 0;
-  for (let index = 0; index < items.length; index++) {
-    const item = items[index];
+  for (let index = 0; index < itemsToDraw.length; index++) {
+    const item = itemsToDraw[index];
     drawItem(x, y + counter * minimapStyles.distanceBetweenCircles, item, ctx);
     counter += 1;
-    if (store.isFolderOpenOnPage(item)) {
+    if (items.isFolderOpenOnPage(item)) {
       counter += drawChildren(
         x + minimapStyles.distancePerLevel,
         y + counter * minimapStyles.distanceBetweenCircles,
-        store.getChildrenFor(item.id),
+        items.getChildrenFor(item.id),
         ctx
       );
     }
@@ -220,7 +220,7 @@ const drawChildren = (
 
 //TODO: consider where to place this method (common with sideScroll.ts)
 const isLightCircleTransparent = (item: Item) =>
-  store.isFolderOpenOnPage(item) || store.isEmptyAndNoNeedToLoad(item);
+  items.isFolderOpenOnPage(item) || items.isEmptyAndNoNeedToLoad(item);
 
 const drawItem = (
   x: number,

@@ -1,22 +1,19 @@
 import { header } from "./header";
 import { cls, css, div, fragment, spacings } from "./infra";
 import { minimap } from "./minimap";
-import { store } from "./state";
+import { items } from "./domain";
 import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
-import { focusItem } from "./focuser";
 import { leftNavigationSidebar } from "./sidebar/leftSidebar";
 import { searchResults } from "./searchResults/searchPage";
+import * as stateLoader from "./api/stateLoader";
 
 database.initFirebase(() => undefined);
-database.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
-  const items: Items = JSON.parse(data.itemsSerialized);
-  store.itemsLoaded(items);
 
-  focusItem(items[data.selectedItemId]);
-});
+stateLoader.loadRemoteState();
 
-store.itemsLoaded({
+//TODO: refactor this, show loader and render without need for home item
+items.itemsLoaded({
   HOME: {
     type: "folder",
     children: [],
@@ -71,14 +68,14 @@ css.class(cls.rowsContainer, {
   position: "relative",
   overflowX: "hidden",
   paddingLeft: spacings.rowsContainerLeftPadding,
-  // marginLeft: "calc((100vw - 700px) / 2)",
-  // maxWidth: `calc(700px + ((100vw - 700px) / 2) - ${spacings.bodyScrollWidth}px - 120px)`,
 });
 
 css.class(cls.rowsScrollContainer, {
   paddingBottom: 60,
   paddingTop: spacings.pageMarginTop,
-  maxHeight: "100%",
+  maxHeight: `calc(100vh - ${
+    spacings.playerFooterHeight + spacings.headerHeight
+  }px)`,
   overflowY: "overlay" as any,
 });
 

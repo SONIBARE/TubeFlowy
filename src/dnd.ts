@@ -1,6 +1,6 @@
 import { cls, colors, css, div, spacings } from "./infra";
-import { appendFocusCicrle } from "./rowIcon";
-import { store } from "./state";
+import { appendFocusCicrle } from "./row/rowIcon";
+import { events, items } from "./domain";
 
 //DND state
 let initialMousePosition: Vector;
@@ -133,19 +133,19 @@ const onMouseUp = () => {
 const drop = () => {
   if (itemUnderElement && itemBeingDraggedElement) {
     if (dropPlacement === "after") {
-      store.moveItemAfter(itemBeingDragged.id, itemUnder.id);
+      items.moveItemAfter(itemBeingDragged.id, itemUnder.id);
       itemUnderElement.insertAdjacentElement(
         "afterend",
         itemBeingDraggedElement
       );
     } else if (dropPlacement === "before") {
-      store.moveItemBefore(itemBeingDragged.id, itemUnder.id);
+      items.moveItemBefore(itemBeingDragged.id, itemUnder.id);
       itemUnderElement.insertAdjacentElement(
         "beforebegin",
         itemBeingDraggedElement
       );
     } else {
-      store.moveItemInside(itemBeingDragged.id, itemUnder.id);
+      items.moveItemInside(itemBeingDragged.id, itemUnder.id);
       //asumes node is open
       const children = itemUnderElement.getElementsByClassName(
         cls.childContainer

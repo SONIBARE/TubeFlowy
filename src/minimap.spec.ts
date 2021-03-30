@@ -1,7 +1,7 @@
 import { fireEvent } from "@testing-library/dom";
 import { spacings } from "./infra";
 import { Minimap, minimap } from "./minimap";
-import { store } from "./state";
+import { items } from "./domain";
 
 const folder = (id: string, children?: string[]): Folder => ({
   id: id,
@@ -23,7 +23,7 @@ describe("Minimap specs", () => {
   afterEach(clearBody);
 
   beforeEach(() => {
-    store.itemsLoaded({ HOME: folder("HOME") });
+    items.itemsLoaded({ HOME: folder("HOME") });
     container = document.createElement("div");
     scrollTo = jest.fn();
     container.scrollTo = scrollTo;
@@ -112,7 +112,7 @@ describe("Having a content shorter than minimap", () => {
   afterEach(clearBody);
 
   beforeEach(() => {
-    store.itemsLoaded({ HOME: folder("HOME") });
+    items.itemsLoaded({ HOME: folder("HOME") });
     container = document.createElement("div");
     scrollTo = jest.fn();
     container.scrollTo = scrollTo;

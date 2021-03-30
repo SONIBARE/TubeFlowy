@@ -8,13 +8,13 @@ import {
   timings,
   Styles,
   div,
-} from "./infra";
-import { store } from "./state";
-import { focusItem } from "./focuser";
+} from "../infra";
+import { events, items } from "../domain";
+import { focusItem } from "../focuser";
 
 //TODO: consider where to place this method (common with sideScroll.ts)
 const isLightCircleTransparent = (item: Item) =>
-  store.isFolderOpenOnPage(item) || store.isEmptyAndNoNeedToLoad(item);
+  items.isFolderOpenOnPage(item) || items.isEmptyAndNoNeedToLoad(item);
 
 export const appendFocusCicrle = (
   item: Item,
@@ -26,10 +26,6 @@ export const appendFocusCicrle = (
     item.type === "YTchannel" ||
     item.type === "YTvideo"
   ) {
-    const unsub = store.addEventListener(
-      "itemChanged." + item.id,
-      () => undefined
-    );
     const image = div({
       classMap: {
         [cls.channelImage]: item.type == "YTchannel",
@@ -37,18 +33,18 @@ export const appendFocusCicrle = (
           item.type == "YTplaylist" || item.type == "YTvideo",
       },
       events: {
-        click: () => item.type == "YTvideo" && store.play(item.id),
+        click: () => item.type == "YTvideo" && items.play(item.id),
         mousedown: onMouseDown,
       },
       draggable: false,
     });
     image.style.setProperty(
       "background-image",
-      `url(${store.getImageSrc(item)})`
+      `url(${items.getImageSrc(item)})`
     );
     parent.appendChild(image);
 
-    return unsub;
+    return () => undefined;
   } else {
     const lightCircle = circle({
       className: cls.lightCircle,
@@ -93,8 +89,9 @@ export const appendFocusCicrle = (
       )
     );
 
-    const unsub = store.addEventListener(
-      "itemChanged." + item.id,
+    const unsub = events.addCompoundEventListener(
+      "item-collapse",
+      item.id,
       animateLightCircle
     );
     animateLightCircle(item);

@@ -1,9 +1,9 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByTestId } from "@testing-library/dom";
 import { myRow } from "./row";
-import { store } from "./state";
+import { items, events } from "../domain";
 
-jest.mock("./infra/animations", () => ({
+jest.mock("../infra/animations", () => ({
   expandHeight: () => ({
     addEventListener: (event: string, cb: EmptyFunc) => cb(),
   }),
@@ -29,7 +29,7 @@ describe("Having an app", () => {
     const rock = folder("rock");
     const music: Item = folder("music", [rock.id]);
     const home = folder("HOME", [music.id]);
-    store.itemsLoaded({
+    items.itemsLoaded({
       [home.id]: home,
       [music.id]: music,
       [rock.id]: rock,
@@ -39,10 +39,11 @@ describe("Having an app", () => {
     expect(query("row-rock")).not.toBeInTheDocument();
     fireEvent.click(get("chevron-music"));
     expect(get("row-rock")).toBeInTheDocument();
+    expect(events.events["item-collapse"]["rock"]).toBeDefined();
     fireEvent.click(get("chevron-music"));
     expect(query("row-rock")).not.toBeInTheDocument();
 
-    expect(store.events.events["itemChanged.rock"]).toBeUndefined();
+    expect(events.events["item-collapse"]["rock"]).toBeUndefined();
   });
 
   it("with an open music folder shows rock content ", () => {
@@ -50,7 +51,7 @@ describe("Having an app", () => {
     const music = folder("music", [rock.id]);
     music.isCollapsedInGallery = false;
     const home = folder("HOME", [music.id]);
-    store.itemsLoaded({
+    items.itemsLoaded({
       [home.id]: home,
       [music.id]: music,
       [rock.id]: rock,

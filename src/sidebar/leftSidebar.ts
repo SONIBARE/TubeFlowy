@@ -1,16 +1,16 @@
 import { focusItem } from "../focuser";
 import { cls, colors, css, div, fragment, icons, spacings } from "../infra";
-import { store } from "../state";
+import { events, items } from "../domain";
 
 const sidebarRow = (item: Item): DocumentFragment => {
-  const isOpen = store.isOpenAtSidebar(item);
+  const isOpen = items.isOpenAtSidebar(item);
   const hasAnyNonChildren =
-    store.getChildrenFor(item.id).filter((i) => i.type !== "YTvideo").length >
+    items.getChildrenFor(item.id).filter((i) => i.type !== "YTvideo").length >
     0;
 
   const onChevronClick = (e: Event) => {
     e.stopPropagation();
-    if (store.isContainer(item)) {
+    if (items.isContainer(item)) {
       item.isOpenFromSidebar = !item.isOpenFromSidebar;
       container.innerHTML = ``;
       renderLeftSidebarContent();
@@ -34,7 +34,7 @@ const sidebarRow = (item: Item): DocumentFragment => {
     ),
     isOpen
       ? renderChildren(
-          store.getChildrenFor(item.id).filter((i) => i.type !== "YTvideo")
+          items.getChildrenFor(item.id).filter((i) => i.type !== "YTvideo")
         )
       : undefined,
   ]);
@@ -50,7 +50,7 @@ let container: HTMLDivElement;
 const renderLeftSidebarContent = () =>
   container.appendChild(
     fragment(
-      store
+      items
         .getRootItems()
         .filter((i) => i.type !== "YTvideo")
         .map(sidebarRow)
@@ -60,7 +60,7 @@ const renderLeftSidebarContent = () =>
 export const leftNavigationSidebar = () => {
   container = div({ className: cls.leftSidebar });
 
-  store.addEventListener("items-loaded", renderLeftSidebarContent);
+  events.addEventListener("items-loaded", renderLeftSidebarContent);
   return container;
 };
 

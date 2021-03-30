@@ -1,10 +1,10 @@
 import * as api from "./youtubeRequest";
-import { store } from "../state";
+import { items } from "../domain";
 
 export const loadItemChildren = (item: Item): Promise<LoadingItemsReponse> => {
-  if (store.isPlaylist(item)) return getPlaylistSubitems(item);
-  else if (store.isChannel(item)) return getChannelSubitems(item);
-  else if (store.isSearch(item)) return searchForNextPage(item);
+  if (items.isPlaylist(item)) return getPlaylistSubitems(item);
+  else if (items.isChannel(item)) return getChannelSubitems(item);
+  else if (items.isSearch(item)) return searchForNextPage(item);
   else throw Error(`Can't figure out how to load ${item.type}`);
 };
 
