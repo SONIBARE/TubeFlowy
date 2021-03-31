@@ -24,17 +24,37 @@ export const cssToString = (selector: string, props: Styles) => {
   }
   `;
 };
+
+type Transition = Partial<Record<keyof Styles, number>>;
+
+const transition = (transitionDefinition: Transition): {} => {
+  const transition = Object.entries(transitionDefinition)
+    .map(([key, value]) => `${camelToSnakeCase(key)} ${value}ms`)
+    .join(", ");
+  return { transition };
+};
+const camelToSnakeCase = (str: string) =>
+  str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+
 type Tag = keyof HTMLElementTagNameMap;
 export const css = {
   id: (id: string, style: Styles) => selector("#" + id, style),
   tag: (tag: Tag, style: Styles) => selector(tag, style),
   class: (c1: ClassName, style: Styles) => selector(`.${c1}`, style),
+  classes: (cs: ClassName[], style: Styles) =>
+    selector(cs.map((c) => `.${c}`).join(), style),
   class2: (c1: ClassName, c2: ClassName, style: Styles) =>
     selector(`.${c1}.${c2}`, style),
   class3: (c1: ClassName, c2: ClassName, c3: ClassName, style: Styles) =>
     selector(`.${c1}.${c2}.${c3}`, style),
   parentChild: (c1: ClassName, c2: ClassName, style: Styles) =>
     selector(`.${c1} .${c2}`, style),
+  parentParentChild: (
+    c1: ClassName,
+    c2: ClassName,
+    c3: ClassName,
+    style: Styles
+  ) => selector(`.${c1} .${c2} .${c3}`, style),
   parentChildTag: (c1: ClassName, tag: Tag, style: Styles) =>
     selector(`.${c1} ${tag}`, style),
   parentIdChild: (id1: string, c2: ClassName, style: Styles) =>
@@ -69,7 +89,7 @@ export const css = {
     selector(`.${className}::selection`, style),
   afterClass: (className: ClassName, style: Styles) =>
     selector(`.${className}::after`, style),
-
+  transition,
   text: cssText,
   selector,
 };

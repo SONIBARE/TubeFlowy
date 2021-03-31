@@ -34,22 +34,28 @@ export const cls = {
   rowsFocused: "rows-focused",
   rowsHide: "rows-hide",
   row: "row",
-  playIcon: "play-icon",
+
+  //row folrder icon
+  focusCircleSvg: "focus-circle-svg",
+  focusCircleSvgEmpty: "focus-circle-svg-empty",
+  focusCircleSvgFilledOpen: "focus-circle-svg-filled-open",
+  focusCircleSvgFilledClosed: "focus-circle-svg-filled-closed",
+  focusCircleSvgPlaying: "focus-circle-svg-playing",
+
+  rowCircleFilled: "row-circle-fillded",
+  rowCircleOuter: "row-circle-outer",
+  rowCircleEmpty: "row-circle-empty",
+  rowCirclePlay: "row-circle-play",
+  rowCirclePause: "row-circle-pause",
+
   childContainer: "child-container",
-  cardsContainer: "cards-container",
-  cardsContainerHeightAdjuster: "cards-container-height-adjuster",
-  cardsContainerLastItemPadding: "cards-container-last-item-padding",
-  card: "card",
-  cardText: "card-text",
-  cardImage: "card-image",
+  rowText: "row-text",
+  rowTextVideo: "row-text-video",
+
   squareImage: "square-image",
   closedContainerImage: "container-image",
   channelImage: "channle-image",
-  rowText: "row-text",
-  rowCircle: "row-circle",
-  outerCircle: "row-outer-circle",
-  lightCircle: "row-light-circle",
-  focusCircleSvg: "focus-circle-svg",
+
   chevron: "chevron",
   chevronOpen: "chevron-open",
 

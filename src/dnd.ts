@@ -1,5 +1,7 @@
+import { items } from "./domain";
 import { cls, colors, css, div, spacings } from "./infra";
-import { appendFocusCicrle } from "./row/rowIcon";
+import { folderIcon } from "./row/folderIcon";
+import { itemImage } from "./row/itemImage";
 import { RowWithChildren } from "./row/rowWithChildren";
 
 //DND state
@@ -62,7 +64,9 @@ const onMouseMove = (e: MouseEvent) => {
       const dist = distance(initialMousePosition, getScreenPosiiton(e));
       if (dist > 5) {
         dragAvatar = div({ className: cls.dragAvatar });
-        appendFocusCicrle(itemBeingDragged, dragAvatar, () => undefined);
+        items.hasImagePreview(itemBeingDragged)
+          ? itemImage(itemBeingDragged, dragAvatar, () => undefined)
+          : folderIcon(itemBeingDragged, dragAvatar, () => undefined);
         document.body.appendChild(dragAvatar);
         updateDragAvatarPosition(dragAvatar, e);
       }

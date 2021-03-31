@@ -2,8 +2,9 @@ import { cls, compose, div, icons } from "../infra";
 import { events, items } from "../domain";
 import { loadItemChildren } from "../api/youtube";
 import * as dnd from "../dnd";
-import { appendFocusCicrle } from "./rowIcon";
 import { RowWithChildren } from "./rowWithChildren";
+import { itemImage } from "./itemImage";
+import { folderIcon } from "./folderIcon";
 
 class Row extends HTMLElement {
   onUnsub!: () => void;
@@ -32,7 +33,10 @@ class Row extends HTMLElement {
 
     const rowText = div(
       {
-        className: cls.rowText,
+        className: [
+          cls.rowText,
+          items.isVideo(item) ? cls.rowTextVideo : cls.none,
+        ],
         contentEditable: true,
         events: {
           input: ({ currentTarget }) => {
@@ -76,7 +80,10 @@ class Row extends HTMLElement {
 
     const onMouseDown = (e: MouseEvent) =>
       dnd.onItemMouseDown(item, rowWithChildren, e);
-    const unsub = appendFocusCicrle(item, this, onMouseDown);
+
+    const unsub = items.hasImagePreview(item)
+      ? itemImage(item, this, onMouseDown)
+      : folderIcon(item, this, onMouseDown);
 
     this.append(rowText);
 

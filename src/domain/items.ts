@@ -89,11 +89,6 @@ export const redrawCanvas = () => {
   events.dispatchEvent("redraw-canvas", undefined);
 };
 
-//Play
-export const play = (itemId: string) => {
-  events.dispatchEvent("item-play", items[itemId]);
-};
-
 export const removeItem = (item: Item) => {
   const parentId = findParentId(item.id);
   const parent = items[parentId];
@@ -117,11 +112,13 @@ export const moveItemAfter = (
     itemToMoveParent.children = itemToMoveParent.children.filter(
       (id) => id != itemIdToMove
     );
+    itemChildrenChanged(itemToMoveParent);
   }
   if (itemToAfterParent) {
     itemToAfterParent.children = itemToAfterParent.children
       .map((i) => (i === itemIdToMoveAfter ? [i, itemIdToMove] : [i]))
       .flat();
+    itemChildrenChanged(itemToAfterParent);
   }
 };
 
@@ -138,6 +135,8 @@ export const moveItemBefore = (
     itemToBeforeParent.children = itemToBeforeParent.children
       .map((i) => (i === itemIdToMoveBefore ? [itemIdToMove, i] : [i]))
       .flat();
+    itemChildrenChanged(itemToBeforeParent);
+    itemChildrenChanged(itemToMoveParent);
   }
 };
 
@@ -154,8 +153,13 @@ export const moveItemInside = (
     itemToMoveInside.children = [itemIdToMove].concat(
       itemToMoveInside.children
     );
+    itemChildrenChanged(itemToMoveInside);
+    itemChildrenChanged(itemToMoveParent);
   }
 };
+
+const itemChildrenChanged = (item: Item) =>
+  events.dispatchCompundEvent("item-children-length-changed", item.id, item);
 
 //SELECTORS
 export const findParentId = (childId: string) =>
@@ -221,6 +225,11 @@ export const isContainer = (item: Item): item is ItemContainer => {
     item.type == "YTplaylist"
   );
 };
+
+export const hasImagePreview = (item: Item): boolean =>
+  item.type === "YTplaylist" ||
+  item.type === "YTchannel" ||
+  item.type === "YTvideo";
 
 export const isEmptyAndNoNeedToLoad = (item: Item) => {
   if ("children" in item) return item.children.length === 0;

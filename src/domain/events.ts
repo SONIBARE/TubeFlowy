@@ -5,6 +5,8 @@ type TubeflowyEvents = {
   "item-renamed": Item;
   "item-collapse": Item;
   "item-focused": Item;
+  "item-children-length-changed": Item;
+
   "items-loaded": Items;
 
   //probably remove this event and use item-collapse instead if possible

@@ -71,13 +71,11 @@ export const button = (props: ButtonProps): HTMLButtonElement => {
   return elem;
 };
 
-export const fragment = (
-  nodes: (Node | string | undefined)[]
-): DocumentFragment => {
+export const fragment = (nodes: FragmentChild[]): DocumentFragment => {
   const fragment = document.createDocumentFragment();
   nodes.forEach((node) => {
     if (typeof node === "string") fragment.append(node);
-    else if (typeof node !== "undefined") fragment.appendChild(node);
+    else if (typeof node !== "undefined" && node) fragment.appendChild(node);
   });
   return fragment;
 };
@@ -92,6 +90,13 @@ export const canvas = (props: CanvasProps): HTMLCanvasElement => {
   elem.setAttribute("height", props.height + "");
   assignHtmlElementProps(elem, props);
   return elem;
+};
+
+type FragmentChild = Node | string | undefined | false;
+
+export const setChildren = (elem: Element, ...children: FragmentChild[]) => {
+  elem.innerHTML = ``;
+  elem.appendChild(fragment(children));
 };
 
 //HELPERS
@@ -125,7 +130,7 @@ export const assignClasses = (
   if (typeof classDefinitions.className === "string")
     elem.classList.add(classDefinitions.className);
   else if (Array.isArray(classDefinitions.className))
-    classDefinitions.className.forEach((cs) => elem.classList.add(cs));
+    classDefinitions.className.forEach((cs) => cs && elem.classList.add(cs));
 
   if (classDefinitions.classMap)
     Object.keys(classDefinitions.classMap).forEach((cs) => {

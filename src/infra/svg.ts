@@ -1,5 +1,10 @@
-import { fragment } from ".";
-import { ElementProps, assignClasses, assignElementProps } from "./dom";
+import { dom, fragment } from ".";
+import {
+  ElementProps,
+  assignClasses,
+  assignElementProps,
+  ElementWithClassDefinitions,
+} from "./dom";
 
 export interface SvgProps extends ElementProps {
   viewBox: string;
@@ -19,6 +24,8 @@ interface CircleProps extends ElementProps {
   cy: number;
   r: number;
   fill: string;
+  stroke?: string;
+  strokeWidth?: number;
 }
 export const circle = (circleProps: CircleProps) => {
   const myCircle = document.createElementNS(
@@ -30,6 +37,10 @@ export const circle = (circleProps: CircleProps) => {
   myCircle.setAttribute("cy", circleProps.cy + "");
   myCircle.setAttribute("r", circleProps.r + "");
   myCircle.setAttribute("fill", circleProps.fill);
+
+  if (circleProps.stroke) myCircle.setAttribute("stroke", circleProps.stroke);
+  if (circleProps.strokeWidth)
+    myCircle.setAttribute("stroke-width", circleProps.strokeWidth + "");
   return myCircle;
 };
 
@@ -48,4 +59,27 @@ export const path = (props: PathProps) => {
     path.setAttribute("stroke-linecap", props.strokeLinecap);
 
   return path;
+};
+
+export interface PolygonProps extends ElementWithClassDefinitions {
+  points: string;
+  fill: string;
+  stroke?: string;
+  strokeWidth?: number;
+  strokelinejoin?: "round";
+}
+export const polygon = (props: PolygonProps) => {
+  const elem = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "polygon"
+  );
+  elem.setAttribute("points", props.points);
+  if (props.strokelinejoin)
+    elem.setAttribute("stroke-linejoin", props.strokelinejoin);
+  if (props.stroke) elem.setAttribute("stroke", props.stroke);
+  if (props.fill) elem.setAttribute("fill", props.fill);
+  if (props.strokeWidth)
+    elem.setAttribute("stroke-width", props.strokeWidth + "");
+  dom.assignClasses(elem, props);
+  return elem;
 };

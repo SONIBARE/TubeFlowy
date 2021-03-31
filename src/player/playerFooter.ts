@@ -3,7 +3,7 @@ import { items, events } from "../domain";
 import { play } from "./youtubePlayer";
 
 //move this to a store
-let itemIdBeingPlayed: string = "";
+export let itemIdBeingPlayed: string = "";
 let isYoutubePlayerShown = true;
 let footer: HTMLElement;
 let toggleButton: HTMLButtonElement;
@@ -12,24 +12,28 @@ export const playerFooter = () => {
     className: cls.playerFooter,
     classMap: { [cls.yotuubePlayerhidden]: !isYoutubePlayerShown },
   });
-  events.addEventListener("item-play", (item) => {
-    const player = document.getElementById(ids.youtubeIframe);
-    if (!player) {
-      toggleButton = button({
-        text: isYoutubePlayerShown ? "hide" : "show",
-        events: { click: onPlayerToggleClicked },
-      });
-      footer.appendChild(toggleButton);
-      footer.appendChild(div({ id: ids.youtubeIframe }));
-    }
-
-    if (item.type === "YTvideo") {
-      itemIdBeingPlayed = item.id;
-      play(item.videoId);
-    }
-  });
   return footer;
 };
+
+export const playItem = (item: Item) => {
+  const player = document.getElementById(ids.youtubeIframe);
+  if (!player) {
+    toggleButton = button({
+      text: isYoutubePlayerShown ? "hide" : "show",
+      events: { click: onPlayerToggleClicked },
+    });
+    footer.appendChild(toggleButton);
+    footer.appendChild(div({ id: ids.youtubeIframe }));
+  }
+
+  itemIdBeingPlayed = item.id;
+  events.dispatchCompundEvent("item-play", item.id, item);
+  if (item.type === "YTvideo") {
+    play(item.videoId);
+  }
+};
+
+export const isItemPlaying = (item: Item) => {};
 
 const onPlayerToggleClicked = () => {
   isYoutubePlayerShown = !isYoutubePlayerShown;

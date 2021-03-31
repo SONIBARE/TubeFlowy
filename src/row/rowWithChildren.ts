@@ -126,7 +126,6 @@ css.class(cls.row, {
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
-  fontWeight: 500,
   whiteSpace: "nowrap",
   color: colors.darkPrimary,
   // lineHeight: 1,
@@ -166,78 +165,6 @@ css.class(cls.childContainer, {
   position: "relative",
 });
 
-css.class(cls.cardsContainer, {
-  height: (spacings.cardHeight + spacings.cardPadding) * 3 + 15,
-  overflowX: "overlay" as any,
-  display: "flex",
-  flexDirection: "column",
-  flexWrap: "wrap",
-  alignContent: "flex-start",
-});
-
-css.selector(`.${cls.cardsContainer}::-webkit-scrollbar`, {
-  height: 8,
-});
-
-css.selector(`.${cls.cardsContainer}::-webkit-scrollbar-thumb`, {
-  backgroundColor: colors.mediumPrimary,
-});
-
-css.class(cls.cardsContainerHeightAdjuster, {
-  width: 40,
-  height: 2,
-  backgroundColor: colors.lightPrimary,
-  cursor: "n-resize",
-  position: "absolute",
-  bottom: 2,
-  left: "calc(50% - 20px)",
-});
-
-css.hover(cls.cardsContainerHeightAdjuster, {
-  backgroundColor: colors.darkPrimary,
-});
-
-css.class(cls.cardsContainerLastItemPadding, {
-  height: "100%",
-  width: spacings.cardPadding,
-});
-
-css.class(cls.card, {
-  marginLeft: spacings.cardPadding,
-  marginTop: spacings.cardPadding,
-  borderRadius: 4,
-  width: spacings.cardWidth,
-  height: spacings.cardHeight,
-  // backgroundColor: colors.border,
-  backgroundColor: "white",
-  display: "flex",
-  alignItems: "center",
-  flexDirection: "row",
-  overflow: "hidden",
-  boxShadow: "1px 1px 4px rgb(0, 0, 0, 0.3)",
-  transition: "all 200ms",
-  cursor: "pointer",
-});
-
-css.hover(cls.card, {
-  boxShadow: "1px 2px 5px 0 rgb(0, 0, 0, 0.53)",
-  backgroundColor: colors.border,
-});
-
-css.class(cls.cardImage, {
-  height: spacings.cardHeight,
-  // width: 40 * 1.5,
-  objectFit: "cover",
-});
-
-css.class(cls.cardText, {
-  flex: 1,
-  fontSize: 14,
-  lineHeight: "1.2",
-  padding: `0 ${spacings.cardTextPadding}px`,
-  paddingBottom: spacings.cardTextBottomPadding,
-});
-
 css.parentHover(cls.row, cls.chevron, {
   opacity: 1,
 });
@@ -262,9 +189,13 @@ css.class(cls.chevronOpen, {
 });
 
 css.class(cls.rowText, {
+  fontWeight: 500,
   outline: "none",
   lineHeight: 41 - 8,
   flex: 1,
+});
+css.class(cls.rowTextVideo, {
+  fontWeight: 400,
 });
 
 css.selection(cls.rowText, {
