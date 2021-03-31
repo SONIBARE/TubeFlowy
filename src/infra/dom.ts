@@ -33,13 +33,22 @@ export const div = (
 };
 
 interface InputProps extends HtmlElementProps {
-  onInput: (e: Event) => void;
+  onInput?: (e: Event) => void;
+  type?: "range" | "color";
+  value?: number | string;
+  min?: number;
+  max?: number;
 }
 
-export const input = (props: InputProps): HTMLElement => {
+export const input = (props: InputProps): HTMLInputElement => {
   const elem = document.createElement("input");
   assignHtmlElementProps(elem, props);
-  elem.addEventListener("input", props.onInput);
+  if (props.onInput) elem.addEventListener("input", props.onInput);
+
+  if (props.type) elem.setAttribute("type", props.type);
+  if (props.value) elem.setAttribute("value", props.value + "");
+  if (props.min) elem.setAttribute("min", props.min + "");
+  if (props.max) elem.setAttribute("max", props.max + "");
   return elem;
 };
 

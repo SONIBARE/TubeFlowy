@@ -34,7 +34,7 @@ const transition = (transitionDefinition: Transition): {} => {
   return { transition };
 };
 const camelToSnakeCase = (str: string) =>
-  str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+  str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
 
 type Tag = keyof HTMLElementTagNameMap;
 export const css = {
