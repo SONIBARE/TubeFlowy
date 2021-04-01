@@ -6,7 +6,7 @@ import {
   ElementWithClassDefinitions,
 } from "./dom";
 
-export interface SvgProps extends ElementProps {
+export interface SvgProps extends ElementProps<SVGSVGElement> {
   viewBox: string;
   fill?: string;
 }
@@ -19,7 +19,7 @@ export const svg = (props: SvgProps, ...child: SVGElement[]): SVGSVGElement => {
   return mySvg;
 };
 
-interface CircleProps extends ElementProps {
+interface CircleProps extends ElementProps<SVGCircleElement> {
   cx: number;
   cy: number;
   r: number;

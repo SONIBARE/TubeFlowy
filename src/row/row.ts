@@ -40,10 +40,7 @@ class Row extends HTMLElement {
         contentEditable: true,
         events: {
           input: ({ currentTarget }) => {
-            items.setTitle(
-              item,
-              (currentTarget as HTMLElement).textContent || ""
-            );
+            items.setTitle(item, currentTarget.textContent || "");
           },
           keydown: (e) => {
             if (e.key === "Backspace" && e.shiftKey && e.ctrlKey) {

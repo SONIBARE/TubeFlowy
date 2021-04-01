@@ -1,5 +1,5 @@
 import { focusItem } from "../focuser";
-import { cls, colors, css, div, fragment, icons, spacings } from "../infra";
+import { cls, colors, css, dom, icons, spacings } from "../infra";
 import { events, items } from "../domain";
 
 const sidebarRow = (item: Item): DocumentFragment => {
@@ -19,8 +19,8 @@ const sidebarRow = (item: Item): DocumentFragment => {
 
   const onRowClick = () => focusItem(item);
 
-  return fragment([
-    div(
+  return dom.fragment([
+    dom.div(
       { className: cls.leftSidebarRow, events: { click: onRowClick } },
       icons.chevron({
         className: cls.leftSidebarChevron,
@@ -41,15 +41,15 @@ const sidebarRow = (item: Item): DocumentFragment => {
 };
 
 const renderChildren = (items: Item[]) =>
-  div(
+  dom.div(
     { className: cls.leftSidebarRowChildren },
-    fragment(items.map(sidebarRow))
+    dom.fragment(items.map(sidebarRow))
   );
 
 let container: HTMLDivElement;
 const renderLeftSidebarContent = () =>
   container.appendChild(
-    fragment(
+    dom.fragment(
       items
         .getRootItems()
         .filter((i) => i.type !== "YTvideo")
@@ -58,7 +58,7 @@ const renderLeftSidebarContent = () =>
   );
 
 export const leftNavigationSidebar = () => {
-  container = div({ className: cls.leftSidebar });
+  container = dom.div({ className: cls.leftSidebar });
 
   events.addEventListener("items-loaded", renderLeftSidebarContent);
   return container;

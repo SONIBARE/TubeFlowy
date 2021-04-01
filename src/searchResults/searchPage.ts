@@ -1,5 +1,5 @@
 import { findYoutubeVideos, ResponseItem } from "../api/youtubeRequest";
-import { cls, colors, css, debounce, div, fragment } from "../infra";
+import { cls, colors, css, debounce, dom } from "../infra";
 import { rowWithChildren } from "../row/rowWithChildren";
 import { items } from "../domain";
 
@@ -11,22 +11,25 @@ export const showSearchPanel = () => {
 let container: HTMLDivElement;
 let input: HTMLInputElement;
 export const searchResults = () => {
-  input = document.createElement("input");
-  input.placeholder = "Search";
-  const content = div({});
-
   const search = () => {
     findYoutubeVideos(input.value).then((results) => {
       const searchItems = results.items.map(mapReponseItem);
       items.setSearchItems(searchItems);
       content.innerHTML = ``;
       content.appendChild(
-        fragment(items.getChildrenFor("SEARCH").map(rowWithChildren))
+        dom.fragment(items.getChildrenFor("SEARCH").map(rowWithChildren))
       );
     });
   };
-  input.addEventListener("input", debounce(search, 600));
-  container = div({ className: cls.searchResults }, input, content);
+
+  input = dom.input({
+    placeholder: "Search",
+    events: { input: debounce(search, 600) },
+  });
+
+  const content = dom.div({});
+
+  container = dom.div({ className: cls.searchResults }, input, content);
 
   return container;
 };

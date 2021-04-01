@@ -6,18 +6,20 @@ export interface ElementWithClassDefinitions {
   className?: ClassName | ClassName[];
   classMap?: ClassMap;
 }
-export interface ElementProps extends ElementWithClassDefinitions {
-  events?: Partial<SlapstukEvents>;
+export interface ElementProps<T extends EventTarget>
+  extends ElementWithClassDefinitions {
+  events?: Partial<SlapstukEvents<T>>;
   testId?: string;
   id?: string;
 }
-export interface HtmlElementProps extends ElementProps {
+export interface HtmlElementProps<T extends EventTarget>
+  extends ElementProps<T> {
   contentEditable?: boolean;
   draggable?: boolean;
   style?: Styles;
 }
 
-interface DivProps extends HtmlElementProps {}
+interface DivProps extends HtmlElementProps<HTMLDivElement> {}
 
 export const div = (
   props: DivProps,
@@ -32,7 +34,8 @@ export const div = (
   return elem;
 };
 
-interface InputProps extends HtmlElementProps {
+interface InputProps extends HtmlElementProps<HTMLInputElement> {
+  placeholder?: string;
   onInput?: (e: Event) => void;
   type?: "range" | "color";
   value?: number | string;
@@ -44,6 +47,7 @@ export const input = (props: InputProps): HTMLInputElement => {
   const elem = document.createElement("input");
   assignHtmlElementProps(elem, props);
   if (props.onInput) elem.addEventListener("input", props.onInput);
+  if (props.placeholder) elem.setAttribute("placeholder", props.placeholder);
 
   if (props.type) elem.setAttribute("type", props.type);
   if (props.value) elem.setAttribute("value", props.value + "");
@@ -52,7 +56,7 @@ export const input = (props: InputProps): HTMLInputElement => {
   return elem;
 };
 
-interface SpanProps extends HtmlElementProps {}
+interface SpanProps extends HtmlElementProps<HTMLSpanElement> {}
 export const span = (props: SpanProps, text: string): HTMLElement => {
   const elem = document.createElement("span");
   assignHtmlElementProps(elem, props);
@@ -60,7 +64,7 @@ export const span = (props: SpanProps, text: string): HTMLElement => {
   return elem;
 };
 
-interface ImgProps extends HtmlElementProps {
+interface ImgProps extends HtmlElementProps<HTMLImageElement> {
   src: string;
 }
 export const img = (props: ImgProps): HTMLElement => {
@@ -70,7 +74,7 @@ export const img = (props: ImgProps): HTMLElement => {
   return elem;
 };
 
-interface ButtonProps extends HtmlElementProps {
+interface ButtonProps extends HtmlElementProps<HTMLButtonElement> {
   text: string;
 }
 export const button = (props: ButtonProps): HTMLButtonElement => {
@@ -89,7 +93,7 @@ export const fragment = (nodes: FragmentChild[]): DocumentFragment => {
   return fragment;
 };
 
-interface CanvasProps extends HtmlElementProps {
+interface CanvasProps extends HtmlElementProps<HTMLCanvasElement> {
   width: number;
   height: number;
 }
@@ -109,15 +113,18 @@ export const setChildren = (elem: Element, ...children: FragmentChild[]) => {
 };
 
 //HELPERS
-export const assignHtmlElementProps = (
+export const assignHtmlElementProps = <T extends EventTarget>(
   elem: HTMLElement,
-  props: HtmlElementProps
+  props: HtmlElementProps<T>
 ) => {
   assignStyles(elem, props.style);
   assignHtmlProps(elem, props);
 };
 
-const assignHtmlProps = (elem: HTMLElement, props: HtmlElementProps) => {
+const assignHtmlProps = <T extends EventTarget>(
+  elem: HTMLElement,
+  props: HtmlElementProps<T>
+) => {
   if (typeof props.contentEditable !== "undefined")
     elem.setAttribute("contenteditable", props.contentEditable + "");
   if (typeof props.draggable !== "undefined")
@@ -125,7 +132,10 @@ const assignHtmlProps = (elem: HTMLElement, props: HtmlElementProps) => {
   assignElementProps(elem, props);
 };
 
-export const assignElementProps = (elem: Element, props: ElementProps) => {
+export const assignElementProps = <T extends EventTarget>(
+  elem: Element,
+  props: ElementProps<T>
+) => {
   assignClasses(elem, props);
   if (props.events) assignEvents(elem, props.events);
   if (props.testId) elem.setAttribute("data-testid", props.testId);
@@ -148,9 +158,12 @@ export const assignClasses = (
     });
 };
 
-const assignEvents = (elem: Element, events: Partial<SlapstukEvents>) => {
+const assignEvents = <T extends EventTarget>(
+  elem: Element,
+  events: Partial<SlapstukEvents<T>>
+) => {
   Object.entries(events).forEach(([event, handler]) => {
-    if (handler) elem.addEventListener(event, handler as (e: Event) => void);
+    if (handler) elem.addEventListener(event, handler as any);
   });
 };
 

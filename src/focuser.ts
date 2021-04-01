@@ -19,10 +19,7 @@ const focusWithoutAnimation = (item: Item) => {
         contentEditable: true,
         events: {
           input: ({ currentTarget }) => {
-            items.setTitle(
-              item,
-              (currentTarget as HTMLElement).textContent || ""
-            );
+            items.setTitle(item, currentTarget.textContent || "");
           },
         },
       },
