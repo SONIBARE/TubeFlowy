@@ -112,6 +112,9 @@ export const setChildren = (elem: Element, ...children: FragmentChild[]) => {
   elem.appendChild(fragment(children));
 };
 
+export const append = (elem: Element, ...children: FragmentChild[]) =>
+  elem.appendChild(fragment(children));
+
 //HELPERS
 export const assignHtmlElementProps = <T extends EventTarget>(
   elem: HTMLElement,

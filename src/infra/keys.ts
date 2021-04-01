@@ -1,4 +1,7 @@
 export const cls = {
+  box: "box",
+  boxRed: "box-red",
+
   page: "page",
 
   header: "header",

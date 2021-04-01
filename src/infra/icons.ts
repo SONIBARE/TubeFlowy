@@ -1,7 +1,7 @@
 import { ElementProps } from "./dom";
 import { svg, path } from "./svg";
 
-export const chevron = (props: ElementProps): SVGSVGElement =>
+export const chevron = (props: ElementProps<SVGSVGElement>): SVGSVGElement =>
   svg(
     { ...props, viewBox: "0 0 256 512" },
     path({
@@ -11,7 +11,9 @@ export const chevron = (props: ElementProps): SVGSVGElement =>
     })
   );
 
-export const lightChevron = (props: ElementProps): SVGSVGElement =>
+export const lightChevron = (
+  props: ElementProps<SVGSVGElement>
+): SVGSVGElement =>
   svg(
     { ...props, viewBox: "0 0 5 8", fill: "none" },
     path({
@@ -21,7 +23,7 @@ export const lightChevron = (props: ElementProps): SVGSVGElement =>
     })
   );
 
-export const home = (props: ElementProps): SVGSVGElement =>
+export const home = (props: ElementProps<SVGSVGElement>): SVGSVGElement =>
   svg(
     { ...props, viewBox: "0 0 576 512" },
     path({
@@ -31,7 +33,7 @@ export const home = (props: ElementProps): SVGSVGElement =>
     })
   );
 
-export const search = (props: ElementProps): SVGSVGElement =>
+export const search = (props: ElementProps<SVGSVGElement>): SVGSVGElement =>
   svg(
     { ...props, viewBox: "0 0 512 512" },
     path({

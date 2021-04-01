@@ -30,10 +30,11 @@ export const playItem = (item: Item) => {
   events.dispatchCompundEvent("item-play", item.id, item);
   if (item.type === "YTvideo") {
     play(item.videoId);
+  } else {
+    const video = items.getFistVideoInside(item.id);
+    if (video) play(video.videoId);
   }
 };
-
-export const isItemPlaying = (item: Item) => {};
 
 const onPlayerToggleClicked = () => {
   isYoutubePlayerShown = !isYoutubePlayerShown;

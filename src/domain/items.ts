@@ -162,6 +162,23 @@ const itemChildrenChanged = (item: Item) =>
   events.dispatchCompundEvent("item-children-length-changed", item.id, item);
 
 //SELECTORS
+export const getFistVideoInside = (
+  itemId: string
+): YoutubeVideo | undefined => {
+  let res: YoutubeVideo | undefined;
+  const findVideo = (itemId: string) => {
+    const children: Item[] = getChildrenFor(itemId);
+    children.forEach((c) => {
+      if (res) return;
+      if (isVideo(c)) res = c;
+      else findVideo(c.id);
+    });
+  };
+  getChildrenFor(itemId);
+  findVideo(itemId);
+  return res;
+};
+
 export const findParentId = (childId: string) =>
   Object.keys(items).find((parentKey) => {
     const item = items[parentKey];
