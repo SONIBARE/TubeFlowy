@@ -1,10 +1,16 @@
 import { items } from "../domain";
 import { createItemsFromArray, folder, video } from "../domain/testUtils";
 import * as player from "./playerFooter";
-import { play } from "./youtubePlayer";
+import { play, pause, resume } from "./youtubePlayer";
 const playMock = play as jest.Mock;
+const pauseMock = pause as jest.Mock;
+const resumeMock = resume as jest.Mock;
 
-jest.mock("./youtubePlayer", () => ({ play: jest.fn() }));
+jest.mock("./youtubePlayer", () => ({
+  play: jest.fn(),
+  pause: jest.fn(),
+  resume: jest.fn(),
+}));
 
 const v1 = video("v1", "videoId1");
 const v2 = video("v2", "videoId2");
@@ -24,9 +30,9 @@ const home = folder("HOME", [f2.id]);
 
 describe("havign two nested folder", () => {
   beforeEach(() => {
+    [playMock, pauseMock, resumeMock].forEach((f) => f.mockReset());
     items.itemsLoaded(createItemsFromArray([v1, f1, f2, f3, home]));
     document.body.appendChild(player.playerFooter());
-    playMock.mockReset();
   });
   it("playing video should call youtube player with that videoid", () => {
     player.playItem(v1);

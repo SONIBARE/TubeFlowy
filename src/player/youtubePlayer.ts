@@ -1,7 +1,7 @@
 import { ids } from "../infra/keys";
 import { playNextTrack } from "./playerFooter";
 
-var player: any;
+var player: Player;
 var videoRequested: string | undefined;
 var isLoadingPlayer = false;
 var isReady = false;
@@ -15,6 +15,17 @@ export function play(videoId: string) {
   else if (isReady) {
     player.loadVideoById(videoId);
   }
+}
+export function pause() {
+  if (player) player.pauseVideo();
+}
+
+export function resume() {
+  if (player) player.playVideo();
+}
+export function getState(): PlayerState {
+  if (player) return player.getPlayerState();
+  return PlayerState.unstarted;
 }
 
 function init() {
@@ -52,7 +63,64 @@ function onPlayerStateChange(event: any) {
   }
 }
 
-enum PlayerState {
+interface Player {
+  // playerInfo;
+  // cueVideoById;
+  loadVideoById: (videoId: string) => void;
+  // cueVideoByUrl;
+  // loadVideoByUrl;
+  playVideo: () => void;
+  pauseVideo: () => void;
+  // stopVideo;
+  // clearVideo;
+  // getVideoBytesLoaded;
+  // getVideoBytesTotal;
+  // getVideoLoadedFraction;
+  // getVideoStartBytes;
+  // cuePlaylist;
+  // loadPlaylist;
+  // nextVideo;
+  // previousVideo;
+  // playVideoAt;
+  // setShuffle;
+  // setLoop;
+  // getPlaylist;
+  // getPlaylistIndex;
+  // getPlaylistId;
+  // loadModule;
+  // unloadModule;
+  // setOption;
+  // mute;
+  // unMute;
+  // isMuted;
+  // setVolume;
+  // getVolume;
+  // seekTo;
+  getPlayerState: () => PlayerState;
+  // getPlaybackRate;
+  // setPlaybackRate;
+  // getAvailablePlaybackRates;
+  // getPlaybackQuality;
+  // setPlaybackQuality;
+  // getAvailableQualityLevels;
+  // getCurrentTime;
+  // getDuration;
+  // removeEventListener;
+  // getDebugText;
+  // getVideoData;
+  // addCueRange;
+  // removeCueRange;
+  // getApiInterface;
+  // showVideoInfo;
+  // hideVideoInfo;
+  // isVideoInfoVisible;
+  // getSphericalProperties;
+  // setSphericalProperties;
+  // getVideoUrl;
+  // getMediaReferenceTime;
+}
+
+export enum PlayerState {
   unstarted = -1,
   ended = 0,
   playing = 1,

@@ -1,7 +1,7 @@
 import { EventsHandler } from "./eventHandler";
 
 type TubeflowyEvents = {
-  "item-play": Item;
+  "item-play": boolean;
   "item-renamed": Item;
   "item-collapse": Item;
   "item-focused": Item;

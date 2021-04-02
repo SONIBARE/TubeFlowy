@@ -1,12 +1,13 @@
 import { button, css, div, spacings, cls, ids, zIndexes } from "../infra";
 import { items, events } from "../domain";
-import { play } from "./youtubePlayer";
+import { play, pause, getState, PlayerState, resume } from "./youtubePlayer";
 
 //move this to a store
 export let itemIdBeingPlayed: string = "";
 let isYoutubePlayerShown = true;
 let footer: HTMLElement;
 let toggleButton: HTMLButtonElement;
+
 export const playerFooter = () => {
   footer = div({
     className: cls.playerFooter,
@@ -26,13 +27,25 @@ export const playItem = (item: Item) => {
     footer.appendChild(div({ id: ids.youtubeIframe }));
   }
 
-  itemIdBeingPlayed = item.id;
-  events.dispatchCompundEvent("item-play", item.id, item);
-  if (item.type === "YTvideo") {
-    play(item.videoId);
+  if (itemIdBeingPlayed !== item.id) {
+    events.dispatchCompundEvent("item-play", itemIdBeingPlayed, false);
+    itemIdBeingPlayed = item.id;
+    events.dispatchCompundEvent("item-play", item.id, true);
+    if (item.type === "YTvideo") {
+      play(item.videoId);
+    } else {
+      const video = items.getFistVideoInside(item.id);
+      if (video) play(video.videoId);
+    }
   } else {
-    const video = items.getFistVideoInside(item.id);
-    if (video) play(video.videoId);
+    if (getState() === PlayerState.playing) {
+      pause();
+
+      events.dispatchCompundEvent("item-play", item.id, false);
+    } else {
+      resume();
+      events.dispatchCompundEvent("item-play", item.id, true);
+    }
   }
 };
 

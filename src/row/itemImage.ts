@@ -1,4 +1,13 @@
-import { cls, colors, spacings, css, Styles, dom, div } from "../infra";
+import {
+  cls,
+  colors,
+  spacings,
+  css,
+  Styles,
+  dom,
+  svg,
+  compose,
+} from "../infra";
 import { events, items } from "../domain";
 import * as player from "../player/playerFooter";
 
@@ -7,13 +16,46 @@ export const itemImage = (
   parent: HTMLElement,
   onMouseDown: (e: MouseEvent) => void
 ) => {
-  const image = div({
-    events: {
-      click: () => player.playItem(item),
-      mousedown: onMouseDown,
+  const playPauseColor = "white";
+  const image = svg.svg(
+    {
+      className: cls.focusCircleSvg,
+      classMap: {
+        [cls.channelImage]: item.type == "YTchannel",
+        [cls.squareImage]: item.type == "YTplaylist" || item.type == "YTvideo",
+      },
+      events: {
+        click: () => player.playItem(item),
+        mousedown: onMouseDown,
+      },
+      viewBox: "0 0 100 100",
     },
-    draggable: false,
-  });
+    svg.polygon({
+      className: cls.rowCirclePlay,
+      points: "40,32 69,50 40,68",
+      stroke: playPauseColor,
+      fill: playPauseColor,
+      strokeWidth: 10,
+      strokelinejoin: "round",
+    }),
+    svg.polygon({
+      className: cls.rowCirclePause,
+      points: "30,30 45,30 45,70 30,70",
+      strokelinejoin: "round",
+      strokeWidth: 2,
+      stroke: playPauseColor,
+      fill: playPauseColor,
+    }),
+    svg.polygon({
+      className: cls.rowCirclePause,
+      points: "70,70 55,70 55,30 70,30",
+      fill: playPauseColor,
+      strokelinejoin: "round",
+      strokeWidth: 2,
+      stroke: playPauseColor,
+    })
+  );
+
   image.style.setProperty(
     "background-image",
     `url(${items.getImageSrc(item)})`
@@ -23,19 +65,27 @@ export const itemImage = (
   const assignImageClasses = () =>
     dom.assignClasses(image, {
       classMap: {
-        [cls.channelImage]: item.type == "YTchannel",
-        [cls.squareImage]: item.type == "YTplaylist" || item.type == "YTvideo",
         [cls.closedContainerImage]:
           !items.isFolderOpenOnPage(item) &&
           (item.type == "YTplaylist" || item.type == "YTchannel"),
       },
     });
 
+  const updatePlayState = (isPlaying: boolean) => {
+    dom.assignClasses(image, {
+      classMap: { [cls.focusCircleSvgPlaying]: isPlaying },
+    });
+  };
+
+  updatePlayState(false);
   assignImageClasses();
-  return events.addCompoundEventListener(
-    "item-collapse",
-    item.id,
-    assignImageClasses
+  return compose(
+    events.addCompoundEventListener(
+      "item-collapse",
+      item.id,
+      assignImageClasses
+    ),
+    events.addCompoundEventListener("item-play", item.id, updatePlayState)
   );
 };
 
@@ -57,8 +107,11 @@ css.class(cls.squareImage, {
   borderRadius: 4,
 });
 
-css.hover(cls.squareImage, {
-  boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.5)`,
+css.parentHover(cls.row, cls.squareImage, {
+  boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
+});
+css.class2(cls.focusCircleSvgPlaying, cls.squareImage, {
+  boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
 });
 
 css.class(cls.channelImage, {
