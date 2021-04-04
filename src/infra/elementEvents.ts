@@ -1,6 +1,9 @@
 export interface SlapstukMouseEvent<T extends EventTarget> extends MouseEvent {
   currentTarget: T;
 }
+export interface SlapstukFocusEvent<T extends EventTarget> extends FocusEvent {
+  currentTarget: T;
+}
 export interface SlaptukEvent<T extends EventTarget> extends Event {
   currentTarget: T;
 }
@@ -42,9 +45,9 @@ export interface SlapstukEvents<T extends EventTarget> {
   // emptied: (e: Event) => void;
   // ended: (e: Event) => void;
   // error: (e: ErrorEvent) => void;
-  // focus: (e: FocusEvent) => void;
-  // focusin: (e: FocusEvent) => void;
-  // focusout: (e: FocusEvent) => void;
+  focus: (e: SlapstukFocusEvent<T>) => void;
+  focusin: (e: SlapstukFocusEvent<T>) => void;
+  focusout: (e: SlapstukFocusEvent<T>) => void;
   // gotpointercapture: (e: PointerEvent) => void;
   input: (e: SlaptukEvent<T>) => void;
   // invalid: (e: Event) => void;

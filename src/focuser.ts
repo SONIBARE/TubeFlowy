@@ -2,6 +2,7 @@ import { cls, div, fragment, ids } from "./infra";
 import { items, events } from "./domain";
 import { rowWithChildren } from "./row/rowWithChildren";
 import { Minimap } from "./minimap";
+import { viewHighlighter } from "./row/rowhighlight";
 
 export const focusItem = (item: Item) => {
   focusWithoutAnimation(item);
@@ -30,6 +31,7 @@ const focusWithoutAnimation = (item: Item) => {
     fragment(items.getChildrenFor(item.id).map(rowWithChildren))
   );
   minimap.drawCanvas();
+  container.appendChild(viewHighlighter());
   events.dispatchEvent("item-focused", item);
 };
 

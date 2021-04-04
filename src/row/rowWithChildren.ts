@@ -140,13 +140,6 @@ css.parentChild(cls.rowsHide, cls.childContainer, {
   borderLeft: `${spacings.borderSize}px solid transparent`,
 });
 
-css.parentChild(cls.rowsFocused, cls.row, {
-  opacity: 1,
-});
-css.parentChild(cls.rowsFocused, cls.childContainer, {
-  borderLeft: `${spacings.borderSize}px solid  ${colors.border}`,
-});
-
 css.class(cls.childContainer, {
   display: "block",
   marginLeft: spacings.spacePerLevel + spacings.rowLeftPadding,
@@ -161,11 +154,12 @@ css.class(cls.childContainer, {
 
   marginBottom: -spacings.rowVecticalPadding,
   paddingBottom: spacings.rowVecticalPadding,
-
-  position: "relative",
 });
 
 css.parentHover(cls.row, cls.chevron, {
+  opacity: 1,
+});
+css.selector(`.${cls.row}.${cls.rowFocused} .${cls.chevron}`, {
   opacity: 1,
 });
 

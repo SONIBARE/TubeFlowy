@@ -1,4 +1,13 @@
-import { cls, colors, spacings, css, dom, svg, compose } from "../infra";
+import {
+  cls,
+  colors,
+  spacings,
+  css,
+  dom,
+  svg,
+  compose,
+  Styles,
+} from "../infra";
 import { events, items } from "../domain";
 import * as player from "../player/playerFooter";
 
@@ -141,12 +150,20 @@ css.parentChild(cls.focusCircleSvgFilledClosed, cls.rowCircleFilled, {
 css.parentChild(cls.focusCircleSvgFilledClosed, cls.rowCircleOuter, {
   opacity: 1,
 });
+
 css.parentHover(cls.row, cls.rowCirclePlay, {
   opacity: 1,
 });
 css.parentHover(cls.row, cls.rowCircleFilled, {
   opacity: 0,
 });
+css.selector(`.${cls.row}.${cls.rowFocused} .${cls.rowCirclePlay}`, {
+  opacity: 1,
+});
+css.selector(`.${cls.row}.${cls.rowFocused} .${cls.rowCircleFilled}`, {
+  opacity: 0,
+});
+
 css.parentParentChild(cls.row, cls.focusCircleSvgEmpty, cls.rowCirclePlay, {
   opacity: 0,
 });

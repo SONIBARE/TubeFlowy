@@ -34,7 +34,7 @@ export const cls = {
   rowsContainer: "rows-container",
   pageTitle: "page-title",
   rowsScrollContainer: "rows-scroll-container",
-  rowsFocused: "rows-focused",
+  rowFocused: "rows-focused",
   rowsHide: "rows-hide",
   row: "row",
 
@@ -50,6 +50,8 @@ export const cls = {
   rowCircleEmpty: "row-circle-empty",
   rowCirclePlay: "row-circle-play",
   rowCirclePause: "row-circle-pause",
+
+  rowHighlight: "row-hightlight",
 
   childContainer: "child-container",
   rowText: "row-text",

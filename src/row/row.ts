@@ -5,6 +5,7 @@ import * as dnd from "../dnd";
 import { RowWithChildren } from "./rowWithChildren";
 import { itemImage } from "./itemImage";
 import { folderIcon } from "./folderIcon";
+import { placeOver } from "./rowhighlight";
 
 class Row extends HTMLElement {
   onUnsub!: () => void;
@@ -39,6 +40,13 @@ class Row extends HTMLElement {
         ],
         contentEditable: true,
         events: {
+          focus: (e) => {
+            this.classList.add(cls.rowFocused);
+            placeOver(e.currentTarget);
+          },
+          focusout: () => {
+            this.classList.remove(cls.rowFocused);
+          },
           input: ({ currentTarget }) => {
             items.setTitle(item, currentTarget.textContent || "");
           },

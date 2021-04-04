@@ -65,12 +65,13 @@ css.class(cls.pageTitle, {
 
 css.class(cls.rowsContainer, {
   gridArea: "gallery",
-  position: "relative",
   overflowX: "hidden",
   paddingLeft: spacings.rowsContainerLeftPadding,
 });
 
 css.class(cls.rowsScrollContainer, {
+  //used to position rowHighlight
+  position: "relative",
   paddingBottom: 60,
   paddingTop: spacings.pageMarginTop,
   maxHeight: `calc(100vh - ${
