@@ -110,7 +110,32 @@ css.class(cls.squareImage, {
 css.parentHover(cls.row, cls.squareImage, {
   boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
 });
+css.parentHover(cls.row, cls.closedContainerImage, {
+  boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2), 0 0 2px 3px ${colors.mediumPrimary}`,
+});
+
 css.class2(cls.focusCircleSvgPlaying, cls.squareImage, {
+  boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
+});
+
+css.class3(
+  cls.focusCircleSvgPlaying,
+  cls.closedContainerImage,
+  cls.squareImage,
+  {
+    boxShadow: `0 0 2px 3px ${colors.mediumPrimary}, inset 0 0 0 16px rgba(0,0,0,0.2)`,
+  }
+);
+css.class3(
+  cls.focusCircleSvgPlaying,
+  cls.closedContainerImage,
+  cls.channelImage,
+  {
+    boxShadow: `0 0 2px 3px ${colors.mediumPrimary}, inset 0 0 0 16px rgba(0,0,0,0.2)`,
+  }
+);
+
+css.class2(cls.focusCircleSvgPlaying, cls.channelImage, {
   boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
 });
 
