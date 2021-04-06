@@ -1,6 +1,6 @@
 import { EventsHandler } from "./eventHandler";
 
-type TubeflowyEvents = {
+export type TubeflowyEvents = {
   "item-play": boolean;
   "item-renamed": Item;
   "item-collapse": Item;

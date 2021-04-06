@@ -231,6 +231,9 @@ export const isSearch = (item: Item): item is SearchContainer => {
   return item.type == "search";
 };
 
+export const isEmpty = (item: Item): boolean =>
+  !("children" in item && item.children.length !== 0);
+
 export const isFolderOpenOnPage = (item: Item) =>
   isContainer(item) && !item.isCollapsedInGallery;
 
@@ -248,7 +251,5 @@ export const hasImagePreview = (item: Item): boolean =>
   item.type === "YTchannel" ||
   item.type === "YTvideo";
 
-export const isEmptyAndNoNeedToLoad = (item: Item) => {
-  if ("children" in item) return item.children.length === 0;
-  return true;
-};
+export const isEmptyAndNoNeedToLoad = (item: Item) =>
+  isEmpty(item) && !isNeedsToBeLoaded(item);

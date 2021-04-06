@@ -1,5 +1,5 @@
-import { cls, compose, div, icons } from "../infra";
-import { events, items } from "../domain";
+import { cls, div, dom, icons } from "../infra";
+import { events, items, TubeflowyEvents } from "../domain";
 import { loadItemChildren } from "../api/youtube";
 import * as dnd from "../dnd";
 import { RowWithChildren } from "./rowWithChildren";
@@ -9,29 +9,68 @@ import { placeOver } from "./rowhighlight";
 import * as player from "../player/playerFooter";
 
 class Row extends HTMLElement {
-  onUnsub!: () => void;
+  item!: Item;
+  unsubs = [] as EmptyFunc[];
 
-  render(item: Item, rowWithChildren: RowWithChildren) {
-    const animateChevron = (item: Item) => {
-      if (items.isFolderOpenOnPage(item)) chev.classList.add(cls.chevronOpen);
-      else chev.classList.remove(cls.chevronOpen);
-    };
+  on(eventName: keyof TubeflowyEvents, cb: EmptyFunc) {
+    this.unsubs.push(
+      events.addCompoundEventListener(eventName, this.item.id, cb)
+    );
+  }
 
-    const onChevronClick = () => {
-      if (items.isNeedsToBeLoaded(item)) {
-        loadItemChildren(item).then((r) => {
-          items.itemLoaded(item.id, r);
-          items.toggleFolderVisibility(item.id);
-        });
-      } else {
+  disconnectedCallback() {
+    this.unsubs.forEach((unsub) => unsub());
+  }
+
+  toggleItemVisibility = () => {
+    const item = this.item;
+    if (items.isNeedsToBeLoaded(item)) {
+      loadItemChildren(item).then((r) => {
+        items.itemLoaded(item.id, r);
         items.toggleFolderVisibility(item.id);
-      }
-    };
+      });
+    } else {
+      items.toggleFolderVisibility(item.id);
+    }
+  };
+
+  viewChevron() {
+    const item = this.item;
+
     const chev = icons.chevron({
       className: cls.chevron,
       testId: "chevron-" + item.id,
-      events: { click: onChevronClick },
+      events: { click: this.toggleItemVisibility },
     });
+    this.appendChild(chev);
+
+    const animateChevron = () => {
+      dom.assignClasses(chev, {
+        classMap: { [cls.chevronOpen]: items.isFolderOpenOnPage(item) },
+      });
+    };
+    this.on("item-collapse", animateChevron);
+    animateChevron();
+
+    if (item.title.startsWith("Is Free Will an Illusion? ")) {
+      console.log(
+        item.title,
+        item,
+        items.isEmpty(item),
+        !items.isNeedsToBeLoaded(item)
+      );
+    }
+    const updateChevronIsActive = () => {
+      dom.assignClasses(chev, {
+        classMap: { [cls.chevronInactive]: items.isEmptyAndNoNeedToLoad(item) },
+      });
+    };
+    this.on("item-children-length-changed", updateChevronIsActive);
+    updateChevronIsActive();
+  }
+
+  render(item: Item, rowWithChildren: RowWithChildren) {
+    this.viewChevron();
 
     const rowText = div(
       {
@@ -84,7 +123,7 @@ class Row extends HTMLElement {
               }
             }
             if (e.code === "Space" && e.ctrlKey) {
-              onChevronClick();
+              this.toggleItemVisibility();
             }
             if (e.key === "x" && e.altKey) {
               player.playItem(item);
@@ -94,18 +133,12 @@ class Row extends HTMLElement {
       },
       item.title
     );
-    const unsub2 = events.addCompoundEventListener(
-      "item-collapse",
-      item.id,
-      animateChevron
-    );
+
     this.classList.add(cls.row);
     this.setAttribute("data-testid", "row-" + item.id);
     this.addEventListener("mousemove", (e) =>
       dnd.onItemMouseMove(item, rowWithChildren, e)
     );
-    this.appendChild(chev);
-    animateChevron(item);
 
     const onMouseDown = (e: MouseEvent) =>
       dnd.onItemMouseDown(item, rowWithChildren, e);
@@ -116,11 +149,7 @@ class Row extends HTMLElement {
 
     this.append(rowText);
 
-    this.onUnsub = compose(unsub, unsub2);
-  }
-
-  disconnectedCallback() {
-    if (this.onUnsub) this.onUnsub();
+    this.unsubs.push(unsub);
   }
 }
 
@@ -128,6 +157,7 @@ customElements.define("slp-row", Row);
 
 export const renderRow = (item: Item, rowWithChildren: RowWithChildren) => {
   const elem = document.createElement("slp-row") as Row;
+  elem.item = item;
   elem.render(item, rowWithChildren);
   return elem;
 };

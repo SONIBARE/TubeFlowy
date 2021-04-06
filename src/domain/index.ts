@@ -1,2 +1,2 @@
-export { events } from "./events";
+export { events, TubeflowyEvents } from "./events";
 export * as items from "./items";

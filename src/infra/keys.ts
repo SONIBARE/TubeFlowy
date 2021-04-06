@@ -62,6 +62,7 @@ export const cls = {
   channelImage: "channle-image",
 
   chevron: "chevron",
+  chevronInactive: "chevron-inactive",
   chevronOpen: "chevron-open",
 
   playerFooter: "player-footer",

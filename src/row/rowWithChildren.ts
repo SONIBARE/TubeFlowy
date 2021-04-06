@@ -174,6 +174,10 @@ css.class(cls.chevron, {
   color: colors.mediumPrimary,
   userSelect: "none",
 });
+css.class(cls.chevronInactive, {
+  pointerEvents: "none",
+  visibility: "hidden",
+});
 
 css.hover(cls.chevron, {
   color: colors.darkPrimary,
