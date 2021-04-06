@@ -1,6 +1,5 @@
 import { header } from "./header";
-import { cls, css, div, fragment, spacings } from "./infra";
-import { minimap } from "./minimap";
+import { cls, colors, css, div, fragment, spacings } from "./infra";
 import { items } from "./domain";
 import { playerFooter } from "./player/playerFooter";
 import * as database from "./api/loginService";
@@ -23,11 +22,7 @@ items.itemsLoaded({
 });
 
 const scrollContainer = div({ className: cls.rowsScrollContainer });
-const container = div(
-  { className: cls.rowsContainer },
-  scrollContainer,
-  minimap(scrollContainer)
-);
+const container = div({ className: cls.rowsContainer }, scrollContainer);
 
 const page = div(
   { className: cls.page },
@@ -66,6 +61,8 @@ css.class(cls.pageTitle, {
 css.class(cls.rowsContainer, {
   gridArea: "gallery",
   overflowX: "hidden",
+  overflowY: "overlay" as any,
+
   paddingLeft: spacings.rowsContainerLeftPadding,
 });
 
@@ -74,10 +71,8 @@ css.class(cls.rowsScrollContainer, {
   position: "relative",
   paddingBottom: 60,
   paddingTop: spacings.pageMarginTop,
-  maxHeight: `calc(100vh - ${
-    spacings.playerFooterHeight + spacings.headerHeight
-  }px)`,
-  overflowY: "overlay" as any,
+  maxWidth: 700,
+  margin: "0 auto",
 });
 
 css.selector("*", {
@@ -89,6 +84,10 @@ css.tag("body", {
   margin: 0,
 });
 
-css.selector(`.${cls.rowsScrollContainer}::-webkit-scrollbar`, {
-  width: 0,
+css.selector(`.${cls.rowsContainer}::-webkit-scrollbar`, {
+  width: 8,
+});
+
+css.selector(`.${cls.rowsContainer}::-webkit-scrollbar-thumb`, {
+  backgroundColor: colors.mediumPrimary,
 });

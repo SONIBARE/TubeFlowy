@@ -6,6 +6,7 @@ import { RowWithChildren } from "./rowWithChildren";
 import { itemImage } from "./itemImage";
 import { folderIcon } from "./folderIcon";
 import { placeOver } from "./rowhighlight";
+import * as player from "../player/playerFooter";
 
 class Row extends HTMLElement {
   onUnsub!: () => void;
@@ -58,12 +59,35 @@ class Row extends HTMLElement {
             if (e.key == "ArrowUp") {
               e.preventDefault();
               const previous = rowWithChildren.previousElementSibling;
-              if (previous) playCaretAtTextAtRow(previous as HTMLElement);
+              if (previous && previous.tagName == "SLP-ITEM")
+                playCaretAtTextAtRow(previous as HTMLElement);
+              else {
+                const praparent = rowWithChildren.parentElement?.parentElement;
+                if (praparent && praparent.tagName == "SLP-ITEM")
+                  playCaretAtTextAtRow(praparent as HTMLElement);
+              }
             }
             if (e.key == "ArrowDown") {
               e.preventDefault();
               const next = rowWithChildren.nextElementSibling;
-              if (next) playCaretAtTextAtRow(next as HTMLElement);
+              if (
+                rowWithChildren.childContainer &&
+                rowWithChildren.childContainer.firstChild
+              ) {
+                playCaretAtTextAtRow(
+                  rowWithChildren.childContainer.firstChild as HTMLElement
+                );
+              } else if (next && next.tagName == "SLP-ITEM") {
+                playCaretAtTextAtRow(next as HTMLElement);
+              } else {
+                console.log("no children and no next item");
+              }
+            }
+            if (e.code === "Space" && e.ctrlKey) {
+              onChevronClick();
+            }
+            if (e.key === "x" && e.altKey) {
+              player.playItem(item);
             }
           },
         },

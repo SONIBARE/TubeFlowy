@@ -1,7 +1,6 @@
 import { cls, div, fragment, ids } from "./infra";
 import { items, events } from "./domain";
 import { rowWithChildren } from "./row/rowWithChildren";
-import { Minimap } from "./minimap";
 import { viewHighlighter } from "./row/rowhighlight";
 
 export const focusItem = (item: Item) => {
@@ -11,7 +10,7 @@ export const focusItem = (item: Item) => {
 const focusWithoutAnimation = (item: Item) => {
   items.setFocusItem(item.id);
   const container = findScrollableContainer();
-  const minimap = findMinimap();
+  // const minimap = findMinimap();
   container.innerHTML = ``;
   container.appendChild(
     div(
@@ -30,7 +29,7 @@ const focusWithoutAnimation = (item: Item) => {
   container.appendChild(
     fragment(items.getChildrenFor(item.id).map(rowWithChildren))
   );
-  minimap.drawCanvas();
+  // minimap.drawCanvas();
   container.appendChild(viewHighlighter());
   events.dispatchEvent("item-focused", item);
 };
@@ -104,5 +103,5 @@ const findScrollableContainer = (): HTMLElement =>
   document.getElementsByClassName(cls.rowsContainer)[0]
     .firstChild as HTMLElement;
 
-const findMinimap = (): Minimap =>
-  document.getElementById(ids.minimap) as Minimap;
+// const findMinimap = (): Minimap =>
+//   document.getElementById(ids.minimap) as Minimap;

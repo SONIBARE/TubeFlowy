@@ -14,39 +14,43 @@ import { playCaretAtTextAtRow, renderRow } from "./row";
 export class RowWithChildren extends HTMLElement {
   unsub!: EmptyFunc;
   item!: Item;
+
+  childContainer: HTMLElement | undefined;
   render(item: Item) {
     this.item = item;
     const elem = this;
-    let childContainer: HTMLElement | undefined;
 
     const appendChildren = (item: Item) => {
-      childContainer = div(
+      this.childContainer = div(
         { className: cls.childContainer },
         fragment(items.getChildrenFor(item.id).map(rowWithChildren))
       );
-      elem.appendChild(childContainer);
+      elem.appendChild(this.childContainer);
     };
 
     const onAnimationFinish = (item: Item) => {
-      if (!items.isFolderOpenOnPage(item) && childContainer) {
-        childContainer.remove();
-        childContainer = undefined;
+      if (!items.isFolderOpenOnPage(item) && this.childContainer) {
+        this.childContainer.remove();
+        this.childContainer = undefined;
       }
       items.redrawCanvas();
     };
 
     const animateChildren = (item: Item) => {
-      if (childContainer && anim.revertCurrentAnimations(childContainer)) {
+      if (
+        this.childContainer &&
+        anim.revertCurrentAnimations(this.childContainer)
+      ) {
       } else if (items.isFolderOpenOnPage(item)) {
         appendChildren(item);
-        if (childContainer)
+        if (this.childContainer)
           anim
-            .expandHeight(childContainer)
+            .expandHeight(this.childContainer)
             .addEventListener("finish", () => onAnimationFinish(item));
       } else {
-        if (childContainer) {
+        if (this.childContainer) {
           anim
-            .collapseHeight(childContainer)
+            .collapseHeight(this.childContainer)
             .addEventListener("finish", () => onAnimationFinish(item));
         }
       }
@@ -125,8 +129,6 @@ css.class(cls.row, {
   paddingBottom: spacings.rowVecticalPadding,
   display: "flex",
   flexDirection: "row",
-  alignItems: "center",
-  whiteSpace: "nowrap",
   color: colors.darkPrimary,
   // lineHeight: 1,
   transition: "opacity 400ms ease-out",
@@ -166,6 +168,7 @@ css.selector(`.${cls.row}.${cls.rowFocused} .${cls.chevron}`, {
 css.class(cls.chevron, {
   height: spacings.chevronSize,
   width: spacings.chevronSize,
+  marginTop: spacings.imageSize / 2 - spacings.chevronSize / 2,
   minWidth: spacings.chevronSize,
   opacity: 0,
   transition: `transform ${timings.cardExpandCollapseDuration}ms, opacity 100ms`,
@@ -185,7 +188,7 @@ css.class(cls.chevronOpen, {
 css.class(cls.rowText, {
   fontWeight: 500,
   outline: "none",
-  lineHeight: 41 - 8,
+  lineHeight: spacings.imageSize,
   flex: 1,
 });
 css.class(cls.rowTextVideo, {

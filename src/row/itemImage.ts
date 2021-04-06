@@ -89,12 +89,10 @@ export const itemImage = (
   );
 };
 
-const imageSize = spacings.outerRadius * 2;
-
 const imageStyles: Styles = {
-  width: imageSize,
-  minWidth: imageSize,
-  height: imageSize,
+  width: spacings.imageSize,
+  minWidth: spacings.imageSize,
+  height: spacings.imageSize,
   marginRight: spacings.spaceBetweenCircleAndText,
   boxShadow: `inset 0 0 0 2px rgba(0,0,0,0.1)`,
   backgroundSize: "cover",
@@ -147,7 +145,7 @@ css.class2(cls.focusCircleSvgPlaying, cls.channelImage, {
 
 css.class(cls.channelImage, {
   ...imageStyles,
-  borderRadius: imageSize,
+  borderRadius: spacings.imageSize,
 });
 
 css.hover(cls.channelImage, {

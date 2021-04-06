@@ -5,6 +5,7 @@ const borderSize = 2;
 
 export const spacings = {
   outerRadius,
+  imageSize: outerRadius * 2,
   chevronSize,
   innerRadius,
   borderSize,
