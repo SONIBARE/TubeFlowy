@@ -67,7 +67,7 @@ class Row extends HTMLElement {
                   playCaretAtTextAtRow(praparent as HTMLElement);
               }
             }
-            if (e.key == "ArrowDown") {
+            if (e.key == "ArrowDown" && !e.shiftKey) {
               e.preventDefault();
               const next = rowWithChildren.nextElementSibling;
               if (

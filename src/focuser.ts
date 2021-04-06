@@ -12,20 +12,21 @@ const focusWithoutAnimation = (item: Item) => {
   const container = findScrollableContainer();
   // const minimap = findMinimap();
   container.innerHTML = ``;
-  container.appendChild(
-    div(
-      {
-        className: cls.pageTitle,
-        contentEditable: true,
-        events: {
-          input: ({ currentTarget }) => {
-            items.setTitle(item, currentTarget.textContent || "");
+  if (item.id !== "HOME")
+    container.appendChild(
+      div(
+        {
+          className: cls.pageTitle,
+          contentEditable: true,
+          events: {
+            input: ({ currentTarget }) => {
+              items.setTitle(item, currentTarget.textContent || "");
+            },
           },
         },
-      },
-      item.title
-    )
-  );
+        item.title
+      )
+    );
   container.appendChild(
     fragment(items.getChildrenFor(item.id).map(rowWithChildren))
   );

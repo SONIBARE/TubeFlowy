@@ -21,8 +21,10 @@ items.itemsLoaded({
   },
 });
 
-const scrollContainer = div({ className: cls.rowsScrollContainer });
-const container = div({ className: cls.rowsContainer }, scrollContainer);
+const container = div(
+  { className: cls.rowsContainer },
+  div({ className: cls.rowsScrollContainer })
+);
 
 const page = div(
   { className: cls.page },
@@ -60,15 +62,14 @@ css.class(cls.pageTitle, {
 
 css.class(cls.rowsContainer, {
   gridArea: "gallery",
-  overflowX: "hidden",
   overflowY: "overlay" as any,
-
+  //used to position rowHighlight
+  position: "relative",
   paddingLeft: spacings.rowsContainerLeftPadding,
+  paddingRight: 8,
 });
 
 css.class(cls.rowsScrollContainer, {
-  //used to position rowHighlight
-  position: "relative",
   paddingBottom: 60,
   paddingTop: spacings.pageMarginTop,
   maxWidth: 700,

@@ -128,9 +128,7 @@ css.class(cls.row, {
   paddingTop: spacings.rowVecticalPadding,
   paddingBottom: spacings.rowVecticalPadding,
   display: "flex",
-  flexDirection: "row",
   color: colors.darkPrimary,
-  // lineHeight: 1,
   transition: "opacity 400ms ease-out",
 });
 
@@ -147,7 +145,7 @@ css.class(cls.childContainer, {
   marginLeft: spacings.spacePerLevel + spacings.rowLeftPadding,
   borderLeft: `${spacings.borderSize}px solid ${colors.border}`,
   transition: "borderLeft 400ms linear",
-  //this break cardsContainer, need to think on how to handle this
+  //this breaks cardsContainer, need to think on how to handle this
   //also if enabled break collapse\expand animation
   // overflow: "hidden",
 
@@ -188,11 +186,17 @@ css.class(cls.chevronOpen, {
 css.class(cls.rowText, {
   fontWeight: 500,
   outline: "none",
-  lineHeight: spacings.imageSize,
-  flex: 1,
+
+  //centering text relative to the image in a row
+  minHeight: 32,
+  display: "flex",
+  alignItems: "center",
+  verticalAlign: "middle",
+  marginTop: -4,
 });
 css.class(cls.rowTextVideo, {
   fontWeight: 400,
+  fontSize: 15,
 });
 
 css.selection(cls.rowText, {

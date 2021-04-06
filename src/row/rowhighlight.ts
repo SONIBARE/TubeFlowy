@@ -29,5 +29,5 @@ css.class(cls.rowHighlight, {
   right: 0,
   backgroundColor: "rgba(0,0,0,0.08)",
   pointerEvents: "none",
-  ...css.transition({ top: 100 }),
+  ...css.transition({ top: 100, height: 100 }),
 });
