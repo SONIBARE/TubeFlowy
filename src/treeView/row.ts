@@ -40,7 +40,12 @@ export class Row extends HTMLElement {
     const chev = icons.chevron({
       className: cls.chevron,
       testId: "chevron-" + item.id,
-      events: { click: this.toggleItemVisibility },
+      events: {
+        click: (e) => {
+          e.stopPropagation();
+          this.toggleItemVisibility();
+        },
+      },
     });
     this.appendChild(chev);
 
