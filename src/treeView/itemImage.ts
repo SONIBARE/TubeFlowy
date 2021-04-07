@@ -25,7 +25,10 @@ export const itemImage = (
         [cls.squareImage]: item.type == "YTplaylist" || item.type == "YTvideo",
       },
       events: {
-        click: () => player.playItem(item),
+        click: (e) => {
+          e.stopPropagation();
+          player.playItem(item);
+        },
         mousedown: onMouseDown,
       },
       viewBox: "0 0 100 100",

@@ -20,7 +20,10 @@ export const folderIcon = (
     {
       className: cls.focusCircleSvg,
       events: {
-        click: () => player.playItem(item),
+        click: (e) => {
+          e.stopPropagation();
+          player.playItem(item);
+        },
         mousedown: onMouseDown,
       },
       viewBox: "0 0 100 100",
