@@ -1,4 +1,4 @@
-import { cls, div, dom, fragment } from "../infra";
+import { cls, div, dom, css, fragment } from "../infra";
 import { rowWithChildren } from "./rowWithChildren";
 import { viewHighlighter } from "./rowhighlight";
 import { items, events } from "../domain";
@@ -39,3 +39,12 @@ const viewTitle = (item: Item) =>
         item.title
       )
     : undefined;
+
+css.class(cls.pageTitle, {
+  fontSize: 28,
+  marginLeft: 22,
+  marginBottom: 5,
+  marginTop: 20,
+  fontWeight: "bold",
+  outline: "none",
+});

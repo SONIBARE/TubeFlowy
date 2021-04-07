@@ -47,15 +47,6 @@ css.class(cls.page, {
     "player player player"`,
 });
 
-css.class(cls.pageTitle, {
-  fontSize: 23,
-  marginLeft: 22,
-  marginBottom: 5,
-  marginTop: 10,
-  fontWeight: "bold",
-  outline: "none",
-});
-
 css.class(cls.rowsContainer, {
   gridArea: "gallery",
   overflowY: "overlay" as any,
