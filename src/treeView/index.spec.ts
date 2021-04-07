@@ -9,7 +9,7 @@ import {
 import { items, events } from "../domain";
 import { folder, createItemsFromArray } from "../domain/testUtils";
 import { renderTreeView, focusItem } from "./index";
-import { cls, timings } from "../infra";
+import { cls, dom, timings } from "../infra";
 
 jest.mock("../infra/animations", () => ({
   expandHeight: () => ({
@@ -54,9 +54,8 @@ const createTestItems = () =>
 //OPEN\CLOSE folder
 describe("Having a closed folder1 with children", () => {
   beforeEach(() => {
-    document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    document.body.appendChild(renderTreeView());
+    dom.setChildren(document.body, renderTreeView());
     focusItem(home);
   });
 
@@ -89,9 +88,8 @@ describe("Having a closed folder1 with children", () => {
 //TRAVERSAL via keyboard
 describe("By default when nothing is selected and user presses down", () => {
   beforeEach(() => {
-    document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    document.body.appendChild(renderTreeView());
+    dom.setChildren(document.body, renderTreeView());
     focusItem(home);
     press.arrowDown();
   });
@@ -173,9 +171,8 @@ describe("By default when nothing is selected and user presses down", () => {
 
 describe("when every folder is open", () => {
   beforeEach(() => {
-    document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    document.body.appendChild(renderTreeView());
+    dom.setChildren(document.body, renderTreeView());
     focusItem(home);
     clickChevron(folder1);
     clickChevron(folder1_1);
@@ -199,9 +196,8 @@ describe("when every folder is open", () => {
 //SELECTION via mouse
 describe("Clicking on a folder2", () => {
   beforeEach(() => {
-    document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    document.body.appendChild(renderTreeView());
+    dom.setChildren(document.body, renderTreeView());
     focusItem(home);
     clickRow(folder2);
   });
@@ -223,9 +219,8 @@ describe("Clicking on a folder2", () => {
 //FOCUS
 describe("Focusing on a folder1", () => {
   beforeEach(() => {
-    document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    document.body.appendChild(renderTreeView());
+    dom.setChildren(document.body, renderTreeView());
     focusItem(folder1);
   });
   it("shows folder1 title on a page", () => {
@@ -241,22 +236,85 @@ describe("Focusing on a folder1", () => {
   });
 });
 
+describe("when folder1_1 is focused", () => {
+  beforeEach(() => {
+    items.itemsLoaded(createTestItems());
+    dom.setChildren(document.body, renderTreeView());
+    focusItem(folder1_1);
+  });
+
+  it("folder1_1 title should be on the screen", () => {
+    expect(getPageTitle()).toHaveTextContent(folder1_1.title);
+  });
+
+  it("pressing alt + <- focuses on parent (folder1)", () => {
+    press.arrowLeft({ alt: true });
+    expect(getPageTitle()).toHaveTextContent(folder1.title);
+  });
+
+  describe("selecting folder1_1_2", () => {
+    beforeEach(() => clickRow(folder1_1_2));
+
+    describe("pressing alt + ->", () => {
+      beforeEach(() => press.arrowRight({ alt: true }));
+      it("focuses it", () => {
+        expect(getPageTitle()).toHaveTextContent(folder1_1_2.title);
+      });
+      it("selects first child", () => {
+        expect(getRow(folder1_1_2_1)).toHaveClass(cls.rowSelected);
+      });
+    });
+
+    it("pressing down should still select folder1_1_2 (because it's the last in list and not open)", () => {
+      expect(getRow(folder1_1_2)).toHaveClass(cls.rowSelected);
+      press.arrowDown();
+      expect(getRow(folder1_1_2)).toHaveClass(cls.rowSelected);
+    });
+  });
+});
+
+describe("focusing folder1 without opening it", () => {
+  beforeEach(() => {
+    items.itemsLoaded(createTestItems());
+    dom.setChildren(document.body, renderTreeView());
+    focusItem(folder1);
+  });
+  it("focuses folder1 and selects after arrow down folder1_1", () => {
+    expect(getPageTitle()).toHaveTextContent(folder1.title);
+    press.arrowDown();
+    expect(getRow(folder1_1)).toHaveClass(cls.rowSelected);
+  });
+
+  it("moving out should select folder1 (item which was presivously selected)", () => {
+    press.arrowLeft({ alt: true });
+    expect(queryPageTitle()).not.toBeInTheDocument();
+    expect(getRow(folder1)).toHaveClass(cls.rowSelected);
+  });
+});
+
+interface Modifiers {
+  alt?: boolean;
+}
 const press = {
-  arrowDown: () =>
+  arrowDown: (modifiers?: Modifiers) =>
     fireEvent.keyDown(document.body, {
       key: "ArrowDown",
+      altKey: modifiers?.alt,
     }),
-  arrowUp: () =>
+  arrowUp: (modifiers?: Modifiers) =>
     fireEvent.keyDown(document.body, {
       key: "ArrowUp",
+      altKey: modifiers?.alt,
     }),
-  arrowRight: () =>
+  arrowRight: (modifiers?: Modifiers) =>
     fireEvent.keyDown(document.body, {
       key: "ArrowRight",
+      altKey: modifiers?.alt,
     }),
-  arrowLeft: () =>
+  arrowLeft: (modifiers?: Modifiers) =>
     fireEvent.keyDown(document.body, {
       key: "ArrowLeft",
+      altKey: modifiers?.alt,
     }),
 };
 
@@ -266,6 +324,7 @@ const queryRow = (item: Item) => queryById("row-" + item.id);
 const clickChevron = (item: Item) => fireEvent.click(get("chevron-" + item.id));
 const clickRow = (item: Item) => fireEvent.click(getById("row-" + item.id));
 const getPageTitle = () => get("page-title");
+const queryPageTitle = () => query("page-title");
 
 //general page-agnostic query helpers
 const get = (id: string) => getByTestId(document.body, id);

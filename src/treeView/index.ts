@@ -7,8 +7,21 @@ let container!: HTMLElement;
 
 export const renderTreeView = () => {
   container = div({ className: cls.rowsScrollContainer });
-  return div({ className: cls.rowsContainer }, container);
+  return div({ className: cls.rowsContainer }, container, viewHighlighter());
 };
+
+export const focusItem = (item: Item) => {
+  items.setFocusItem(item.id);
+
+  dom.setChildren(container, renderTreeViewContent(item));
+  events.dispatchEvent("item-focused", item);
+};
+
+const renderTreeViewContent = (nodeFocused: Item) =>
+  dom.fragment([
+    viewTitle(nodeFocused),
+    fragment(items.getChildrenFor(nodeFocused.id).map(rowWithChildren)),
+  ]);
 
 const viewTitle = (item: Item) =>
   !items.isRoot(item)
@@ -26,17 +39,3 @@ const viewTitle = (item: Item) =>
         item.title
       )
     : undefined;
-
-const renderTreeViewContent = (nodeFocused: Item) =>
-  dom.fragment([
-    viewTitle(nodeFocused),
-    fragment(items.getChildrenFor(nodeFocused.id).map(rowWithChildren)),
-    viewHighlighter(),
-  ]);
-
-export const focusItem = (item: Item) => {
-  items.setFocusItem(item.id);
-
-  dom.setChildren(container, renderTreeViewContent(item));
-  events.dispatchEvent("item-focused", item);
-};

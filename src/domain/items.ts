@@ -53,9 +53,11 @@ export const getItemsCount = (itemsToCount = items): number =>
   Object.keys(itemsToCount).length;
 
 export const getChildrenFor = (itemId: string) => {
-  const focused = items[itemId] as Folder;
-  return focused.children.map((id) => items[id]);
+  const folder = items[itemId] as ItemContainer;
+  return folder.children.map((id) => items[id]);
 };
+
+export const getFirstChildOf = (itemId: string) => getChildrenFor(itemId)[0];
 
 export const getImageSrc = (item: Item): string => {
   if (item.type == "YTvideo")

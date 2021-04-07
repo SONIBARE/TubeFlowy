@@ -1,3 +1,4 @@
+import { focusItem } from ".";
 import { items } from "../domain";
 import { cls, css, utils } from "../infra";
 import { Row } from "./row";
@@ -6,7 +7,21 @@ class RowSelector extends HTMLElement {
   selectedItem: Item | undefined;
 
   onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "ArrowUp") {
+    if (e.key === "ArrowLeft" && e.altKey) {
+      e.preventDefault();
+      const previsoulyFocusedItem = items.getFocusedItem();
+      const parent = items.getParent(previsoulyFocusedItem.id);
+      if (parent) {
+        focusItem(parent);
+        this.selectItem(previsoulyFocusedItem);
+      }
+    } else if (e.key === "ArrowRight" && e.altKey) {
+      e.preventDefault();
+      if (this.selectedItem) {
+        focusItem(this.selectedItem);
+        this.selectFirstChildOf(this.selectedItem);
+      }
+    } else if (e.key === "ArrowUp") {
       e.preventDefault();
       if (this.selectedItem) {
         const previousItem = items.getPreviousItem(this.selectedItem);
@@ -24,8 +39,7 @@ class RowSelector extends HTMLElement {
           this.selectParent();
         }
       }
-    }
-    if (e.key === "ArrowDown") {
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
       if (this.selectedItem) {
         if (
@@ -44,10 +58,13 @@ class RowSelector extends HTMLElement {
             let parent = items.getParent(this.selectedItem.id);
 
             let child = this.selectedItem;
-            while (parent && isLastItem(child, parent)) {
+            while (
+              parent &&
+              isLastItem(child, parent) &&
+              parent.id !== items.getFocusedItem().id
+            ) {
               child = parent;
               parent = items.getParent(parent.id);
-              console.log("42");
             }
 
             this.selectItem(items.getNextItem(child));
@@ -57,20 +74,18 @@ class RowSelector extends HTMLElement {
         const itemInFocus = items.getFocusedItem();
         this.selectFirstChildOf(itemInFocus);
       }
-    }
-    if (e.key === "ArrowRight") {
+    } else if (e.key === "ArrowRight") {
       e.preventDefault();
 
       if (this.selectedItem && !items.isFolderOpenOnPage(this.selectedItem)) {
-        this.getRowElemByItemId(this.selectedItem).toggleItemVisibility();
+        this.getRowElemByItemId(this.selectedItem)?.toggleItemVisibility();
       } else if (this.selectedItem) {
         this.selectFirstChildOf(this.selectedItem);
       }
-    }
-    if (e.key === "ArrowLeft") {
+    } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       if (this.selectedItem && items.isFolderOpenOnPage(this.selectedItem)) {
-        this.getRowElemByItemId(this.selectedItem).toggleItemVisibility();
+        this.getRowElemByItemId(this.selectedItem)?.toggleItemVisibility();
       } else if (this.selectedItem) {
         this.selectParent();
       }
@@ -78,7 +93,7 @@ class RowSelector extends HTMLElement {
   };
 
   selectFirstChildOf(item: Item) {
-    const firstChild = items.getChildrenFor(item.id)[0];
+    const firstChild = items.getFirstChildOf(item.id);
     if (firstChild) this.selectItem(firstChild);
   }
   selectParent() {
@@ -93,19 +108,12 @@ class RowSelector extends HTMLElement {
   unSelectCurrentItem() {
     if (this.selectedItem) {
       const elem = this.getRowElemByItemId(this.selectedItem);
-      elem.classList.remove(cls.rowSelected);
+      elem?.classList.remove(cls.rowSelected);
     }
   }
 
-  getRowElemByItemId = ({ id, title }: Item): Row => {
-    const elem = document.getElementById("row-" + id) as Row;
-    if (!elem) {
-      throw new Error(
-        "Can not find element for an item with id: " + id + ` (${title})`
-      );
-    }
-    return elem;
-  };
+  getRowElemByItemId = ({ id }: Item): Row | undefined =>
+    document.getElementById("row-" + id) as Row;
 
   connectedCallback() {
     document.addEventListener("keydown", this.onKeyDown);
@@ -120,12 +128,40 @@ class RowSelector extends HTMLElement {
       this.selectedItem = item;
 
       const elem = this.getRowElemByItemId(this.selectedItem);
-      elem.classList.add(cls.rowSelected);
-
-      this.style.top = elem.offsetTop + "px";
-      this.style.height = elem.offsetHeight + "px";
+      if (elem) {
+        elem.classList.add(cls.rowSelected);
+        this.makeSureContainerIsWithinElemBoundarues(elem);
+        this.style.top = elem.offsetTop + "px";
+        this.style.height = elem.offsetHeight + "px";
+      }
     }
   };
+
+  makeSureContainerIsWithinElemBoundarues(elem: HTMLElement) {
+    const scrollContainer = this.parentElement as HTMLElement;
+
+    const topWindowBoundary = scrollContainer.scrollTop;
+    const bottomWindowBoundary =
+      scrollContainer.scrollTop + scrollContainer.clientHeight;
+
+    if (topWindowBoundary > elem.offsetTop - this.clientHeight * 2.5) {
+      scrollContainer.scrollTo({
+        top: elem.offsetTop - this.clientHeight * 2.5,
+        behavior: "smooth",
+      });
+    } else if (
+      bottomWindowBoundary - this.clientHeight * 2.5 <
+      elem.offsetTop
+    ) {
+      scrollContainer.scrollTo({
+        top:
+          elem.offsetTop +
+          this.clientHeight * 2.5 -
+          scrollContainer.clientHeight,
+        behavior: "smooth",
+      });
+    }
+  }
 }
 
 customElements.define("slp-row-selection", RowSelector);
