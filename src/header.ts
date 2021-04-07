@@ -1,4 +1,4 @@
-import { focusItem } from "./treeView/focuser";
+import { focusItem } from "./treeView";
 import {
   button,
   cls,

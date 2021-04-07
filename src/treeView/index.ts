@@ -1,26 +1,42 @@
-import { cls, div, fragment } from "../infra";
+import { cls, div, dom, fragment } from "../infra";
 import { rowWithChildren } from "./rowWithChildren";
 import { viewHighlighter } from "./rowhighlight";
-import { items } from "../domain";
+import { items, events } from "../domain";
 
-export const renderTreeView = (nodeFocused: Item, container: HTMLElement) => {
-  if (!items.isRoot(nodeFocused))
-    container.appendChild(
-      div(
+let container!: HTMLElement;
+
+export const renderTreeView = () => {
+  container = div({ className: cls.rowsScrollContainer });
+  return div({ className: cls.rowsContainer }, container);
+};
+
+const viewTitle = (item: Item) =>
+  !items.isRoot(item)
+    ? div(
         {
           className: cls.pageTitle,
+          testId: "page-title",
           contentEditable: true,
           events: {
             input: ({ currentTarget }) => {
-              items.setTitle(nodeFocused, currentTarget.textContent || "");
+              items.setTitle(item, currentTarget.textContent || "");
             },
           },
         },
-        nodeFocused.title
+        item.title
       )
-    );
-  container.appendChild(
-    fragment(items.getChildrenFor(nodeFocused.id).map(rowWithChildren))
-  );
-  container.appendChild(viewHighlighter());
+    : undefined;
+
+const renderTreeViewContent = (nodeFocused: Item) =>
+  dom.fragment([
+    viewTitle(nodeFocused),
+    fragment(items.getChildrenFor(nodeFocused.id).map(rowWithChildren)),
+    viewHighlighter(),
+  ]);
+
+export const focusItem = (item: Item) => {
+  items.setFocusItem(item.id);
+
+  dom.setChildren(container, renderTreeViewContent(item));
+  events.dispatchEvent("item-focused", item);
 };

@@ -1,5 +1,5 @@
 import { items, events } from "../domain";
-import { focusItem } from "../treeView/focuser";
+import { focusItem } from "../treeView";
 import {
   loadUserSettings,
   PersistedState,

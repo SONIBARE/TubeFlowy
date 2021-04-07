@@ -1,6 +1,6 @@
 export const folder = (id: string, children?: string[]): Folder => ({
   id: id,
-  title: id,
+  title: id + " Title",
   type: "folder",
   children: children || [],
   isCollapsedInGallery: true,

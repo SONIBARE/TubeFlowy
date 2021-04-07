@@ -8,8 +8,8 @@ import {
 } from "@testing-library/dom";
 import { items, events } from "../domain";
 import { folder, createItemsFromArray } from "../domain/testUtils";
-import { renderTreeView } from "./index";
-import { cls } from "../infra";
+import { renderTreeView, focusItem } from "./index";
+import { cls, timings } from "../infra";
 
 jest.mock("../infra/animations", () => ({
   expandHeight: () => ({
@@ -56,7 +56,8 @@ describe("Having a closed folder1 with children", () => {
   beforeEach(() => {
     document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    renderTreeView(home, document.body);
+    document.body.appendChild(renderTreeView());
+    focusItem(home);
   });
 
   it("children are hidden (folder1_1 is not visible)", () => {
@@ -90,7 +91,8 @@ describe("By default when nothing is selected and user presses down", () => {
   beforeEach(() => {
     document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    renderTreeView(home, document.body);
+    document.body.appendChild(renderTreeView());
+    focusItem(home);
     press.arrowDown();
   });
 
@@ -173,7 +175,8 @@ describe("when every folder is open", () => {
   beforeEach(() => {
     document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    renderTreeView(home, document.body);
+    document.body.appendChild(renderTreeView());
+    focusItem(home);
     clickChevron(folder1);
     clickChevron(folder1_1);
     clickChevron(folder1_1_2);
@@ -198,7 +201,8 @@ describe("Clicking on a folder2", () => {
   beforeEach(() => {
     document.body.innerHTML = ``;
     items.itemsLoaded(createTestItems());
-    renderTreeView(home, document.body);
+    document.body.appendChild(renderTreeView());
+    focusItem(home);
     clickRow(folder2);
   });
   it("should focus folder2", () => {
@@ -213,6 +217,27 @@ describe("Clicking on a folder2", () => {
     it("should unselect folder2", () => {
       expect(getRow(folder2)).not.toHaveClass(cls.rowSelected);
     });
+  });
+});
+
+//FOCUS
+describe("Focusing on a folder1", () => {
+  beforeEach(() => {
+    document.body.innerHTML = ``;
+    items.itemsLoaded(createTestItems());
+    document.body.appendChild(renderTreeView());
+    focusItem(folder1);
+  });
+  it("shows folder1 title on a page", () => {
+    expect(getPageTitle()).toHaveTextContent("folder1 Title");
+  });
+  it("shows folder1_1 and folder 1_2 title on a page", () => {
+    expect(getRow(folder1_1)).toBeInTheDocument();
+    expect(getRow(folder1_2)).toBeInTheDocument();
+  });
+
+  it("hides folder2", () => {
+    expect(queryRow(folder2)).not.toBeInTheDocument();
   });
 });
 
@@ -235,11 +260,14 @@ const press = {
     }),
 };
 
+//page specific queries
 const getRow = (item: Item) => queryById("row-" + item.id);
 const queryRow = (item: Item) => queryById("row-" + item.id);
 const clickChevron = (item: Item) => fireEvent.click(get("chevron-" + item.id));
 const clickRow = (item: Item) => fireEvent.click(getById("row-" + item.id));
+const getPageTitle = () => get("page-title");
 
+//general page-agnostic query helpers
 const get = (id: string) => getByTestId(document.body, id);
 const query = (id: string) => queryByTestId(document.body, id);
 const queryById = (id: string) => queryByAttribute("id", document.body, id);

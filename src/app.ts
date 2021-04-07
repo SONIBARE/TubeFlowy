@@ -2,9 +2,10 @@ import { header } from "./header";
 import { cls, colors, css, div, fragment, spacings } from "./infra";
 import { items } from "./domain";
 import { playerFooter } from "./player/playerFooter";
-import * as database from "./api/loginService";
 import { leftNavigationSidebar } from "./sidebar/leftSidebar";
 import { searchResults } from "./searchResults/searchPage";
+import { renderTreeView } from "./treeView";
+import * as database from "./api/loginService";
 import * as stateLoader from "./api/stateLoader";
 
 database.initFirebase(() => undefined);
@@ -21,16 +22,11 @@ items.itemsLoaded({
   },
 });
 
-const container = div(
-  { className: cls.rowsContainer },
-  div({ className: cls.rowsScrollContainer })
-);
-
 const page = div(
   { className: cls.page },
   fragment([
     header(),
-    container,
+    renderTreeView(),
     searchResults(),
     leftNavigationSidebar(),
     playerFooter(),
