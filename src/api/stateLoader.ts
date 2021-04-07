@@ -6,11 +6,6 @@ import {
   saveUserSettings,
 } from "./loginService";
 
-export const saveState = () => {
-  const persisted: PersistedState = createPersistedState();
-  saveUserSettings(persisted, "nLHkgavG6YXJWlP4YkzJ9t4zW692");
-};
-
 const createPersistedState = (): PersistedState => {
   const homeNodes: Items = {};
   const traverse = (id: string) => {
@@ -22,9 +17,10 @@ const createPersistedState = (): PersistedState => {
   };
   traverse("HOME");
 
-  const count = (items: Items) => Object.keys(items).length;
+  const savingCount = items.getItemsCount(homeNodes);
+  const actualCount = items.getItemsCount();
   console.log(
-    `Saving to backend ${count(homeNodes)} (from ${items.getItemsCount()})`
+    `Saving ${savingCount} items (currently in state ${actualCount} items)`
   );
 
   //selected node might be removed, in that case point to a HOME
@@ -39,10 +35,34 @@ const createPersistedState = (): PersistedState => {
   };
 };
 
+const dataVersion = "v1";
+const dataKey = "tubeflowyData:" + dataVersion;
+
+export const saveState = () => {
+  const persisted: PersistedState = createPersistedState();
+
+  if (window.location.host.startsWith("localhost")) {
+    console.log(`Saving to localStorage ${dataVersion}`);
+    localStorage.setItem(dataKey, JSON.stringify(persisted));
+  } else {
+    saveUserSettings(persisted, "nLHkgavG6YXJWlP4YkzJ9t4zW692");
+  }
+};
+
 export const loadRemoteState = () => {
-  loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((data) => {
+  const localData = localStorage.getItem(dataKey);
+
+  const onDataReady = (data: PersistedState) => {
     const loadedItems: Items = JSON.parse(data.itemsSerialized);
     items.itemsLoaded(loadedItems);
     focusItem(loadedItems[data.selectedItemId]);
-  });
+  };
+
+  if (localData) {
+    console.log(`Loaded from localStorage ${dataVersion}`);
+    const parsed = JSON.parse(localData) as PersistedState;
+    Promise.resolve().then(() => onDataReady(parsed));
+  } else {
+    loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then(onDataReady);
+  }
 };

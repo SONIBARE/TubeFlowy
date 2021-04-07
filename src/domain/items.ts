@@ -49,7 +49,8 @@ export const getFocusedItem = (): Item => items[itemIdFocused];
 
 export const getItem = (id: string): Item => items[id];
 
-export const getItemsCount = (): number => Object.keys(items).length;
+export const getItemsCount = (itemsToCount = items): number =>
+  Object.keys(itemsToCount).length;
 
 export const getChildrenFor = (itemId: string) => {
   const focused = items[itemId] as Folder;
