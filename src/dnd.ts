@@ -1,8 +1,8 @@
 import { items } from "./domain";
 import { cls, colors, css, div, spacings } from "./infra";
-import { folderIcon } from "./row/folderIcon";
-import { itemImage } from "./row/itemImage";
-import { RowWithChildren } from "./row/rowWithChildren";
+import { folderIcon } from "./treeView/folderIcon";
+import { itemImage } from "./treeView/itemImage";
+import { RowWithChildren } from "./treeView/rowWithChildren";
 
 //DND state
 let initialMousePosition: Vector;
