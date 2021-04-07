@@ -72,6 +72,23 @@ export const toggleFolderVisibility = (itemId: string) => {
   }
 };
 
+export const getPreviousItem = (item: Item): Item | undefined => {
+  const parent = getParent(item.id);
+  if (parent) {
+    const index = parent.children.indexOf(item.id);
+    const id = parent.children[index - 1];
+    if (id) return items[id];
+  }
+};
+export const getNextItem = (item: Item): Item | undefined => {
+  const parent = getParent(item.id);
+  if (parent) {
+    const index = parent.children.indexOf(item.id);
+    const id = parent.children[index + 1];
+    if (id) return items[id];
+  }
+};
+
 //check duplicated for moveItemInside
 export const createNewItemAfter = (insertAfter: string): Item => {
   const newItem: Item = {
@@ -212,6 +229,9 @@ export const isNeedsToBeLoaded = (item: Item): boolean =>
   (isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
   (isSearch(item) && item.children.length == 0 && !item.isLoading) ||
   (isChannel(item) && item.children.length == 0 && !item.isLoading);
+
+export const isRoot = (item: Item) =>
+  item.id === "HOME" || item.id === "SEARCH";
 
 export const isFolder = (item: Item): item is Folder => {
   return item.type == "folder";

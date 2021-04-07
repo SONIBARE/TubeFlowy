@@ -9,7 +9,7 @@ import {
   timings,
 } from "../infra";
 import { events, items } from "../domain";
-import { playCaretAtTextAtRow, renderRow } from "./row";
+import { renderRow } from "./row";
 
 export class RowWithChildren extends HTMLElement {
   unsub!: EmptyFunc;
@@ -63,7 +63,6 @@ export class RowWithChildren extends HTMLElement {
         const newItem: Item = items.createNewItemAfter(item.id);
         const row = rowWithChildren(newItem);
         elem.insertAdjacentElement("afterend", row);
-        playCaretAtTextAtRow(row);
       }
     });
     elem.appendChild(row);

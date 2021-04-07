@@ -157,10 +157,10 @@ css.parentHover(cls.row, cls.rowCirclePlay, {
 css.parentHover(cls.row, cls.rowCircleFilled, {
   opacity: 0,
 });
-css.selector(`.${cls.row}.${cls.rowFocused} .${cls.rowCirclePlay}`, {
+css.selector(`.${cls.row}.${cls.rowSelected} .${cls.rowCirclePlay}`, {
   opacity: 1,
 });
-css.selector(`.${cls.row}.${cls.rowFocused} .${cls.rowCircleFilled}`, {
+css.selector(`.${cls.row}.${cls.rowSelected} .${cls.rowCircleFilled}`, {
   opacity: 0,
 });
 

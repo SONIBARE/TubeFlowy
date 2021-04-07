@@ -107,8 +107,9 @@ export const canvas = (props: CanvasProps): HTMLCanvasElement => {
 
 type FragmentChild = Node | string | undefined | false;
 
-export const setChildren = (elem: Element, ...children: FragmentChild[]) => {
-  elem.innerHTML = ``;
+export const setChildren = (elem: Node, ...children: FragmentChild[]) => {
+  while (elem.firstChild) elem.removeChild(elem.firstChild);
+
   elem.appendChild(fragment(children));
 };
 

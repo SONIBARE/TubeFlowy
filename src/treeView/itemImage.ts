@@ -108,13 +108,13 @@ css.class(cls.squareImage, {
 css.parentHover(cls.row, cls.squareImage, {
   boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
 });
-css.selector(`.${cls.row}.${cls.rowFocused} .${cls.squareImage}`, {
+css.selector(`.${cls.row}.${cls.rowSelected} .${cls.squareImage}`, {
   boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2)`,
 });
 css.parentHover(cls.row, cls.closedContainerImage, {
   boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2), 0 0 2px 3px ${colors.mediumPrimary}`,
 });
-css.selector(`.${cls.row}.${cls.rowFocused} .${cls.closedContainerImage}`, {
+css.selector(`.${cls.row}.${cls.rowSelected} .${cls.closedContainerImage}`, {
   boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2), 0 0 2px 3px ${colors.mediumPrimary}`,
 });
 

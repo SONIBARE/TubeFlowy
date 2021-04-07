@@ -5,10 +5,10 @@ import * as dnd from "../dnd";
 import { RowWithChildren } from "./rowWithChildren";
 import { itemImage } from "./itemImage";
 import { folderIcon } from "./folderIcon";
-import { placeOver } from "./rowhighlight";
+import { selectItem } from "./rowhighlight";
 import * as player from "../player/playerFooter";
 
-class Row extends HTMLElement {
+export class Row extends HTMLElement {
   item!: Item;
   unsubs = [] as EmptyFunc[];
 
@@ -70,7 +70,17 @@ class Row extends HTMLElement {
   }
 
   render(item: Item, rowWithChildren: RowWithChildren) {
+    this.id = "row-" + item.id;
+
     this.viewChevron();
+
+    this.addEventListener("click", (e) => {
+      const currentlyFocused = document.getElementsByClassName(cls.rowSelected);
+
+      for (const el of currentlyFocused) el.classList.remove(cls.rowSelected);
+
+      selectItem(item);
+    });
 
     const rowText = div(
       {
@@ -79,10 +89,6 @@ class Row extends HTMLElement {
           items.isVideo(item) ? cls.rowTextVideo : cls.none,
         ],
         events: {
-          click: (e) => {
-            this.classList.add(cls.rowFocused);
-            placeOver(e.currentTarget);
-          },
           input: ({ currentTarget }) => {
             items.setTitle(item, currentTarget.textContent || "");
           },
@@ -90,33 +96,6 @@ class Row extends HTMLElement {
             if (e.key === "Backspace" && e.shiftKey && e.ctrlKey) {
               items.removeItem(item);
               rowWithChildren.remove();
-            }
-            if (e.key == "ArrowUp") {
-              e.preventDefault();
-              const previous = rowWithChildren.previousElementSibling;
-              if (previous && previous.tagName == "SLP-ITEM")
-                playCaretAtTextAtRow(previous as HTMLElement);
-              else {
-                const praparent = rowWithChildren.parentElement?.parentElement;
-                if (praparent && praparent.tagName == "SLP-ITEM")
-                  playCaretAtTextAtRow(praparent as HTMLElement);
-              }
-            }
-            if (e.key == "ArrowDown" && !e.shiftKey) {
-              e.preventDefault();
-              const next = rowWithChildren.nextElementSibling;
-              if (
-                rowWithChildren.childContainer &&
-                rowWithChildren.childContainer.firstChild
-              ) {
-                playCaretAtTextAtRow(
-                  rowWithChildren.childContainer.firstChild as HTMLElement
-                );
-              } else if (next && next.tagName == "SLP-ITEM") {
-                playCaretAtTextAtRow(next as HTMLElement);
-              } else {
-                console.log("no children and no next item");
-              }
             }
             if (e.code === "Space" && e.ctrlKey) {
               this.toggleItemVisibility();
@@ -131,7 +110,7 @@ class Row extends HTMLElement {
     );
 
     this.classList.add(cls.row);
-    this.setAttribute("data-testid", "row-" + item.id);
+
     this.addEventListener("mousemove", (e) =>
       dnd.onItemMouseMove(item, rowWithChildren, e)
     );
@@ -201,7 +180,7 @@ css.class(cls.childContainer, {
 css.parentHover(cls.row, cls.chevron, {
   opacity: 1,
 });
-css.selector(`.${cls.row}.${cls.rowFocused} .${cls.chevron}`, {
+css.selector(`.${cls.row}.${cls.rowSelected} .${cls.chevron}`, {
   opacity: 1,
 });
 
@@ -238,7 +217,7 @@ css.class(cls.rowText, {
   display: "flex",
   alignItems: "center",
   verticalAlign: "middle",
-  marginTop: -4,
+  marginTop: -2,
 });
 css.class(cls.rowTextVideo, {
   fontWeight: 400,
@@ -248,22 +227,3 @@ css.class(cls.rowTextVideo, {
 css.selection(cls.rowText, {
   background: colors.lightPrimary,
 });
-
-export const playCaretAtTextAtRow = (row: HTMLElement) => {
-  const text = row.getElementsByClassName(cls.rowText)[0] as HTMLElement;
-  placeCarentAtBeginingOfElement(text);
-};
-
-//utility
-
-const placeCarentAtBeginingOfElement = (elem: HTMLElement) => {
-  var range = document.createRange();
-  var sel = window.getSelection();
-
-  range.setStart(elem, 0);
-  range.collapse(true);
-  if (sel) {
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-};

@@ -1,4 +1,4 @@
-import { focusItem } from "../focuser";
+import { focusItem } from "../treeView/focuser";
 import { cls, colors, css, dom, icons, spacings } from "../infra";
 import { events, items } from "../domain";
 
