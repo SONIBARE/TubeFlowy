@@ -57,7 +57,11 @@ css.class(cls.rowsContainer, {
 });
 
 css.class(cls.rowsScrollContainer, {
-  paddingBottom: 60,
+  paddingBottom: `calc(100vh - ${
+    spacings.rowHeight * 2.5 +
+    spacings.playerFooterHeight +
+    spacings.headerHeight
+  }px)`,
   paddingTop: spacings.pageMarginTop,
   maxWidth: 700,
   margin: "0 auto",
