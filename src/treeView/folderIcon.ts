@@ -10,6 +10,7 @@ import {
 } from "../infra";
 import { events, items } from "../domain";
 import * as player from "../player/playerFooter";
+import { focusItemAndSelectFirstChild } from ".";
 
 export const folderIcon = (
   item: Item,
@@ -22,7 +23,8 @@ export const folderIcon = (
       events: {
         click: (e) => {
           e.stopPropagation();
-          player.playItem(item);
+          if (e.ctrlKey) focusItemAndSelectFirstChild(item);
+          else player.playItem(item);
         },
         mousedown: onMouseDown,
       },

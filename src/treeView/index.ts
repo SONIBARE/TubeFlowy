@@ -1,6 +1,6 @@
 import { cls, div, dom, css, fragment } from "../infra";
 import { rowWithChildren } from "./rowWithChildren";
-import { viewHighlighter } from "./rowhighlight";
+import { selectItem, viewHighlighter } from "./rowhighlight";
 import { items, events } from "../domain";
 
 let container!: HTMLElement;
@@ -15,6 +15,12 @@ export const focusItem = (item: Item) => {
 
   dom.setChildren(container, renderTreeViewContent(item));
   events.dispatchEvent("item-focused", item);
+};
+
+export const focusItemAndSelectFirstChild = (item: Item) => {
+  focusItem(item);
+  const firstChild = items.getFirstChildOf(item.id);
+  if (firstChild) selectItem(firstChild);
 };
 
 const renderTreeViewContent = (nodeFocused: Item) =>

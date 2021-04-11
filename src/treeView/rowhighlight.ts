@@ -1,4 +1,4 @@
-import { focusItem } from ".";
+import { focusItem, focusItemAndSelectFirstChild } from ".";
 import { items } from "../domain";
 import { cls, css, utils } from "../infra";
 import { Row } from "./row";
@@ -18,8 +18,7 @@ class RowSelector extends HTMLElement {
     } else if (e.key === "ArrowRight" && e.altKey) {
       e.preventDefault();
       if (this.selectedItem) {
-        focusItem(this.selectedItem);
-        this.selectFirstChildOf(this.selectedItem);
+        focusItemAndSelectFirstChild(this.selectedItem);
       }
     } else if (e.key === "ArrowUp") {
       e.preventDefault();

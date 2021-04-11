@@ -10,6 +10,7 @@ import {
 } from "../infra";
 import { events, items } from "../domain";
 import * as player from "../player/playerFooter";
+import { focusItemAndSelectFirstChild } from ".";
 
 export const itemImage = (
   item: Item,
@@ -27,7 +28,9 @@ export const itemImage = (
       events: {
         click: (e) => {
           e.stopPropagation();
-          player.playItem(item);
+          if (e.ctrlKey && !items.isVideo(item))
+            focusItemAndSelectFirstChild(item);
+          else player.playItem(item);
         },
         mousedown: onMouseDown,
       },

@@ -1,4 +1,4 @@
-import { focusItem } from "../treeView";
+import { focusItemAndSelectFirstChild } from "../treeView";
 import { cls, colors, css, dom, icons, spacings } from "../infra";
 import { events, items } from "../domain";
 
@@ -17,7 +17,7 @@ const sidebarRow = (item: Item): DocumentFragment => {
     }
   };
 
-  const onRowClick = () => focusItem(item);
+  const onRowClick = () => focusItemAndSelectFirstChild(item);
 
   return dom.fragment([
     dom.div(
