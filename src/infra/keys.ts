@@ -1,9 +1,20 @@
 export const cls = {
+  //TREE VIEW
+  treeViewContainer: "tree-view-container",
+  treeRow: "tree-row",
+  treeRowChildren: "tree-row-children",
+  treeTabContainer: "tree-tab-container",
+  treeTab: "tree-tab",
+  toggleSearchButton: "toggle-search-button",
+  gallerySubText: "gallery-sub-text",
+
   box: "box",
+  lastBox: "last-box",
   boxRed: "box-red",
 
   page: "page",
 
+  myPage: "my-page",
   header: "header",
   headerIcon: "header-icon",
   headerIconInactive: "header-icon-inactive",

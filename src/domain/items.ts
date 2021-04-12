@@ -1,7 +1,14 @@
 import { events } from "./events";
 import { LoadingItemsReponse } from "../api/youtube";
 
-let items: Items = {};
+let items: Items = {
+  HOME: {
+    type: "folder",
+    children: [],
+    id: "HOME",
+    title: "Home",
+  },
+};
 let itemIdFocused = "HOME";
 
 export const itemsLoaded = (newItems: Items) => {

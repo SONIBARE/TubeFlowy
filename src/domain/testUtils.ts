@@ -18,3 +18,5 @@ export const createItemsFromArray = (items: Item[]): Items =>
     items[item.id] = item;
     return items;
   }, {} as Items);
+
+export const deepCopy = <T>(i: T): T => JSON.parse(JSON.stringify(i));

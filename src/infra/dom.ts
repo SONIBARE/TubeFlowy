@@ -105,11 +105,14 @@ export const canvas = (props: CanvasProps): HTMLCanvasElement => {
   return elem;
 };
 
+export const removeAllChildren = (elem: Node) => {
+  while (elem.firstChild) elem.removeChild(elem.firstChild);
+};
+
 type FragmentChild = Node | string | undefined | false;
 
 export const setChildren = (elem: Node, ...children: FragmentChild[]) => {
-  while (elem.firstChild) elem.removeChild(elem.firstChild);
-
+  removeAllChildren(elem);
   elem.appendChild(fragment(children));
 };
 
