@@ -81,6 +81,11 @@ export const toggleFolderVisibility = (itemId: string) => {
   }
 };
 
+export const focus = (item: Item) => {
+  itemIdFocused = item.id;
+  events.dispatchCompundEvent("item-focused", item.id, item);
+};
+
 export const getPreviousItem = (item: Item): Item | undefined => {
   const parent = getParent(item.id);
   if (parent) {

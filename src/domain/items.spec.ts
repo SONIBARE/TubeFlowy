@@ -24,7 +24,6 @@ describe("Having a folder and a bunch of videos", () => {
       "v3",
       "v1.2",
     ]);
-    console.log(items)
     expect(items.getChildrenFor("HOME").map((i) => i.id)).toEqual(["f1"]);
   });
 

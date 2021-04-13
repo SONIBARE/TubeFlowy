@@ -2,10 +2,10 @@ import { anim, cls, colors, css, div, dom } from "../infra";
 import { events, items } from "../domain";
 
 export default class ItemView {
-  itemRow: HTMLElement;
-  itemChildren: HTMLElement | undefined;
+  private itemRow: HTMLElement;
+  private itemChildren: HTMLElement | undefined;
 
-  expandButton: HTMLElement;
+  private expandButton: HTMLElement;
 
   constructor(public item: Item, public level: number) {
     this.expandButton = this.viewExpandButton();
@@ -32,7 +32,12 @@ export default class ItemView {
         onRemovedFromDom: this.cleanup,
       },
       this.expandButton,
-      this.item.title
+      this.item.title,
+      dom.button({
+        text: "f",
+        testId: "focuser-" + this.item.id,
+        events: { click: () => items.focus(this.item) },
+      })
     );
 
   private viewExpandButton = () =>
@@ -83,7 +88,10 @@ export default class ItemView {
     this.updateExpandButton();
   };
 
-  private cleanup = () => this.onCleanup && this.onCleanup();
+  private cleanup = () => {
+    console.log("cleanup called", this.onCleanup);
+    this.onCleanup && this.onCleanup();
+  };
 
   private updateItemVisibility = () => {
     this.updateExpandButton();
