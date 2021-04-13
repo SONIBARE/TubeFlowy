@@ -73,8 +73,9 @@ export default class ItemView {
   private updateExpandButton = () =>
     (this.expandButton.textContent = this.isItemOpen() ? "-" : "+");
 
+  private onCleanup: EmptyFunc | undefined;
   private assignListeners = () => {
-    events.addCompoundEventListener(
+    this.onCleanup = events.addCompoundEventListener(
       "item-collapse",
       this.item.id,
       this.updateItemVisibility
@@ -82,13 +83,7 @@ export default class ItemView {
     this.updateExpandButton();
   };
 
-  private cleanup = () => {
-    events.removeEventCb(
-      "item-collapse",
-      this.updateItemVisibility,
-      this.item.id
-    );
-  };
+  private cleanup = () => this.onCleanup && this.onCleanup();
 
   private updateItemVisibility = () => {
     this.updateExpandButton();
