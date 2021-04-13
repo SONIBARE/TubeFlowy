@@ -6,9 +6,19 @@ import {
   queryByTestId,
 } from "@testing-library/dom";
 import { events, items } from "../domain";
-import { createItemsFromArray, deepCopy, folder } from "../domain/testUtils";
+import { folder, deepCopy, createItemsFromArray } from "../domain/testUtils";
 import { cls, dom } from "../infra";
-import { renderApp } from "../page";
+import { renderTreeView } from "../treeView2";
+
+jest.mock("../infra/animations", () => ({
+  expandHeight: () => ({
+    addEventListener: (event: string, cb: EmptyFunc) => cb(),
+  }),
+  collapseHeight: () => ({
+    addEventListener: (event: string, cb: EmptyFunc) => cb(),
+  }),
+  revertCurrentAnimations: () => false,
+}));
 
 const folder1_1_2_1 = folder("folder1_1_2_1");
 const folder1_1_1 = folder("folder1_1_1");
@@ -32,31 +42,49 @@ const createTestItems = () =>
     ])
   );
 
-xdescribe("Rendering the whole app with data", () => {
+//HOME
+// folder1 (closed by default)
+//   folder1_1
+//     folder1_1_1
+//     folder1_1_2
+//       folder1_1_2_1
+//   folder1_2
+// folder2
+
+describe("Having a treeview with nested folders", () => {
   beforeEach(() => {
-    dom.setChildren(document.body, renderApp());
     items.itemsLoaded(createTestItems());
-    events.dispatchEvent("item-focused", home);
+    dom.setChildren(document.body, renderTreeView());
+  });
+  it("should have two closed items", () => {
+    const rows = document.getElementsByClassName(cls.treeRow);
+
+    const titles = Array.from(rows).map((el) => el.textContent);
+    expect(titles).toEqual(["+" + folder1.title, "+" + folder2.title]);
   });
 
-  it("page title should be Home", () => {
-    expect(getPageTitle()).toHaveTextContent(home.title);
-  });
+  describe("expanding folder1", () => {
+    beforeEach(() => clickChevron(folder1));
 
-  describe("focusing on item on a sidebar", () => {
-    beforeEach(() => {
-      const firstSidebarRow = document.getElementsByClassName(
-        cls.leftSidebarRow
-      )[0];
-      fireEvent.click(firstSidebarRow);
+    it("should show its children", () => {
+      expect(getRow(folder1_1)).toBeInTheDocument();
     });
 
-    it("should set title to folder1", () => {
-      expect(getPageTitle()).toHaveTextContent(folder1.title);
-    });
-    xit("and then removing the whole app should cleanup all events listeners", () => {
-      dom.removeAllChildren(document.body);
-      expect(JSON.stringify(events.events)).toEqual("{}");
+    describe("then collapsing folder1", () => {
+      beforeEach(() => clickChevron(folder1));
+
+      it("should hide its children", () => {
+        expect(queryRow(folder1_1)).not.toBeInTheDocument();
+      });
+
+      it("should remove child from event listers", () => {
+        expect(events.events["item-collapse"][folder1_1.id]).toBeUndefined();
+      });
+
+      it("clearing body should cleanup all event listeners", () => {
+        dom.removeAllChildren(document.body);
+        expect(JSON.stringify(events.events)).toBe("{}");
+      });
     });
   });
 });

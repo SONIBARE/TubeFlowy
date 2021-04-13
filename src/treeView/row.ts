@@ -195,7 +195,7 @@ css.class(cls.chevron, {
   marginTop: spacings.imageSize / 2 - spacings.chevronSize / 2,
   minWidth: spacings.chevronSize,
   opacity: 0,
-  transition: `transform ${timings.cardExpandCollapseDuration}ms, opacity 100ms`,
+  transition: `transform ${timings.itemExpandCollapseDuration}ms, opacity 100ms`,
   cursor: "pointer",
   color: colors.mediumPrimary,
   userSelect: "none",

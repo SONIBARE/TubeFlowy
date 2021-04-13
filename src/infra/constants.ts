@@ -34,7 +34,7 @@ export const spacings = {
 };
 
 export const timings = {
-  cardExpandCollapseDuration: 200,
+  itemExpandCollapseDuration: 200,
 };
 
 export const colors = {

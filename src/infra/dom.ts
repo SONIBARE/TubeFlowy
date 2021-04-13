@@ -19,13 +19,26 @@ export interface HtmlElementProps<T extends EventTarget>
   style?: Styles;
 }
 
-interface DivProps extends HtmlElementProps<HTMLDivElement> {}
+interface DivProps extends HtmlElementProps<HTMLDivElement> {
+  onRemovedFromDom?: () => void;
+}
 
 export const div = (
   props: DivProps,
   ...children: (string | Node)[]
-): HTMLDivElement => {
-  const elem = document.createElement("div");
+): HTMLElement => {
+  const createElement = (): HTMLElement => {
+    if (props.onRemovedFromDom) {
+      const res = document.createElement("tbf-div") as MyComponent;
+      res.onDisconnected = props.onRemovedFromDom;
+      return res;
+    } else {
+      return document.createElement("div");
+    }
+  };
+
+  const elem = createElement();
+
   assignHtmlElementProps(elem, props);
   children.forEach((c) => {
     if (typeof c === "string") elem.append(c);
@@ -33,6 +46,15 @@ export const div = (
   });
   return elem;
 };
+
+class MyComponent extends HTMLElement {
+  public onDisconnected: EmptyFunc | undefined;
+  disconnectedCallback() {
+    if (this.onDisconnected) this.onDisconnected();
+  }
+}
+
+customElements.define("tbf-div", MyComponent);
 
 interface InputProps extends HtmlElementProps<HTMLInputElement> {
   placeholder?: string;
