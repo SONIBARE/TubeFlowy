@@ -6,7 +6,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = (env, argv) => {
   const isProd = argv.mode === "production";
   return {
-    entry: "./src/app.ts",
+    entry: "./src/architecture2/app.ts",
     output: {
       path: path.resolve(__dirname, "dist"),
       filename: "app.[chunkhash].js",
