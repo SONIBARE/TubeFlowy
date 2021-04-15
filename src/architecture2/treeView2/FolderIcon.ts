@@ -21,8 +21,8 @@ export default class FoderIcon {
       className: cn,
       points,
       strokeWidth,
-      stroke: colors.darkPrimary,
-      fill: colors.darkPrimary,
+      stroke: "currentColor",
+      fill: "currentColor",
       strokelinejoin: "round",
     });
 
@@ -33,24 +33,38 @@ export default class FoderIcon {
 
   update = () => {
     const item = this.item;
+    const isMedia = item.type !== "folder";
+
     dom.assignClasses(this.svg, {
       classMap: {
-        [cls.focusCircleSvgEmpty]: items.isEmptyAndNoNeedToLoad(item),
+        [cls.focusCircleSvgEmpty]:
+          !isMedia && items.isEmptyAndNoNeedToLoad(item),
         [cls.focusCircleSvgFilledOpen]:
           !items.isEmptyAndNoNeedToLoad(item) && items.isFolderOpenOnPage(item),
         [cls.focusCircleSvgFilledClosed]:
           !items.isEmptyAndNoNeedToLoad(item) &&
           !items.isFolderOpenOnPage(item),
         [cls.focusCircleSvgPlaying]: player.isPlayingItem(this.item),
+        [cls.closedContainerImage]:
+          !items.isFolderOpenOnPage(item) &&
+          (item.type == "YTplaylist" || item.type == "YTchannel"),
       },
     });
   };
 
   create() {
     const item = this.item;
-    return svg.svg(
+    const isMedia = item.type !== "folder";
+
+    const res = svg.svg(
       {
         className: cls.focusCircleSvg,
+        classMap: {
+          [cls.mediaSvg]: isMedia,
+          [cls.roundImage]: item.type == "YTchannel",
+          [cls.squareImage]:
+            item.type == "YTplaylist" || item.type == "YTvideo",
+        },
         testId: "itemIcon-" + item.id,
         events: {
           click: (e) => {
@@ -66,27 +80,35 @@ export default class FoderIcon {
         },
         viewBox: "0 0 100 100",
       },
-      this.createCircleAtCenter({
-        className: cls.rowCircleOuter,
-        r: 50,
-        fill: colors.lightPrimary,
-      }),
-      this.createCircleAtCenter({
-        className: cls.rowCircleFilled,
-        r: 19,
-        fill: colors.darkPrimary,
-      }),
-      this.createCircleAtCenter({
-        className: cls.rowCircleEmpty,
-        r: 19,
-        strokeWidth: 2,
-        stroke: colors.darkPrimary,
-        fill: "none",
-      }),
+      !isMedia &&
+        this.createCircleAtCenter({
+          className: cls.rowCircleOuter,
+          r: 50,
+          fill: colors.lightPrimary,
+        }),
+      !isMedia &&
+        this.createCircleAtCenter({
+          className: cls.rowCircleFilled,
+          r: 19,
+          fill: colors.darkPrimary,
+        }),
+      !isMedia &&
+        this.createCircleAtCenter({
+          className: cls.rowCircleEmpty,
+          r: 19,
+          strokeWidth: 2,
+          stroke: colors.darkPrimary,
+          fill: "none",
+        }),
       this.polygon("40,32 69,50 40,68", 10, cls.rowCirclePlay),
       this.polygon("30,30 45,30 45,70 30,70", 2, cls.rowCirclePause),
       this.polygon("70,70 55,70 55,30 70,30", 2, cls.rowCirclePause)
     );
+    res.style.setProperty(
+      "background-image",
+      `url(${items.getImageSrc(item)})`
+    );
+    return res;
   }
 
   render = () => this.svg;
@@ -98,6 +120,38 @@ css.class(cls.focusCircleSvg, {
   width: spacings.outerRadius * 2,
   minWidth: spacings.outerRadius * 2,
   height: spacings.outerRadius * 2,
+  backgroundSize: "cover",
+  backgroundPosition: `50% 50%`,
+  color: colors.darkPrimary,
+});
+
+const insetBlack = (spread: number, alpha: number) =>
+  `inset 0 0 0 ${spread}px rgba(0,0,0,${alpha.toFixed(2)})`;
+
+css.class(cls.mediaSvg, {
+  color: "white",
+  boxShadow: insetBlack(2, 0.1),
+  ...css.transition({ boxShadow: 200 }),
+});
+
+css.parentHover(cls.treeRow, cls.mediaSvg, {
+  boxShadow: insetBlack(16, 0.2),
+});
+
+css.class(cls.closedContainerImage, {
+  boxShadow: `0 0 2px 3px ${colors.mediumPrimary}`,
+});
+
+css.parentHover(cls.treeRow, cls.closedContainerImage, {
+  boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2), 0 0 2px 3px ${colors.mediumPrimary}`,
+});
+
+css.class(cls.squareImage, {
+  borderRadius: 4,
+});
+
+css.class(cls.roundImage, {
+  borderRadius: "50%",
 });
 
 css.classes(

@@ -4,6 +4,8 @@ import { renderTreeView } from "./treeView2";
 import * as globals from "./domain";
 import { ItemsStore } from "./ItemsStore";
 import PlayerStore from "./PlayerStore";
+import { dom } from "../infra";
+import { renderPlayerFooter } from "./player";
 
 const loadLocalItems = (): Items => {
   const localData = localStorage.getItem("tubeflowyData:v1")!;
@@ -12,7 +14,7 @@ const loadLocalItems = (): Items => {
   return loadedItems;
 };
 
-export const viewAppShell = (): HTMLElement => {
+export const viewAppShell = (): Node => {
   const events = new EventsHandler<MyEvents>();
   const store = new ItemsStore(events);
   const player = new PlayerStore(events);
@@ -21,7 +23,7 @@ export const viewAppShell = (): HTMLElement => {
 
   store.itemsLoaded(loadLocalItems());
   store.focusItem("HOME");
-  return renderTreeView();
+  return dom.fragment([renderTreeView(), renderPlayerFooter()]);
 };
 
 document.body.appendChild(viewAppShell());

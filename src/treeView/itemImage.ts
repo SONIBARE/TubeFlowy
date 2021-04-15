@@ -36,6 +36,7 @@ export const itemImage = (
       },
       viewBox: "0 0 100 100",
     },
+
     svg.polygon({
       className: cls.rowCirclePlay,
       points: "40,32 69,50 40,68",
@@ -66,6 +67,7 @@ export const itemImage = (
     "background-image",
     `url(${items.getImageSrc(item)})`
   );
+
   parent.appendChild(image);
 
   const assignImageClasses = () =>

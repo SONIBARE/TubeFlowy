@@ -32,6 +32,9 @@ export default class PlayerStore {
   onItemPlay = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-play", itemId, cb);
 
+  onAnyItemPlay = (cb: ItemCallback) =>
+    this.events.addEventListener("item-play", cb);
+
   isPlayingItem = (item: Item) =>
     this.isPlaying && this.itemBeingShownId === item.id;
 }

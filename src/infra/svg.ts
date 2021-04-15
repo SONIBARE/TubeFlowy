@@ -10,7 +10,10 @@ export interface SvgProps extends ElementProps<SVGSVGElement> {
   viewBox: string;
   fill?: string;
 }
-export const svg = (props: SvgProps, ...child: SVGElement[]): SVGSVGElement => {
+export const svg = (
+  props: SvgProps,
+  ...child: (SVGElement | false)[]
+): SVGSVGElement => {
   const mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   mySvg.setAttribute("viewBox", props.viewBox);
   if (props.fill) mySvg.setAttribute("fill", props.fill);

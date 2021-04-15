@@ -56,6 +56,7 @@ export const cls = {
 
   //row folrder icon
   focusCircleSvg: "focus-circle-svg",
+  mediaSvg: "media-svg",
   focusCircleSvgEmpty: "focus-circle-svg-empty",
   focusCircleSvgFilledOpen: "focus-circle-svg-filled-open",
   focusCircleSvgFilledClosed: "focus-circle-svg-filled-closed",
@@ -72,6 +73,7 @@ export const cls = {
   rowTextVideo: "row-text-video",
 
   squareImage: "square-image",
+  roundImage: "round-image",
   closedContainerImage: "container-image",
   channelImage: "channle-image",
 

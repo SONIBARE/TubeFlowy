@@ -17,6 +17,11 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
 
   const onItemCollapse = () => {
     itemIcon.update();
+    dom.toggleClass(
+      chevron,
+      cls.chevronInactive,
+      items.isEmptyAndNoNeedToLoad(item)
+    );
     dom.toggleClass(chevron, cls.chevronOpen, items.isFolderOpenOnPage(item));
   };
 

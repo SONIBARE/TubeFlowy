@@ -80,6 +80,13 @@ export class ItemsStore {
     } else return item;
   };
 
+  getImageSrc = (item: Item): string => {
+    if (item.type == "YTvideo")
+      return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+    else if ("image" in item) return item.image;
+    else return "";
+  };
+
   //EVENTS
   onItemFocus = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-focused", itemId, cb);
