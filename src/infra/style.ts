@@ -102,6 +102,7 @@ const whitelist: Styles = {
   opacity: 1,
   flex: 1,
   fontWeight: 1,
+  lineHeight: 1,
 };
 export const convertNumericStylesToPixels = (
   s: Styles

@@ -12,7 +12,7 @@ export const spacings = {
   innerRadius,
   borderSize,
   rowLeftPadding: chevronSize / 2,
-  spacePerLevel: chevronSize + outerRadius - borderSize / 2,
+  spacePerLevel: chevronSize + outerRadius - borderSize / 2 + 5,
   negativeMarginForRowAtZeroLevel: 1000,
   rowVecticalPadding,
   spaceBetweenCircleAndText: 8,

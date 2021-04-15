@@ -57,14 +57,6 @@ export class Row extends HTMLElement {
     this.on("item-collapse", animateChevron);
     animateChevron();
 
-    if (item.title.startsWith("Is Free Will an Illusion? ")) {
-      console.log(
-        item.title,
-        item,
-        items.isEmpty(item),
-        !items.isNeedsToBeLoaded(item)
-      );
-    }
     const updateChevronIsActive = () => {
       dom.assignClasses(chev, {
         classMap: { [cls.chevronInactive]: items.isEmptyAndNoNeedToLoad(item) },
@@ -200,6 +192,7 @@ css.class(cls.chevron, {
   color: colors.mediumPrimary,
   userSelect: "none",
 });
+
 css.class(cls.chevronInactive, {
   pointerEvents: "none",
   visibility: "hidden",

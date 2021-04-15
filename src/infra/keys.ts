@@ -2,6 +2,11 @@ export const cls = {
   //TREE VIEW
   treeViewContainer: "tree-view-container",
   treeRow: "tree-row",
+  treeRowBorder: "tree-row-border",
+  treeRowChildren: "tree-row-children",
+  treeRowIconPlay: "tree-row-icon-play",
+  treeRowIcon: "tree-row-icon",
+  childrenBorder: "children-border",
   treeTabContainer: "tree-tab-container",
   treeTab: "tree-tab",
   toggleSearchButton: "toggle-search-button",

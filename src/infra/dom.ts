@@ -25,7 +25,7 @@ interface DivProps extends HtmlElementProps<HTMLDivElement> {
 
 export const div = (
   props: DivProps,
-  ...children: (string | Node)[]
+  ...children: (string | Node | undefined)[]
 ): HTMLElement => {
   const createElement = (): HTMLElement => {
     if (props.onRemovedFromDom) {
@@ -42,7 +42,7 @@ export const div = (
   assignHtmlElementProps(elem, props);
   children.forEach((c) => {
     if (typeof c === "string") elem.append(c);
-    else elem.appendChild(c);
+    else if (c) elem.appendChild(c);
   });
   return elem;
 };
@@ -186,6 +186,21 @@ export const assignClasses = (
       else elem.classList.remove(cs);
     });
 };
+
+export const toggleClass = (
+  elem: Element,
+  className: ClassName,
+  isPresent: boolean
+) => {
+  if (isPresent) elem.classList.add(className);
+  else elem.classList.remove(className);
+};
+
+export const removeClass = (elem: Element, className: ClassName) =>
+  toggleClass(elem, className, false);
+
+export const addClass = (elem: Element, className: ClassName) =>
+  toggleClass(elem, className, true);
 
 const assignEvents = <T extends EventTarget>(
   elem: Element,

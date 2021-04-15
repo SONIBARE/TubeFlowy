@@ -65,3 +65,5 @@ type YoutubeVideo = {
 
 //DND
 type DropPlacement = "before" | "after" | "inside";
+
+type ItemCallback = (item: Item) => void;

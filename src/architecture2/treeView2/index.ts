@@ -1,18 +1,19 @@
 import { cls, colors, css, div, dom } from "../../infra";
 import { ItemsStore } from "../ItemsStore";
 import ItemView from "./ItemView";
+import { items } from "../domain";
 
 //VIEW
 
 class TabView {
   tab: HTMLElement;
-  constructor(public store: ItemsStore) {
-    const cleanup = store.onAnyItemFocus(this.renderTabContent);
+  constructor() {
+    const cleanup = items.onAnyItemFocus(this.renderTabContent);
     this.tab = dom.div({
       className: cls.treeTab,
       onRemovedFromDom: cleanup,
     });
-    this.renderTabContent(store.getFocusedItem());
+    this.renderTabContent(items.getFocusedItem());
   }
 
   renderTabContent = (itemFocused: Item) => {
@@ -20,12 +21,19 @@ class TabView {
       this.tab,
       dom.div(
         {
-          testId: "page-title",
           className: [cls.pageTitle, "level_0" as any],
         },
-        itemFocused.title
+        itemFocused.id !== "HOME"
+          ? dom.button({
+              text: "<-",
+              testId: "go-back",
+              events: { click: items.goBack },
+            })
+          : undefined,
+
+        dom.span({ testId: "page-title" }, itemFocused.title)
       ),
-      ItemView.viewItemChildren(itemFocused, 0, this.store)
+      ItemView.viewItemChildren(itemFocused, 0)
     );
   };
   render() {
@@ -33,8 +41,8 @@ class TabView {
   }
 }
 
-export const renderTreeView = (store: ItemsStore): HTMLElement => {
-  return div({ className: cls.treeTabContainer }, new TabView(store).render());
+export const renderTreeView = (): HTMLElement => {
+  return div({ className: cls.treeTabContainer }, new TabView().render());
 };
 
 css.class(cls.treeTabContainer, {

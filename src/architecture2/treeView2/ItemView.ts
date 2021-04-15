@@ -1,55 +1,29 @@
 import { anim, cls, colors, css, div, dom } from "../../infra";
-import { ItemsStore } from "../ItemsStore";
+import { row } from "./row";
+import { items } from "../domain";
 
 export default class ItemView {
   private itemRow: HTMLElement;
   private itemChildren: HTMLElement | undefined;
 
-  private expandButton: HTMLElement;
-
-  constructor(
-    public item: Item,
-    public level: number,
-    public store: ItemsStore
-  ) {
-    this.expandButton = this.viewExpandButton();
-    this.itemRow = this.viewRow();
+  constructor(public item: Item, public level: number) {
+    const cleanup = items.onItemCollapseExpand(
+      this.item.id,
+      this.updateItemChildren
+    );
+    this.itemRow = row(item, level, cleanup);
     this.itemChildren = this.isItemOpen() ? this.viewChildren() : undefined;
-    this.assignListeners();
   }
 
   render = () => dom.fragment([this.itemRow, this.itemChildren]);
 
-  static viewItemChildren = (item: Item, level = 0, store: ItemsStore): Node =>
+  static viewItemChildren = (item: Item, level = 0): Node =>
     dom.fragment(
-      store
+      items
         .getChildrenFor(item.id)
-        .map((child) => new ItemView(child, level, store))
+        .map((child) => new ItemView(child, level))
         .map((itemView) => itemView.render())
     );
-
-  private viewRow = () =>
-    dom.div(
-      {
-        id: "row-" + this.item.id,
-        className: [cls.treeRow, ("level_" + this.level) as any],
-        onRemovedFromDom: this.cleanup,
-      },
-      this.expandButton,
-      this.item.title,
-      dom.button({
-        text: "f",
-        testId: "focuser-" + this.item.id,
-        events: { click: () => this.store.focusItem(this.item.id) },
-      })
-    );
-
-  private viewExpandButton = () =>
-    dom.button({
-      testId: "chevron-" + this.item.id,
-      text: "",
-      events: { click: () => this.store.toggleItemVisibility(this.item) },
-    });
 
   private viewChildren = () =>
     this.item.title ===
@@ -59,8 +33,16 @@ export default class ItemView {
 
   private viewRegularChildren = (): HTMLElement =>
     dom.div(
-      {},
-      ItemView.viewItemChildren(this.item, this.level + 1, this.store)
+      {
+        className: [cls.treeRowChildren],
+      },
+      ItemView.viewItemChildren(this.item, this.level + 1),
+      dom.div({
+        className: [
+          cls.childrenBorder,
+          ("children-level_" + this.level) as any,
+        ],
+      })
     );
 
   private viewGalleryChildren = (): HTMLElement =>
@@ -75,31 +57,14 @@ export default class ItemView {
           ],
           style: { height: 200 },
         },
-        ...this.store
+        ...items
           .getChildrenFor(this.item.id)
           .map((child) => div({ className: cls.box }, child.title))
           .concat([div({ className: cls.lastBox })])
       )
     );
 
-  private updateExpandButton = () =>
-    (this.expandButton.textContent = this.isItemOpen() ? "-" : "+");
-
-  private onCleanup: EmptyFunc | undefined;
-  private assignListeners = () => {
-    this.onCleanup = this.store.onItemCollapseExpand(
-      this.item.id,
-      this.updateItemVisibility
-    );
-    this.updateExpandButton();
-  };
-
-  private cleanup = () => {
-    this.onCleanup && this.onCleanup();
-  };
-
-  private updateItemVisibility = () => {
-    this.updateExpandButton();
+  private updateItemChildren = () => {
     if (this.isItemOpen()) this.expandChildren();
     else this.collapseChildren();
   };
@@ -129,34 +94,8 @@ export default class ItemView {
     }
   };
 
-  private isItemOpen = () => this.store.isFolderOpenOnPage(this.item);
+  private isItemOpen = () => items.isFolderOpenOnPage(this.item);
 }
-
-const numberOfLevelsToGenerate = 21;
-
-const TREE_MAX_WIDTH = 700;
-
-for (let level = 0; level < numberOfLevelsToGenerate; level++) {
-  const base = `max((100% - ${TREE_MAX_WIDTH}px) / 2, 20px)`;
-  const levelPadding = `${level * 20}px`;
-  css.text(`
-    .level_${level}{
-        padding-left: calc(${base} + ${levelPadding});
-        padding-right: 20px;
-    }
-`);
-}
-
-css.class(cls.treeRow, {
-  cursor: "pointer",
-  display: "flex",
-  justifyItems: "center",
-  alignItems: "flex-start",
-});
-
-css.hover(cls.treeRow, {
-  backgroundColor: colors.superLight,
-});
 
 css.class(cls.itemGalleryContent, {
   overflowX: "overlay" as any,
@@ -179,6 +118,23 @@ css.class(cls.lastBox, {
   height: "100%",
   width: 20,
 });
+
+css.class(cls.treeRowChildren, {
+  position: "relative",
+});
+
+css.class(cls.childrenBorder, {
+  position: "absolute",
+  width: 2,
+  // height: 30,
+  backgroundColor: colors.lightPrimary,
+  top: 0,
+  bottom: 0,
+});
+// css.class(cls.treeRowChildren, {
+//   marginLeft: 30,
+//   borderLeft: `2px solid ${colors.darkPrimary}`,
+// });
 
 css.selector(`.${cls.itemGalleryContent}::-webkit-scrollbar`, {
   height: 8,

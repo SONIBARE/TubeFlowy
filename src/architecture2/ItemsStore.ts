@@ -1,17 +1,15 @@
 import { EventsHandler } from "../domain/eventHandler";
 import { MyEvents } from "./events";
 
-type ItemCallback = (item: Item) => void;
-
 export class ItemsStore {
-  items: Items = {};
+  private items: Items = {};
 
-  focusedId: string = "HOME";
+  private focusedId: string = "HOME";
 
   constructor(private events: EventsHandler<MyEvents>) {}
 
   //SELECTORS
-  getFocusedItem = () => this.items[this.focusedId];
+  getFocusedItem = () => this.getItem(this.focusedId);
 
   isFolderOpenOnPage = (item: Item) =>
     this.isContainer(item) && !item.isCollapsedInGallery;
@@ -24,11 +22,62 @@ export class ItemsStore {
       item.type == "YTplaylist"
     );
   };
+  isEmpty = (item: Item): boolean =>
+    !("children" in item && item.children.length !== 0);
 
+  isNeedsToBeLoaded = (item: Item): boolean =>
+    (this.isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
+    (this.isSearch(item) && item.children.length == 0 && !item.isLoading) ||
+    (this.isChannel(item) && item.children.length == 0 && !item.isLoading);
+
+  isEmptyAndNoNeedToLoad = (item: Item): boolean =>
+    this.isEmpty(item) && !this.isNeedsToBeLoaded(item);
+
+  isRoot = (item: Item) => item.id === "HOME" || item.id === "SEARCH";
+
+  isFolder = (item: Item): item is Folder => {
+    return item.type == "folder";
+  };
+  isPlaylist = (item: Item): item is YoutubePlaylist => {
+    return item.type == "YTplaylist";
+  };
+
+  isVideo = (item: Item): item is YoutubeVideo => {
+    return item.type == "YTvideo";
+  };
+
+  isChannel = (item: Item): item is YoutubeChannel => {
+    return item.type == "YTchannel";
+  };
+
+  isSearch = (item: Item): item is SearchContainer => {
+    return item.type == "search";
+  };
   getChildrenFor = (itemId: string): Item[] => {
-    const item = this.items[itemId];
-    if ("children" in item) return item.children.map((id) => this.items[id]);
+    const item = this.getItem(itemId);
+    if ("children" in item) return item.children.map((id) => this.getItem(id));
     else return [];
+  };
+
+  getParent = (itemId: string | undefined): ItemContainer | undefined =>
+    itemId
+      ? (this.getItem(this.findParentId(itemId)) as ItemContainer)
+      : undefined;
+
+  findParentId = (childId: string) =>
+    Object.keys(this.items).find((parentKey) => {
+      const item = this.getItem(parentKey);
+      if ("children" in item) return item.children.indexOf(childId) > -1;
+    }) as string;
+
+  getItem = (itemId: string): Item => {
+    const item = this.items[itemId];
+    if (!item) {
+      console.error(this.items);
+      throw new Error(
+        `Can't find item with id '${itemId}' in ItemsStore. See all items in console logs.`
+      );
+    } else return item;
   };
 
   //EVENTS
@@ -44,6 +93,7 @@ export class ItemsStore {
   //ACTIONS
   itemsLoaded = (items: Items) => {
     this.items = items;
+    //no events for now
   };
 
   toggleItemVisibility = (item: Item) => {
@@ -58,7 +108,12 @@ export class ItemsStore {
     this.events.dispatchCompundEvent(
       "item-focused",
       itemId,
-      this.items[itemId]
+      this.getItem(itemId)
     );
+  };
+
+  goBack = () => {
+    const parentOfFocusedNode = this.getParent(this.focusedId);
+    if (parentOfFocusedNode) this.focusItem(parentOfFocusedNode.id);
   };
 }

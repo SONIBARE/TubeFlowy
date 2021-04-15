@@ -19,7 +19,7 @@ export const svg = (props: SvgProps, ...child: SVGElement[]): SVGSVGElement => {
   return mySvg;
 };
 
-interface CircleProps extends ElementProps<SVGCircleElement> {
+export interface CircleProps extends ElementProps<SVGCircleElement> {
   cx: number;
   cy: number;
   r: number;
