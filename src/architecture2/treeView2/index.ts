@@ -1,4 +1,4 @@
-import { cls, colors, css, div, dom } from "../../infra";
+import { cls, colors, css, div, dom, spacings } from "../../infra";
 import { ItemsStore } from "../ItemsStore";
 import ItemView from "./ItemView";
 import { items } from "../domain";
@@ -60,6 +60,7 @@ css.class(cls.pageTitle, {
   fontSize: 40,
   fontWeight: "bold",
   marginTop: 20,
+  marginLeft: spacings.chevronSize,
 });
 
 css.selector(`.${cls.treeTab}::-webkit-scrollbar`, {
