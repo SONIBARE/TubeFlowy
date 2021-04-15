@@ -128,6 +128,9 @@ css.class(cls.focusCircleSvg, {
 const insetBlack = (spread: number, alpha: number) =>
   `inset 0 0 0 ${spread}px rgba(0,0,0,${alpha.toFixed(2)})`;
 
+const shadow = (blur: number, spread: number, color: string) =>
+  `0 0 ${blur}px ${spread}px ${color}`;
+
 css.class(cls.mediaSvg, {
   color: "white",
   boxShadow: insetBlack(2, 0.1),
@@ -139,11 +142,13 @@ css.parentHover(cls.treeRow, cls.mediaSvg, {
 });
 
 css.class(cls.closedContainerImage, {
-  boxShadow: `0 0 2px 3px ${colors.mediumPrimary}`,
+  boxShadow: shadow(2, 3, colors.mediumPrimary),
 });
 
 css.parentHover(cls.treeRow, cls.closedContainerImage, {
-  boxShadow: `inset 0 0 0 16px rgba(0,0,0,0.2), 0 0 2px 3px ${colors.mediumPrimary}`,
+  boxShadow: [insetBlack(16, 0.2), shadow(2, 3, colors.mediumPrimary)].join(
+    ","
+  ),
 });
 
 css.class(cls.squareImage, {
@@ -193,7 +198,17 @@ css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.rowCirclePlay}`, {
 css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.rowCircleFilled}`, {
   opacity: 0,
 });
-
+css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.mediaSvg}`, {
+  boxShadow: insetBlack(16, 0.2),
+});
+css.selector(
+  `.${cls.treeRow}.${cls.rowSelected} .${cls.closedContainerImage}`,
+  {
+    boxShadow: [insetBlack(16, 0.2), shadow(2, 3, colors.mediumPrimary)].join(
+      ","
+    ),
+  }
+);
 css.parentParentChild(cls.treeRow, cls.focusCircleSvgEmpty, cls.rowCirclePlay, {
   opacity: 0,
 });
