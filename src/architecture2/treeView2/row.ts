@@ -34,7 +34,7 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
       className: [cls.treeRow, ("level_" + level) as any],
       onRemovedFromDom: compose(onRemove, cleanup, itemIcon.cleanup),
       events: {
-        click: (e) => items.itemClick(item, e.currentTarget),
+        click: () => items.itemClick(item),
       },
     },
     chevron,

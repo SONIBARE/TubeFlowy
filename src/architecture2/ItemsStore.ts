@@ -58,7 +58,7 @@ export class ItemsStore {
     if ("children" in item) return item.children.map((id) => this.getItem(id));
     else return [];
   };
-
+  getFirstChildOf = (itemId: string) => this.getChildrenFor(itemId)[0];
   getParent = (itemId: string | undefined): ItemContainer | undefined =>
     itemId
       ? (this.getItem(this.findParentId(itemId)) as ItemContainer)
@@ -79,7 +79,22 @@ export class ItemsStore {
       );
     } else return item;
   };
-
+  getNextItem = (item: Item): Item | undefined => {
+    const parent = this.getParent(item.id);
+    if (parent) {
+      const index = parent.children.indexOf(item.id);
+      const id = parent.children[index + 1];
+      if (id) return this.getItem(id);
+    }
+  };
+  getPreviousItem = (item: Item): Item | undefined => {
+    const parent = this.getParent(item.id);
+    if (parent) {
+      const index = parent.children.indexOf(item.id);
+      const id = parent.children[index - 1];
+      if (id) return this.getItem(id);
+    }
+  };
   getImageSrc = (item: Item): string => {
     if (item.type == "YTvideo")
       return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
@@ -122,11 +137,8 @@ export class ItemsStore {
     );
   };
 
-  itemClick = (item: Item, rowElement: HTMLElement) => {
-    this.events.dispatchCompundEvent("item-click", item.id, {
-      item,
-      rowElement,
-    });
+  itemClick = (item: Item) => {
+    this.events.dispatchCompundEvent("item-click", item.id, item);
   };
 
   goBack = () => {

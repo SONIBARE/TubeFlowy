@@ -1,20 +1,18 @@
 import { cls, colors, compose, css, div, dom, spacings } from "../../infra";
 import ItemView from "./ItemView";
 import { items } from "../domain";
-import { RowHighliter } from "./rowHighlighter";
+import { RowHighliter } from "./RowHighlighterr";
 
 //VIEW
 
 class TabView {
   tab: HTMLElement;
-  rowHighlighter: RowHighliter;
   constructor() {
-    console.log("bar", RowHighliter);
-    this.rowHighlighter = new RowHighliter();
+    const rowHighlighter = new RowHighliter();
     const cleanup = items.onAnyItemFocus(this.renderTabContent);
     this.tab = dom.div({
       className: cls.treeTab,
-      onRemovedFromDom: compose(cleanup, this.rowHighlighter.cleanup),
+      onRemovedFromDom: compose(cleanup, rowHighlighter.cleanup),
     });
     this.renderTabContent(items.getFocusedItem());
   }

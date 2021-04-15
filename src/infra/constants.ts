@@ -33,8 +33,11 @@ export const spacings = {
   cardTextBottomPadding: 2,
 };
 
+const globalCoef = 1;
+
 export const timings = {
-  itemExpandCollapseDuration: 200,
+  selectionMove: 100 * globalCoef,
+  itemExpandCollapseDuration: 200 * globalCoef,
 };
 
 export const colors = {
