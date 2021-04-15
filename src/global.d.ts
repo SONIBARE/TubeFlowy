@@ -67,3 +67,7 @@ type YoutubeVideo = {
 type DropPlacement = "before" | "after" | "inside";
 
 type ItemCallback = (item: Item) => void;
+
+type Func<T1> = (arg: T1) => void;
+type Func<T1, T2> = (arg1: T1, arg2: T2) => void;
+type Func<T1, T2, T3> = (arg1: T1, arg2: T2, arg2: T3) => void;

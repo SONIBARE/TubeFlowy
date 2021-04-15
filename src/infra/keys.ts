@@ -12,6 +12,7 @@ export const cls = {
   toggleSearchButton: "toggle-search-button",
   itemGalleryContainer: "item-gallery-container",
   itemGalleryContent: "item-gallery-content",
+  treeRowHighlight: "tree-row-highlight",
 
   box: "box",
   lastBox: "last-box",

@@ -33,6 +33,9 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
       id: "row-" + item.id,
       className: [cls.treeRow, ("level_" + level) as any],
       onRemovedFromDom: compose(onRemove, cleanup, itemIcon.cleanup),
+      events: {
+        click: (e) => items.itemClick(item, e.currentTarget),
+      },
     },
     chevron,
     itemIcon.render(),
@@ -76,6 +79,8 @@ for (let level = 0; level < numberOfLevelsToGenerate; level++) {
 
 css.class(cls.treeRow, {
   cursor: "pointer",
+  //used to position selection row
+  position: "relative",
   display: "flex",
   justifyItems: "center",
   alignItems: "flex-start",

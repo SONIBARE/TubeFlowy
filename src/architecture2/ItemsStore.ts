@@ -97,6 +97,9 @@ export class ItemsStore {
   onItemCollapseExpand = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-collapse", itemId, cb);
 
+  onAnyItemClick = (cb: Func<MyEvents["item-click"]>) =>
+    this.events.addEventListener("item-click", cb);
+
   //ACTIONS
   itemsLoaded = (items: Items) => {
     this.items = items;
@@ -117,6 +120,13 @@ export class ItemsStore {
       itemId,
       this.getItem(itemId)
     );
+  };
+
+  itemClick = (item: Item, rowElement: HTMLElement) => {
+    this.events.dispatchCompundEvent("item-click", item.id, {
+      item,
+      rowElement,
+    });
   };
 
   goBack = () => {
