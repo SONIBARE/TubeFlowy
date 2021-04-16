@@ -1,5 +1,5 @@
-import { EventsHandler } from "./infra";
-import { items } from "./domain";
+import { EventsHandler } from "../infra";
+import { items } from "./";
 
 export default class PlayerStore {
   itemBeingShownId: string | undefined;

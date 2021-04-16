@@ -2,11 +2,9 @@ import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByAttribute } from "@testing-library/dom";
 import { cls, dom, EventsHandler } from "../infra";
 
-import { folder, deepCopy, createItemsFromArray, video } from "../testUtils";
-import { ItemsStore } from "../ItemsStore";
+import { folder, deepCopy, createItemsFromArray, video } from "./testUtils";
 import { renderTreeView } from ".";
-import { setItems, setPlayer } from "../domain";
-import PlayerStore from "../PlayerStore";
+import * as domain from "../domain";
 
 jest.mock("../infra/animations", () => ({
   animate: () => ({
@@ -56,15 +54,12 @@ const createTestItems = () =>
 // folder2
 
 describe("App features:", () => {
-  let store: ItemsStore;
   let events: EventsHandler<MyEvents>;
 
   beforeEach(() => {
     events = new EventsHandler<MyEvents>();
-    store = new ItemsStore(events);
-    setItems(store);
-    setPlayer(new PlayerStore(events));
-    store.itemsLoaded(createTestItems());
+    domain.init(events);
+    domain.items.itemsLoaded(createTestItems());
     dom.setChildren(document.body, renderTreeView());
   });
 

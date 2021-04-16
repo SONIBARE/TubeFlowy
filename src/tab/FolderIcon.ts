@@ -8,7 +8,7 @@ import {
   Styles,
   svg,
 } from "../infra";
-import { onItemMouseDown } from "../dnd";
+import { onItemMouseDown } from "./dnd";
 import { items, player } from "../domain";
 
 export default class FoderIcon {

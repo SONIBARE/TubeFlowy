@@ -1,6 +1,6 @@
-import { EventsHandler } from "./infra";
+import { EventsHandler } from "../infra";
 
-export class ItemsStore {
+export default class ItemsStore {
   private items: Items = {};
 
   private focusedId: string = "HOME";

@@ -8,7 +8,7 @@ import {
   spacings,
   timings,
 } from "../infra";
-import { onItemMouseMove } from "../dnd";
+import { onItemMouseMove } from "./dnd";
 import { items } from "../domain";
 import FolderIcon from "./FolderIcon";
 

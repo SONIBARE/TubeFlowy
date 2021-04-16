@@ -1,6 +1,6 @@
-import { items } from "./domain";
-import { cls, colors, css, div, spacings } from "./infra";
-import FolderIcon from "./tab/FolderIcon";
+import { items } from "../domain";
+import { cls, colors, css, div, spacings } from "../infra";
+import FolderIcon from "./FolderIcon";
 
 //DND state
 let initialMousePosition: Vector;
