@@ -19,20 +19,42 @@ export interface HtmlElementProps<T extends EventTarget>
   style?: Styles;
 }
 
-interface DivProps extends HtmlElementProps<HTMLDivElement> {}
+interface DivProps extends HtmlElementProps<HTMLDivElement> {
+  onRemovedFromDom?: () => void;
+}
 
 export const div = (
   props: DivProps,
-  ...children: (string | Node)[]
-): HTMLDivElement => {
-  const elem = document.createElement("div");
+  ...children: (string | Node | undefined)[]
+): HTMLElement => {
+  const createElement = (): HTMLElement => {
+    if (props.onRemovedFromDom) {
+      const res = document.createElement("tbf-div") as MyComponent;
+      res.onDisconnected = props.onRemovedFromDom;
+      return res;
+    } else {
+      return document.createElement("div");
+    }
+  };
+
+  const elem = createElement();
+
   assignHtmlElementProps(elem, props);
   children.forEach((c) => {
     if (typeof c === "string") elem.append(c);
-    else elem.appendChild(c);
+    else if (c) elem.appendChild(c);
   });
   return elem;
 };
+
+class MyComponent extends HTMLElement {
+  public onDisconnected: EmptyFunc | undefined;
+  disconnectedCallback() {
+    if (this.onDisconnected) this.onDisconnected();
+  }
+}
+
+customElements.define("tbf-div", MyComponent);
 
 interface InputProps extends HtmlElementProps<HTMLInputElement> {
   placeholder?: string;
@@ -105,11 +127,14 @@ export const canvas = (props: CanvasProps): HTMLCanvasElement => {
   return elem;
 };
 
+export const removeAllChildren = (elem: Node) => {
+  while (elem.firstChild) elem.removeChild(elem.firstChild);
+};
+
 type FragmentChild = Node | string | undefined | false;
 
 export const setChildren = (elem: Node, ...children: FragmentChild[]) => {
-  while (elem.firstChild) elem.removeChild(elem.firstChild);
-
+  removeAllChildren(elem);
   elem.appendChild(fragment(children));
 };
 
@@ -161,6 +186,21 @@ export const assignClasses = (
       else elem.classList.remove(cs);
     });
 };
+
+export const toggleClass = (
+  elem: Element,
+  className: ClassName,
+  isPresent: boolean
+) => {
+  if (isPresent) elem.classList.add(className);
+  else elem.classList.remove(className);
+};
+
+export const removeClass = (elem: Element, className: ClassName) =>
+  toggleClass(elem, className, false);
+
+export const addClass = (elem: Element, className: ClassName) =>
+  toggleClass(elem, className, true);
 
 const assignEvents = <T extends EventTarget>(
   elem: Element,

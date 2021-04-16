@@ -12,7 +12,7 @@ export const spacings = {
   innerRadius,
   borderSize,
   rowLeftPadding: chevronSize / 2,
-  spacePerLevel: chevronSize + outerRadius - borderSize / 2,
+  spacePerLevel: chevronSize + outerRadius - borderSize / 2 + 5,
   negativeMarginForRowAtZeroLevel: 1000,
   rowVecticalPadding,
   spaceBetweenCircleAndText: 8,
@@ -33,8 +33,11 @@ export const spacings = {
   cardTextBottomPadding: 2,
 };
 
+const globalCoef = 1;
+
 export const timings = {
-  cardExpandCollapseDuration: 200,
+  selectionMove: 100 * globalCoef,
+  itemExpandCollapseDuration: 200 * globalCoef,
 };
 
 export const colors = {

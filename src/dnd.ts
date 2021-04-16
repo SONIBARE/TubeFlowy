@@ -1,42 +1,28 @@
 import { items } from "./domain";
 import { cls, colors, css, div, spacings } from "./infra";
-import { folderIcon } from "./treeView/folderIcon";
-import { itemImage } from "./treeView/itemImage";
-import { RowWithChildren } from "./treeView/rowWithChildren";
+import FolderIcon from "./tab/FolderIcon";
 
 //DND state
 let initialMousePosition: Vector;
 let dragAvatar: HTMLElement | undefined;
 let dragDestination: HTMLElement | undefined;
-let itemBeingDragged: Item;
-let itemBeingDraggedElement: RowWithChildren | undefined;
-
-let itemUnderElement: RowWithChildren | undefined;
-
+let itemBeingDragged: Item | undefined;
+let itemUnder: Item | undefined;
 let dropPlacement: DropPlacement;
 
-export const onItemMouseDown = (
-  item: Item,
-  itemElem: RowWithChildren,
-  e: MouseEvent
-) => {
+export const onItemMouseDown = (item: Item, e: MouseEvent) => {
   document.body.style.userSelect = "none";
   document.body.style.cursor = "grabbing";
 
-  itemBeingDraggedElement = itemElem;
   itemBeingDragged = item;
   initialMousePosition = getScreenPosiiton(e);
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 };
 
-export const onItemMouseMove = (
-  item: Item,
-  itemUnderElem: RowWithChildren,
-  e: MouseEvent
-) => {
+export const onItemMouseMove = (item: Item, e: MouseEvent) => {
   if (dragAvatar) {
-    itemUnderElement = itemUnderElem;
+    itemUnder = item;
     if (!dragDestination) {
       dragDestination = div(
         { className: cls.dragDestination },
@@ -59,14 +45,13 @@ export const onItemMouseMove = (
 };
 
 const onMouseMove = (e: MouseEvent) => {
-  if (e.buttons == 1) {
+  if (e.buttons == 1 && itemBeingDragged) {
     if (!dragAvatar) {
       const dist = distance(initialMousePosition, getScreenPosiiton(e));
       if (dist > 5) {
-        dragAvatar = div({ className: cls.dragAvatar });
-        items.hasImagePreview(itemBeingDragged)
-          ? itemImage(itemBeingDragged, dragAvatar, () => undefined)
-          : folderIcon(itemBeingDragged, dragAvatar, () => undefined);
+        const icon = new FolderIcon(itemBeingDragged);
+        icon.update();
+        dragAvatar = div({ className: cls.dragAvatar }, icon.render());
         document.body.appendChild(dragAvatar);
         updateDragAvatarPosition(dragAvatar, e);
       }
@@ -88,12 +73,15 @@ const updateDragDestinationPosition = (
   rowUnder: HTMLElement,
   e: MouseEvent
 ) => {
+  const outerCircle = rowUnder.getElementsByClassName(cls.focusCircleSvg)[0]!;
+  const circleRect = outerCircle.getBoundingClientRect();
+  const left = circleRect.left + spacings.outerRadius - BULP_RADIUS;
+
   const rect = rowUnder.getBoundingClientRect();
-  const baseLevel = spacings.rowsContainerLeftPadding;
 
   const isOnTheLowerHalf = e.pageY > rect.top + rect.height / 2;
 
-  let isInside = 1;
+  let isInside = 0;
 
   if (isOnTheLowerHalf) {
     dropPlacement = "after";
@@ -104,26 +92,13 @@ const updateDragDestinationPosition = (
   }
 
   if (
-    e.pageX >
-      baseLevel +
-        rect.left +
-        spacings.negativeMarginForRowAtZeroLevel +
-        spacings.rowsContainerLeftPadding +
-        spacings.spacePerLevel &&
+    e.pageX > circleRect.left + spacings.outerRadius * 2 &&
     isOnTheLowerHalf
   ) {
     dropPlacement = "inside";
-    isInside = 2;
+    isInside = 1;
   }
-  //TODO: there is a small error in this calculation (when placing inside)
-  //postponing resolution, since I don't believe this visual accuracy matters now
-  dragDestination.style.left =
-    rect.left +
-    spacings.negativeMarginForRowAtZeroLevel +
-    isInside * spacings.spacePerLevel +
-    spacings.rowLeftPadding -
-    3 +
-    "px";
+  dragDestination.style.left = left + isInside * spacings.spacePerLevel + "px";
 };
 
 const onMouseUp = () => {
@@ -132,8 +107,13 @@ const onMouseUp = () => {
 };
 
 const drop = () => {
-  if (itemUnderElement && itemBeingDraggedElement) {
-    itemBeingDraggedElement.moveItemRelativeTo(dropPlacement, itemUnderElement);
+  if (itemBeingDragged && itemUnder) {
+    if (dropPlacement === "after")
+      items.moveItemAfter(itemBeingDragged.id, itemUnder.id);
+    if (dropPlacement === "before")
+      items.moveItemBefore(itemBeingDragged.id, itemUnder.id);
+    if (dropPlacement === "inside")
+      items.moveItemInside(itemBeingDragged.id, itemUnder.id);
   }
 };
 
@@ -146,9 +126,6 @@ const finishDrag = () => {
     dragDestination.remove();
     dragDestination = undefined;
   }
-  itemUnderElement = undefined;
-  itemBeingDraggedElement = undefined;
-
   document.body.style.removeProperty("user-select");
   document.body.style.removeProperty("cursor");
   document.removeEventListener("mousemove", onMouseMove);
@@ -174,18 +151,22 @@ const distance = (a1: Vector, a2: Vector) => {
 css.class(cls.dragAvatar, {
   position: "fixed",
   pointerEvents: "none",
+  zIndex: 200,
 });
 
 css.class(cls.dragDestination, {
   position: "fixed",
+  pointerEvents: "none",
   height: 2,
   backgroundColor: colors.darkPrimary,
   width: 300,
+  zIndex: 100,
 });
+const BULP_RADIUS = 4;
 css.class(cls.dragDestinationBulp, {
   position: "absolute",
-  height: 8,
-  width: 8,
+  height: BULP_RADIUS * 2,
+  width: BULP_RADIUS * 2,
   left: 0,
   top: -3,
   backgroundColor: colors.darkPrimary,

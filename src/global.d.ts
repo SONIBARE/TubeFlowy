@@ -65,3 +65,24 @@ type YoutubeVideo = {
 
 //DND
 type DropPlacement = "before" | "after" | "inside";
+
+type ItemCallback = (item: Item) => void;
+
+type Func<T1> = (arg: T1) => void;
+type Func<T1, T2> = (arg1: T1, arg2: T2) => void;
+type Func<T1, T2, T3> = (arg1: T1, arg2: T2, arg2: T3) => void;
+
+//EVENTS
+type MyEvents = {
+  "items-loaded": Items;
+
+  "item-collapse": Item;
+  "item-focused": Item;
+  "item-play": Item;
+  "item-click": Item;
+
+  //CRUD
+  "item-removed": Item;
+  "item-insert-after": Item;
+  "item-insert-inside": Item;
+};

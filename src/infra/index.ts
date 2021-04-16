@@ -7,7 +7,8 @@ export { zIndexes, tIds, ids, cls, ClassName } from "./keys";
 export { div, fragment, img, span, input, button, canvas } from "./dom"; //   findFirstByClass,
 export * as dom from "./dom";
 export * as svg from "./svg"; //   findFirstByClass,
-export { EventsHandler } from "./eventsHandler";
+export { EventsHandler } from "./eventHandler";
+export { SlapstukMouseEvent } from "./elementEvents";
 //   findById,
 //   fragment,
 //   DivDefinition,

@@ -18,7 +18,7 @@ export const expandHeight = (elem: HTMLElement) =>
       { height: 0, opacity: 0, overflow: "hidden" },
       { height: elem.clientHeight, opacity: 1, overflow: "hidden" },
     ],
-    { duration: timings.cardExpandCollapseDuration }
+    { duration: timings.itemExpandCollapseDuration }
   );
 
 export const collapseHeight = (elem: HTMLElement) =>
@@ -28,7 +28,7 @@ export const collapseHeight = (elem: HTMLElement) =>
       { height: elem.clientHeight, opacity: 1, overflow: "hidden" },
       { height: 0, opacity: 0, overflow: "hidden" },
     ],
-    { duration: timings.cardExpandCollapseDuration }
+    { duration: timings.itemExpandCollapseDuration }
   );
 
 export const revertCurrentAnimations = (elem: HTMLElement): boolean => {
