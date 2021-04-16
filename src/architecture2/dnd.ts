@@ -1,6 +1,6 @@
 import { items } from "./domain";
 import { cls, colors, css, div, spacings } from "../infra";
-import FolderIcon from "./treeView2/FolderIcon";
+import FolderIcon from "./tab/FolderIcon";
 
 //DND state
 let initialMousePosition: Vector;
@@ -156,6 +156,7 @@ css.class(cls.dragAvatar, {
 
 css.class(cls.dragDestination, {
   position: "fixed",
+  pointerEvents: "none",
   height: 2,
   backgroundColor: colors.darkPrimary,
   width: 300,

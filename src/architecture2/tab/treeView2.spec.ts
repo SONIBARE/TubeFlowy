@@ -1,14 +1,8 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByAttribute } from "@testing-library/dom";
-import { cls, dom } from "../../infra";
+import { cls, dom, EventsHandler } from "../../infra";
 
-import { EventsHandler } from "../../domain/eventHandler";
-import {
-  folder,
-  deepCopy,
-  createItemsFromArray,
-  video,
-} from "../../domain/testUtils";
+import { folder, deepCopy, createItemsFromArray, video } from "../testUtils";
 import { ItemsStore } from "../ItemsStore";
 import { renderTreeView } from ".";
 import { setItems, setPlayer } from "../domain";
