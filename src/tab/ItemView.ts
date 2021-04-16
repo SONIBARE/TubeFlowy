@@ -11,6 +11,7 @@ export default class ItemView {
       items.onItemCollapseExpand(this.item.id, this.updateItemChildren),
       items.onItemRemoved(item.id, this.removeItem),
       items.onItemInsertedAfter(item.id, this.insertItemAfterThis),
+      items.onItemInsertedBefore(item.id, this.insertItemBeforeThis),
       items.onItemInsertedInside(item.id, this.insertItemInsideThis)
     );
     this.itemRow = row(item, level, cleanup);
@@ -109,6 +110,14 @@ export default class ItemView {
     if (itemView.itemChildren)
       target.insertAdjacentElement("afterend", itemView.itemChildren);
     target.insertAdjacentElement("afterend", itemView.itemRow);
+  };
+
+  private insertItemBeforeThis = (item: Item) => {
+    const itemView = new ItemView(item, this.level);
+    const target = this.itemRow;
+    target.insertAdjacentElement("beforebegin", itemView.itemRow);
+    if (itemView.itemChildren)
+      target.insertAdjacentElement("beforebegin", itemView.itemChildren);
   };
 
   private insertItemInsideThis = (item: Item) => {

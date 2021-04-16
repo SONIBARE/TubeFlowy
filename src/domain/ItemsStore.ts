@@ -120,6 +120,9 @@ export default class ItemsStore {
   onItemInsertedAfter = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-insert-after", itemId, cb);
 
+  onItemInsertedBefore = (itemId: string, cb: ItemCallback) =>
+    this.events.addCompoundEventListener("item-insert-before", itemId, cb);
+
   onItemInsertedInside = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-insert-inside", itemId, cb);
 
@@ -175,41 +178,35 @@ export default class ItemsStore {
       this.insertAfter(itemIdToMoveAfter, item);
     }
   };
-  moveItemBefore = (itemIdToMove: string, itemIdToMoveAfter: string) => {
+
+  moveItemBefore = (itemIdToMove: string, itemIdToMoveBefore: string) => {
     const item = this.getItem(itemIdToMove);
     this.removeItem(item);
-    const targetItemParent = this.getParent(itemIdToMoveAfter);
+    const targetItemParent = this.getParent(itemIdToMoveBefore);
 
     if (targetItemParent) {
       targetItemParent.children = targetItemParent.children
-        .map((i) => (i === itemIdToMoveAfter ? [itemIdToMove, i] : [i]))
+        .map((i) => (i === itemIdToMoveBefore ? [itemIdToMove, i] : [i]))
         .flat();
-      const itemAfterIndex =
-        targetItemParent.children.indexOf(itemIdToMove) - 1;
-      if (itemAfterIndex >= 0) {
-        this.insertAfter(targetItemParent.children[itemAfterIndex], item);
-      } else {
-        this.inserItemInto(targetItemParent, item);
-      }
+      this.insertBefore(itemIdToMoveBefore, item);
     }
   };
 
   moveItemInside = (itemIdToMove: string, itemIdToMoveInside: string) => {
     const item = this.getItem(itemIdToMove);
     this.removeItem(item);
-    const itemToMoveInside = this.getItem(itemIdToMoveInside);
-    this.inserItemInto(itemToMoveInside, item);
-  };
-
-  inserItemInto = (itemContainer: Item, itemToInsert: Item) => {
+    const itemContainer = this.getItem(itemIdToMoveInside);
     if (this.isContainer(itemContainer)) {
-      itemContainer.children = [itemToInsert.id].concat(itemContainer.children);
-      this.insertInside(itemContainer.id, itemToInsert);
+      itemContainer.children = [item.id].concat(itemContainer.children);
+      this.insertInside(itemContainer.id, item);
     }
   };
 
   private insertAfter = (itemId: string, item: Item) =>
     this.events.dispatchCompundEvent("item-insert-after", itemId, item);
+
+  private insertBefore = (itemId: string, item: Item) =>
+    this.events.dispatchCompundEvent("item-insert-before", itemId, item);
 
   private insertInside = (itemId: string, item: Item) =>
     this.events.dispatchCompundEvent("item-insert-inside", itemId, item);

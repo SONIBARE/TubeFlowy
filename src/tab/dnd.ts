@@ -15,7 +15,7 @@ export const onItemMouseDown = (item: Item, e: MouseEvent) => {
   document.body.style.cursor = "grabbing";
 
   itemBeingDragged = item;
-  initialMousePosition = getScreenPosiiton(e);
+  initialMousePosition = getScreenPosition(e);
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
 };
@@ -47,7 +47,7 @@ export const onItemMouseMove = (item: Item, e: MouseEvent) => {
 const onMouseMove = (e: MouseEvent) => {
   if (e.buttons == 1 && itemBeingDragged) {
     if (!dragAvatar) {
-      const dist = distance(initialMousePosition, getScreenPosiiton(e));
+      const dist = distance(initialMousePosition, getScreenPosition(e));
       if (dist > 5) {
         const icon = new FolderIcon(itemBeingDragged);
         icon.update();
@@ -79,7 +79,8 @@ const updateDragDestinationPosition = (
 
   const rect = rowUnder.getBoundingClientRect();
 
-  const isOnTheLowerHalf = e.pageY > rect.top + rect.height / 2;
+  const point = getScreenPosition(e);
+  const isOnTheLowerHalf = point.y > rect.top + rect.height / 2;
 
   let isInside = 0;
 
@@ -137,9 +138,12 @@ interface Vector {
   y: number;
 }
 
-const getScreenPosiiton = (e: MouseEvent): Vector => ({
-  x: e.pageX,
-  y: e.pageY,
+//accessing clientX is ugly, but I have no other way to pass pageX from tests
+//https://github.com/testing-library/dom-testing-library/issues/144
+//https://github.com/jsdom/jsdom/issues/1911
+const getScreenPosition = (e: MouseEvent): Vector => ({
+  x: e.pageX || e.clientX,
+  y: e.pageY || e.clientY,
 });
 
 const distance = (a1: Vector, a2: Vector) => {

@@ -243,7 +243,7 @@ describe("App features:", () => {
             describe("pressing left", () => {
               beforeEach(() => press.arrowLeft());
               it("closes that node", () => {
-                expect(getRow(folder1_1_1)).not.toBeInTheDocument();
+                expect(queryRow(folder1_1_1)).not.toBeInTheDocument();
               });
               describe("pressing left", () => {
                 beforeEach(() => press.arrowLeft());
@@ -291,6 +291,78 @@ describe("App features:", () => {
     });
   });
 
+  describe("DND via mouse", () => {
+    const startDraggingItem = (item: Item) => {
+      fireEvent.mouseDown(outerCircle(item), {
+        clientX: 0,
+        clientY: 0,
+      });
+      fireEvent.mouseMove(document, {
+        buttons: 1,
+        clientX: 5,
+        clientY: 5,
+      });
+    };
+    it("moving folder1 after folder2 and droping should swap their positions", () => {
+      const getTitlesInOrder = () =>
+        Array.from(document.getElementsByClassName(cls.treeRow)).map(
+          (row) => row.getElementsByClassName(cls.rowText)[0].textContent
+        );
+
+      expect(getTitlesInOrder()).toEqual([folder1.title, folder2.title]);
+
+      startDraggingItem(folder1);
+      const rowHeight = 20;
+      const folder2XPosition = 110;
+
+      const row = getRow(folder2);
+      row.getBoundingClientRect = () =>
+        ({
+          height: rowHeight,
+          top: folder2XPosition,
+        } as any);
+
+      fireEvent.mouseMove(getRow(folder2), {
+        buttons: 1,
+        clientX: 10,
+        clientY: folder2XPosition + rowHeight / 2 + 1,
+      });
+
+      fireEvent.mouseUp(document);
+      expect(getTitlesInOrder()).toEqual([folder2.title, folder1.title]);
+    });
+    it("moving folder2 before folder1 and droping should swap their positions", () => {
+      const getTitlesInOrder = () =>
+        Array.from(document.getElementsByClassName(cls.treeRow)).map(
+          (row) => row.getElementsByClassName(cls.rowText)[0].textContent
+        );
+
+      expect(getTitlesInOrder()).toEqual([folder1.title, folder2.title]);
+
+      startDraggingItem(folder2);
+      const rowHeight = 20;
+      const folder1Position = 110;
+
+      const row = getRow(folder1);
+      row.getBoundingClientRect = () =>
+        ({
+          height: rowHeight,
+          top: folder1Position,
+        } as any);
+
+      fireEvent.mouseMove(getRow(folder1), {
+        buttons: 1,
+        clientX: 10,
+        clientY: folder1Position + rowHeight / 2 - 1,
+      });
+
+      fireEvent.mouseUp(document);
+      expect(getTitlesInOrder()).toEqual([folder2.title, folder1.title]);
+    });
+
+    it("opening folder1 and draggning folder2 inside should place folder2 as first child", () => {});
+  });
+
   describe("PLAYER", () => {
     it("opening folder1 and clicking play on a video1_3 should show pause icon", () => {
       const [leftPause, rightPause] = pauseIcons(folder1);
@@ -335,7 +407,7 @@ const pauseIcons = (item: Item) => [
 ];
 
 const itemIcon = (item: Item) => get("itemIcon-" + item.id);
-const getRow = (item: Item) => queryById("row-" + item.id);
+const getRow = (item: Item): Element => getById("row-" + item.id) as Element;
 const queryRow = (item: Item) => queryById("row-" + item.id);
 
 //general page-agnostic query helpers

@@ -83,6 +83,7 @@ type MyEvents = {
 
   //CRUD
   "item-removed": Item;
+  "item-insert-before": Item;
   "item-insert-after": Item;
   "item-insert-inside": Item;
 };
