@@ -8,6 +8,7 @@ import {
   spacings,
   timings,
 } from "../../infra";
+import { onItemMouseMove } from "../dnd";
 import { items } from "../domain";
 import FolderIcon from "./FolderIcon";
 
@@ -35,6 +36,7 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
       onRemovedFromDom: compose(onRemove, cleanup, itemIcon.cleanup),
       events: {
         click: () => items.itemClick(item),
+        mousemove: (e) => onItemMouseMove(item, e),
       },
     },
     chevron,
@@ -55,7 +57,7 @@ const viewChevron = (item: Item) =>
     },
   });
 
-const numberOfLevelsToGenerate = 21;
+const numberOfLevelsToGenerate = 11;
 
 const borderWidth = 2;
 const TREE_MAX_WIDTH = 700;

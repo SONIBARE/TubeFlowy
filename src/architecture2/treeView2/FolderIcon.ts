@@ -1,9 +1,20 @@
-import { ClassName, cls, colors, css, dom, spacings, svg } from "../../infra";
+import {
+  ClassName,
+  cls,
+  colors,
+  css,
+  dom,
+  spacings,
+  Styles,
+  svg,
+} from "../../infra";
+import { onItemMouseDown } from "../dnd";
 import { items, player } from "../domain";
 
 export default class FoderIcon {
   svg: SVGElement;
   cleanup: EmptyFunc;
+
   constructor(public item: Item) {
     this.cleanup = player.onItemPlay(item.id, this.update);
     this.svg = this.create();
@@ -76,7 +87,7 @@ export default class FoderIcon {
               player.play(item.id);
             }
           },
-          // mousedown: onMouseDown,
+          mousedown: (e) => onItemMouseDown(item, e),
         },
         viewBox: "0 0 100 100",
       },
@@ -98,7 +109,7 @@ export default class FoderIcon {
           r: 19,
           strokeWidth: 2,
           stroke: colors.darkPrimary,
-          fill: "none",
+          fill: "white",
         }),
       this.polygon("40,32 69,50 40,68", 10, cls.rowCirclePlay),
       this.polygon("30,30 45,30 45,70 30,70", 2, cls.rowCirclePause),
@@ -173,31 +184,25 @@ css.classes(
   }
 );
 
-css.parentChild(cls.focusCircleSvgEmpty, cls.rowCircleEmpty, {
-  opacity: 1,
-});
-css.parentChild(cls.focusCircleSvgFilledOpen, cls.rowCircleFilled, {
-  opacity: 1,
-});
-css.parentChild(cls.focusCircleSvgFilledClosed, cls.rowCircleFilled, {
-  opacity: 1,
-});
-css.parentChild(cls.focusCircleSvgFilledClosed, cls.rowCircleOuter, {
-  opacity: 1,
-});
+const opaque: Styles = { opacity: 1 };
+const transparent: Styles = { opacity: 0 };
 
-css.parentHover(cls.treeRow, cls.rowCirclePlay, {
-  opacity: 1,
-});
-css.parentHover(cls.treeRow, cls.rowCircleFilled, {
-  opacity: 0,
-});
-css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.rowCirclePlay}`, {
-  opacity: 1,
-});
-css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.rowCircleFilled}`, {
-  opacity: 0,
-});
+css.parentChild(cls.focusCircleSvgEmpty, cls.rowCircleEmpty, opaque);
+css.parentChild(cls.focusCircleSvgFilledOpen, cls.rowCircleFilled, opaque);
+css.parentChild(cls.focusCircleSvgFilledClosed, cls.rowCircleFilled, opaque);
+css.parentChild(cls.focusCircleSvgFilledClosed, cls.rowCircleOuter, opaque);
+
+css.parentHover(cls.treeRow, cls.rowCirclePlay, opaque);
+css.parentHover(cls.treeRow, cls.rowCircleFilled, transparent);
+
+css.selector(
+  `.${cls.treeRow}.${cls.rowSelected} .${cls.rowCirclePlay}`,
+  opaque
+);
+css.selector(
+  `.${cls.treeRow}.${cls.rowSelected} .${cls.rowCircleFilled}`,
+  transparent
+);
 css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.mediaSvg}`, {
   boxShadow: insetBlack(16, 0.2),
 });
@@ -209,9 +214,13 @@ css.selector(
     ),
   }
 );
-css.parentParentChild(cls.treeRow, cls.focusCircleSvgEmpty, cls.rowCirclePlay, {
-  opacity: 0,
-});
+css.selector(`.${cls.treeRow}.${cls.rowSelected} .${cls.chevron}`, opaque);
+css.parentParentChild(
+  cls.treeRow,
+  cls.focusCircleSvgEmpty,
+  cls.rowCirclePlay,
+  transparent
+);
 
 css.parentParentChild(
   cls.treeRow,
@@ -222,10 +231,6 @@ css.parentParentChild(
   }
 );
 
-css.parentChild(cls.focusCircleSvgPlaying, cls.rowCircleFilled, {
-  opacity: 0,
-});
+css.parentChild(cls.focusCircleSvgPlaying, cls.rowCircleFilled, transparent);
 
-css.parentChild(cls.focusCircleSvgPlaying, cls.rowCirclePause, {
-  opacity: 1,
-});
+css.parentChild(cls.focusCircleSvgPlaying, cls.rowCirclePause, opaque);

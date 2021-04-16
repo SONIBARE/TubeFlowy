@@ -8,6 +8,7 @@ export { div, fragment, img, span, input, button, canvas } from "./dom"; //   fi
 export * as dom from "./dom";
 export * as svg from "./svg"; //   findFirstByClass,
 export { EventsHandler } from "./eventsHandler";
+export { SlapstukMouseEvent } from "./elementEvents";
 //   findById,
 //   fragment,
 //   DivDefinition,

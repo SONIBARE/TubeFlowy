@@ -1,5 +1,4 @@
 import { EventsHandler } from "../domain/eventHandler";
-import { MyEvents } from "./events";
 
 export class ItemsStore {
   private items: Items = {};
@@ -102,7 +101,7 @@ export class ItemsStore {
     else return "";
   };
 
-  //EVENTS
+  //EVENTS SUBSCRIPTIONS
   onItemFocus = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-focused", itemId, cb);
 
@@ -114,6 +113,15 @@ export class ItemsStore {
 
   onAnyItemClick = (cb: Func<MyEvents["item-click"]>) =>
     this.events.addEventListener("item-click", cb);
+
+  onItemRemoved = (itemId: string, cb: ItemCallback) =>
+    this.events.addCompoundEventListener("item-removed", itemId, cb);
+
+  onItemInsertedAfter = (itemId: string, cb: ItemCallback) =>
+    this.events.addCompoundEventListener("item-insert-after", itemId, cb);
+
+  onItemInsertedInside = (itemId: string, cb: ItemCallback) =>
+    this.events.addCompoundEventListener("item-insert-inside", itemId, cb);
 
   //ACTIONS
   itemsLoaded = (items: Items) => {
@@ -141,8 +149,68 @@ export class ItemsStore {
     this.events.dispatchCompundEvent("item-click", item.id, item);
   };
 
+  removeItem = (item: Item) => {
+    const parent = this.getParent(item.id);
+    if (parent) {
+      parent.children = parent.children.filter((id) => id != item.id);
+      this.events.dispatchCompundEvent("item-removed", item.id, item);
+    }
+  };
+
   goBack = () => {
     const parentOfFocusedNode = this.getParent(this.focusedId);
     if (parentOfFocusedNode) this.focusItem(parentOfFocusedNode.id);
   };
+
+  //DND ACTIONS
+  moveItemAfter = (itemIdToMove: string, itemIdToMoveAfter: string) => {
+    const item = this.getItem(itemIdToMove);
+    this.removeItem(item);
+    const itemToAfterParent = this.getParent(itemIdToMoveAfter);
+
+    if (itemToAfterParent) {
+      itemToAfterParent.children = itemToAfterParent.children
+        .map((i) => (i === itemIdToMoveAfter ? [i, itemIdToMove] : [i]))
+        .flat();
+      this.insertAfter(itemIdToMoveAfter, item);
+    }
+  };
+  moveItemBefore = (itemIdToMove: string, itemIdToMoveAfter: string) => {
+    const item = this.getItem(itemIdToMove);
+    this.removeItem(item);
+    const targetItemParent = this.getParent(itemIdToMoveAfter);
+
+    if (targetItemParent) {
+      targetItemParent.children = targetItemParent.children
+        .map((i) => (i === itemIdToMoveAfter ? [itemIdToMove, i] : [i]))
+        .flat();
+      const itemAfterIndex =
+        targetItemParent.children.indexOf(itemIdToMove) - 1;
+      if (itemAfterIndex >= 0) {
+        this.insertAfter(targetItemParent.children[itemAfterIndex], item);
+      } else {
+        this.inserItemInto(targetItemParent, item);
+      }
+    }
+  };
+
+  moveItemInside = (itemIdToMove: string, itemIdToMoveInside: string) => {
+    const item = this.getItem(itemIdToMove);
+    this.removeItem(item);
+    const itemToMoveInside = this.getItem(itemIdToMoveInside);
+    this.inserItemInto(itemToMoveInside, item);
+  };
+
+  inserItemInto = (itemContainer: Item, itemToInsert: Item) => {
+    if (this.isContainer(itemContainer)) {
+      itemContainer.children = [itemToInsert.id].concat(itemContainer.children);
+      this.insertInside(itemContainer.id, itemToInsert);
+    }
+  };
+
+  private insertAfter = (itemId: string, item: Item) =>
+    this.events.dispatchCompundEvent("item-insert-after", itemId, item);
+
+  private insertInside = (itemId: string, item: Item) =>
+    this.events.dispatchCompundEvent("item-insert-inside", itemId, item);
 }

@@ -9,7 +9,6 @@ import {
   createItemsFromArray,
   video,
 } from "../../domain/testUtils";
-import { MyEvents } from "../events";
 import { ItemsStore } from "../ItemsStore";
 import { renderTreeView } from ".";
 import { setItems, setPlayer } from "../domain";
@@ -153,7 +152,7 @@ describe("App features:", () => {
       });
 
       it("going back should focus on Home again", () => {
-        clickBack();
+        press.arrowLeft({ alt: true });
         expect(getPageTitle().textContent).toBe(home.title);
       });
     });

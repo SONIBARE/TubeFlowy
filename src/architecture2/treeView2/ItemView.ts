@@ -1,4 +1,4 @@
-import { anim, cls, colors, css, div, dom } from "../../infra";
+import { anim, cls, colors, compose, css, div, dom } from "../../infra";
 import { row } from "./row";
 import { items } from "../domain";
 
@@ -7,9 +7,11 @@ export default class ItemView {
   private itemChildren: HTMLElement | undefined;
 
   constructor(public item: Item, public level: number) {
-    const cleanup = items.onItemCollapseExpand(
-      this.item.id,
-      this.updateItemChildren
+    const cleanup = compose(
+      items.onItemCollapseExpand(this.item.id, this.updateItemChildren),
+      items.onItemRemoved(item.id, this.removeItem),
+      items.onItemInsertedAfter(item.id, this.insertItemAfterThis),
+      items.onItemInsertedInside(item.id, this.insertItemInsideThis)
     );
     this.itemRow = row(item, level, cleanup);
     this.itemChildren = this.isItemOpen() ? this.viewChildren() : undefined;
@@ -95,6 +97,29 @@ export default class ItemView {
   };
 
   private isItemOpen = () => items.isFolderOpenOnPage(this.item);
+
+  private removeItem = () => {
+    this.itemRow.remove();
+    this.itemChildren?.remove();
+  };
+
+  private insertItemAfterThis = (item: Item) => {
+    const itemView = new ItemView(item, this.level);
+    const target = this.itemChildren || this.itemRow;
+    if (itemView.itemChildren)
+      target.insertAdjacentElement("afterend", itemView.itemChildren);
+    target.insertAdjacentElement("afterend", itemView.itemRow);
+  };
+
+  private insertItemInsideThis = (item: Item) => {
+    const target = this.itemChildren;
+    if (target) {
+      const itemView = new ItemView(item, this.level + 1);
+      if (itemView.itemChildren)
+        target.insertAdjacentElement("afterbegin", itemView.itemChildren);
+      target.insertAdjacentElement("afterbegin", itemView.itemRow);
+    }
+  };
 }
 
 css.class(cls.itemGalleryContent, {

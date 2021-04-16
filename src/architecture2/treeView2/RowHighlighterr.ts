@@ -1,5 +1,5 @@
 import { anim, cls, compose, css, dom, timings, utils } from "../../infra";
-import { items, MyEvents } from "../domain";
+import { items } from "../domain";
 
 export class RowHighliter {
   selectedItem: Item | undefined;

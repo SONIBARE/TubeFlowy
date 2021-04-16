@@ -1,5 +1,4 @@
 import { EventsHandler } from "../domain/eventHandler";
-import { MyEvents } from "./events";
 import { renderTreeView } from "./treeView2";
 import * as globals from "./domain";
 import { ItemsStore } from "./ItemsStore";

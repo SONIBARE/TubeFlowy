@@ -1,4 +1,3 @@
-export { MyEvents } from "./events";
 import { ItemsStore } from "./ItemsStore";
 import PlayerStore from "./PlayerStore";
 

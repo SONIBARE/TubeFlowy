@@ -1,5 +1,4 @@
 import { EventsHandler } from "../domain/eventHandler";
-import { MyEvents } from "./events";
 import { items } from "./domain";
 
 export default class PlayerStore {

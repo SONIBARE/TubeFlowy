@@ -24,14 +24,6 @@ class TabView {
         {
           className: [cls.pageTitle, "level_0" as any],
         },
-        itemFocused.id !== "HOME"
-          ? dom.button({
-              text: "<-",
-              testId: "go-back",
-              events: { click: items.goBack },
-            })
-          : undefined,
-
         dom.span({ testId: "page-title" }, itemFocused.title)
       ),
       ItemView.viewItemChildren(itemFocused, 0)
@@ -61,7 +53,7 @@ css.class(cls.pageTitle, {
   fontSize: 40,
   fontWeight: "bold",
   marginTop: 20,
-  marginLeft: spacings.chevronSize,
+  marginLeft: spacings.chevronSize + 2,
 });
 
 css.selector(`.${cls.treeTab}::-webkit-scrollbar`, {
