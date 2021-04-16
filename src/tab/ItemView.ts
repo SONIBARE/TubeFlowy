@@ -1,4 +1,4 @@
-import { anim, cls, colors, compose, css, div, dom } from "../../infra";
+import { anim, cls, colors, compose, css, div, dom } from "../infra";
 import { row } from "./row";
 import { items } from "../domain";
 

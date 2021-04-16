@@ -1,4 +1,4 @@
-import { EventsHandler } from "../infra";
+import { EventsHandler } from "./infra";
 
 export class ItemsStore {
   private items: Items = {};

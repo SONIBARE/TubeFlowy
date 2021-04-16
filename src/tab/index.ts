@@ -1,4 +1,4 @@
-import { cls, colors, compose, css, div, dom, spacings } from "../../infra";
+import { cls, colors, compose, css, div, dom, spacings } from "../infra";
 import ItemView from "./ItemView";
 import { items } from "../domain";
 import { RowHighliter } from "./RowHighlighterr";

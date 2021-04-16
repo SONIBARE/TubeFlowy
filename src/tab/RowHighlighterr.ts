@@ -1,4 +1,4 @@
-import { anim, cls, compose, css, dom, timings, utils } from "../../infra";
+import { anim, cls, compose, css, dom, timings, utils } from "../infra";
 import { items } from "../domain";
 
 export class RowHighliter {

@@ -7,7 +7,7 @@ import {
   icons,
   spacings,
   timings,
-} from "../../infra";
+} from "../infra";
 import { onItemMouseMove } from "../dnd";
 import { items } from "../domain";
 import FolderIcon from "./FolderIcon";

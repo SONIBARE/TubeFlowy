@@ -7,7 +7,7 @@ import {
   spacings,
   Styles,
   svg,
-} from "../../infra";
+} from "../infra";
 import { onItemMouseDown } from "../dnd";
 import { items, player } from "../domain";
 

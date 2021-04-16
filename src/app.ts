@@ -2,7 +2,7 @@ import { renderTreeView } from "./tab";
 import * as globals from "./domain";
 import { ItemsStore } from "./ItemsStore";
 import PlayerStore from "./PlayerStore";
-import { dom, EventsHandler } from "../infra";
+import { dom, EventsHandler } from "./infra";
 import { renderPlayerFooter } from "./player";
 
 const loadLocalItems = (): Items => {

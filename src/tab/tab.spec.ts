@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import { fireEvent, getByTestId, queryByAttribute } from "@testing-library/dom";
-import { cls, dom, EventsHandler } from "../../infra";
+import { cls, dom, EventsHandler } from "../infra";
 
 import { folder, deepCopy, createItemsFromArray, video } from "../testUtils";
 import { ItemsStore } from "../ItemsStore";
@@ -8,7 +8,7 @@ import { renderTreeView } from ".";
 import { setItems, setPlayer } from "../domain";
 import PlayerStore from "../PlayerStore";
 
-jest.mock("../../infra/animations", () => ({
+jest.mock("../infra/animations", () => ({
   animate: () => ({
     addEventListener: (event: string, cb: EmptyFunc) => cb(),
   }),

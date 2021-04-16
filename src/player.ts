@@ -1,4 +1,4 @@
-import { cls, colors, dom } from "../infra";
+import { cls, colors, dom } from "./infra";
 import { player } from "./domain";
 export const renderPlayerFooter = () => {
   const span = dom.span({}, "");

@@ -1,5 +1,5 @@
 import { items } from "./domain";
-import { cls, colors, css, div, spacings } from "../infra";
+import { cls, colors, css, div, spacings } from "./infra";
 import FolderIcon from "./tab/FolderIcon";
 
 //DND state
