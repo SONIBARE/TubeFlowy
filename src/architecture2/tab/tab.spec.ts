@@ -275,28 +275,25 @@ describe("App features:", () => {
         });
       });
     });
-    // describe("when every folder is open", () => {
-    //   beforeEach(() => {
-    //     items.itemsLoaded(createTestItems());
-    //     dom.setChildren(document.body, renderTreeView());
-    //     focusItem(home);
-    //     clickChevron(folder1);
-    //     clickChevron(folder1_1);
-    //     clickChevron(folder1_1_2);
-    //   });
-    //   it("when folder1_1_2_1 is selected pressing down should select folder1_2", () => {
-    //     clickRow(folder1_1_2_1);
-    //     expect(getRow(folder1_1_2_1)).toHaveClass(cls.rowSelected);
-    //     press.arrowDown();
-    //     expect(getRow(folder1_2)).toHaveClass(cls.rowSelected);
-    //   });
-    //   it("when folder1_2 is selected pressing up should select folder1_1_2_1", () => {
-    //     clickRow(folder1_2);
-    //     expect(getRow(folder1_2)).toHaveClass(cls.rowSelected);
-    //     press.arrowUp();
-    //     expect(getRow(folder1_1_2_1)).toHaveClass(cls.rowSelected);
-    //   });
-    // });
+    describe("when every folder is open", () => {
+      beforeEach(() => {
+        clickChevron(folder1);
+        clickChevron(folder1_1);
+        clickChevron(folder1_1_2);
+      });
+      it("when folder1_1_2_1 is selected pressing down should select folder1_2", () => {
+        clickRow(folder1_1_2_1);
+        expect(getRow(folder1_1_2_1)).toHaveClass(cls.rowSelected);
+        press.arrowDown();
+        expect(getRow(folder1_2)).toHaveClass(cls.rowSelected);
+      });
+      it("when folder1_2 is selected pressing up should select folder1_1_2_1", () => {
+        clickRow(folder1_2);
+        expect(getRow(folder1_2)).toHaveClass(cls.rowSelected);
+        press.arrowUp();
+        expect(getRow(folder1_1_2_1)).toHaveClass(cls.rowSelected);
+      });
+    });
   });
 
   describe("PLAYER", () => {
