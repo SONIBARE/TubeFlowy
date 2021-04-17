@@ -141,7 +141,6 @@ const insetBlack = (spread: number, alpha: number) =>
 
 const shadow = (blur: number, spread: number, color: string) =>
   `0 0 ${blur}px ${spread}px ${color}`;
-
 css.class(cls.mediaSvg, {
   color: "white",
   boxShadow: insetBlack(2, 0.1),

@@ -1,5 +1,5 @@
-import { SlapstukEvents } from "./elementEvents";
-import { ClassMap, ClassName } from "./keys";
+import { SlapstukEvents } from "../elementEvents";
+import { ClassMap, ClassName } from "../keys";
 import { Styles, convertNumericStylesToPixels } from "./style";
 
 export interface ElementWithClassDefinitions {

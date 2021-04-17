@@ -1,4 +1,5 @@
-import { dom, fragment } from ".";
+import * as dom from "./dom";
+
 import {
   ElementProps,
   assignClasses,
@@ -17,7 +18,7 @@ export const svg = (
   const mySvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   mySvg.setAttribute("viewBox", props.viewBox);
   if (props.fill) mySvg.setAttribute("fill", props.fill);
-  mySvg.appendChild(fragment(child));
+  mySvg.appendChild(dom.fragment(child));
   assignElementProps(mySvg, props);
   return mySvg;
 };

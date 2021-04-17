@@ -6,7 +6,7 @@ import { folder, deepCopy, createItemsFromArray, video } from "./testUtils";
 import { renderTreeView } from ".";
 import * as domain from "../domain";
 
-jest.mock("../infra/animations", () => ({
+jest.mock("../infra/browser/animations", () => ({
   animate: () => ({
     addEventListener: (event: string, cb: EmptyFunc) => cb(),
   }),
@@ -360,7 +360,37 @@ describe("App features:", () => {
       expect(getTitlesInOrder()).toEqual([folder2.title, folder1.title]);
     });
 
-    it("opening folder1 and draggning folder2 inside should place folder2 as first child", () => {});
+    xit("opening folder1 and draggning folder2 inside should place folder2 as first child", () => {
+      const getTitlesInOrder = () =>
+        Array.from(document.getElementsByClassName(cls.treeRow)).map(
+          (row) => row.getElementsByClassName(cls.rowText)[0].textContent
+        );
+
+      expect(getTitlesInOrder()).toEqual([folder1.title, folder2.title]);
+
+      startDraggingItem(folder2);
+      const rowHeight = 20;
+      const folder1Position = 110;
+
+      const row = getRow(folder1);
+      row.getBoundingClientRect = () =>
+        ({
+          height: rowHeight,
+          top: folder1Position,
+        } as any);
+
+      const folder1OuterCircle = outerCircle(folder2);
+      folder1OuterCircle.getBoundingClientRect = () => ({ left: 10 } as any);
+
+      fireEvent.mouseMove(getRow(folder1), {
+        buttons: 1,
+        clientX: 10,
+        clientY: folder1Position + rowHeight / 2 - 1,
+      });
+
+      fireEvent.mouseUp(document);
+      expect(getTitlesInOrder()).toEqual([folder2.title, folder1.title]);
+    });
   });
 
   describe("PLAYER", () => {

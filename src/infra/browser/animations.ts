@@ -1,4 +1,3 @@
-import { timings } from "./constants";
 import { convertNumericStylesToPixels, Styles } from "./style";
 
 export const animate = (
@@ -11,24 +10,24 @@ export const animate = (
     options
   );
 
-export const expandHeight = (elem: HTMLElement) =>
+export const expandHeight = (elem: HTMLElement, duration: number) =>
   animate(
     elem,
     [
       { height: 0, opacity: 0, overflow: "hidden" },
       { height: elem.clientHeight, opacity: 1, overflow: "hidden" },
     ],
-    { duration: timings.itemExpandCollapseDuration }
+    { duration }
   );
 
-export const collapseHeight = (elem: HTMLElement) =>
+export const collapseHeight = (elem: HTMLElement, duration: number) =>
   animate(
     elem,
     [
       { height: elem.clientHeight, opacity: 1, overflow: "hidden" },
       { height: 0, opacity: 0, overflow: "hidden" },
     ],
-    { duration: timings.itemExpandCollapseDuration }
+    { duration }
   );
 
 export const revertCurrentAnimations = (elem: HTMLElement): boolean => {

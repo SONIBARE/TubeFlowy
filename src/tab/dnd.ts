@@ -1,5 +1,5 @@
 import { items } from "../domain";
-import { cls, colors, css, div, spacings } from "../infra";
+import { cls, colors, css, dom, spacings } from "../infra";
 import FolderIcon from "./FolderIcon";
 
 //DND state
@@ -24,9 +24,9 @@ export const onItemMouseMove = (item: Item, e: MouseEvent) => {
   if (dragAvatar) {
     itemUnder = item;
     if (!dragDestination) {
-      dragDestination = div(
+      dragDestination = dom.div(
         { className: cls.dragDestination },
-        div({
+        dom.div({
           className: cls.dragDestinationBulp,
           style: {
             borderRadius:
@@ -79,8 +79,8 @@ const updateDragDestinationPosition = (
 
   const rect = rowUnder.getBoundingClientRect();
 
-  const point = getScreenPosition(e);
-  const isOnTheLowerHalf = point.y > rect.top + rect.height / 2;
+  const mousePosition = getScreenPosition(e);
+  const isOnTheLowerHalf = mousePosition.y > rect.top + rect.height / 2;
 
   let isInside = 0;
 
@@ -92,8 +92,9 @@ const updateDragDestinationPosition = (
     dropPlacement = "before";
   }
 
+  console.log(circleRect.left);
   if (
-    e.pageX > circleRect.left + spacings.outerRadius * 2 &&
+    mousePosition.x > circleRect.left + spacings.outerRadius * 2 &&
     isOnTheLowerHalf
   ) {
     dropPlacement = "inside";

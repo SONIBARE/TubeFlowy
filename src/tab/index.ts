@@ -1,4 +1,4 @@
-import { cls, colors, compose, css, div, dom, spacings } from "../infra";
+import { cls, colors, compose, css, dom, spacings } from "../infra";
 import ItemView from "./ItemView";
 import { items } from "../domain";
 import { RowHighliter } from "./RowHighlighterr";
@@ -35,7 +35,7 @@ class TabView {
 }
 
 export const renderTreeView = (): HTMLElement => {
-  return div({ className: cls.treeTabContainer }, new TabView().render());
+  return dom.div({ className: cls.treeTabContainer }, new TabView().render());
 };
 
 css.class(cls.treeTabContainer, {

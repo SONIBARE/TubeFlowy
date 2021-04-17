@@ -1,4 +1,4 @@
-import { ClassName } from "./keys";
+import { ClassName } from "../keys";
 // import * as dom from "./dom";
 import * as CSS from "csstype";
 export type Styles = CSS.Properties<string | number>;

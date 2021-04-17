@@ -1,4 +1,4 @@
-import { anim, cls, colors, compose, css, div, dom } from "../infra";
+import { anim, cls, colors, compose, css, dom, timings } from "../infra";
 import { row } from "./row";
 import { items } from "../domain";
 
@@ -50,9 +50,9 @@ export default class ItemView {
 
   private viewGalleryChildren = (): HTMLElement =>
     //this outer container is used to animate height without triggering reflow of wrapped flex gallery
-    div(
+    dom.div(
       {},
-      div(
+      dom.div(
         {
           className: [
             cls.itemGalleryContent,
@@ -62,8 +62,8 @@ export default class ItemView {
         },
         ...items
           .getChildrenFor(this.item.id)
-          .map((child) => div({ className: cls.box }, child.title))
-          .concat([div({ className: cls.lastBox })])
+          .map((child) => dom.div({ className: cls.box }, child.title))
+          .concat([dom.div({ className: cls.lastBox })])
       )
     );
 
@@ -78,7 +78,7 @@ export default class ItemView {
       this.itemChildren = this.viewChildren();
       this.itemRow.insertAdjacentElement("afterend", this.itemChildren);
       anim
-        .expandHeight(this.itemChildren)
+        .expandHeight(this.itemChildren, timings.itemExpandCollapseDuration)
         .addEventListener("finish", this.onAnimationFinish);
     }
   };
@@ -86,7 +86,7 @@ export default class ItemView {
   private collapseChildren = () => {
     if (this.itemChildren && !anim.revertCurrentAnimations(this.itemChildren))
       anim
-        .collapseHeight(this.itemChildren)
+        .collapseHeight(this.itemChildren, timings.itemExpandCollapseDuration)
         .addEventListener("finish", this.onAnimationFinish);
   };
 
