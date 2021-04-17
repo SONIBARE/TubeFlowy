@@ -139,6 +139,7 @@ css.class(cls.rowTextInput, {
   border: "none",
   outline: "none",
   padding: 0,
+  backgroundColor: "transparent",
   fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
 });
 
