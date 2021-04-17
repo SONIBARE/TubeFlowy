@@ -403,6 +403,42 @@ describe("App features:", () => {
     });
   });
 
+  describe("RENAME", () => {
+    describe("pressing F2 while folder1 is selected", () => {
+      beforeEach(() => {
+        clickRow(folder1);
+        fireEvent.keyDown(document, { key: "F2" });
+      });
+      it("shows input with focus on it", () => {
+        expect(itemInput(folder1)).toBeInTheDocument();
+        expect(document.activeElement).toBe(itemInput(folder1));
+      });
+
+      describe("entering new title", () => {
+        const newTitle = "New Title";
+        beforeEach(() =>
+          fireEvent.input(itemInput(folder1), {
+            target: { value: newTitle },
+          })
+        );
+        it("pressing ESC should exit rename with new item title", () => {
+          const input = itemInput(folder1);
+          expect(domain.items.getItem(folder1.id).title).toBe(newTitle);
+
+          fireEvent.keyDown(input, { key: "Escape" });
+          expect(input).not.toBeInTheDocument();
+
+          expect(itemTitle(folder1).textContent).toBe(newTitle);
+        });
+
+        it("bluring input element should also exist edit mode", () => {
+          fireEvent.blur(itemInput(folder1));
+          expect(itemTitle(folder1).textContent).toBe(newTitle);
+        });
+      });
+    });
+  });
+
   describe("PLAYER", () => {
     it("opening folder1 and clicking play on a video1_3 should show pause icon", () => {
       const [leftPause, rightPause] = pauseIcons(folder1);
@@ -447,6 +483,10 @@ const pauseIcons = (item: Item) => [
 ];
 
 const itemIcon = (item: Item) => get("itemIcon-" + item.id);
+const itemTitle = (item: Item) =>
+  getRow(item).getElementsByClassName(cls.rowText)[0];
+const itemInput = (item: Item) =>
+  getRow(item).getElementsByClassName(cls.rowTextInput)[0] as HTMLElement;
 const getRow = (item: Item): Element => getById("row-" + item.id) as Element;
 const queryRow = (item: Item) => queryById("row-" + item.id);
 

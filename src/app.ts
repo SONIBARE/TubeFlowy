@@ -14,7 +14,6 @@ export const viewAppShell = (): Node => {
   const events = new EventsHandler<MyEvents>();
   domain.init(events);
 
-  domain.items;
   domain.items.itemsLoaded(loadLocalItems());
   domain.items.focusItem("HOME");
   return dom.fragment([renderTreeView(), renderPlayerFooter()]);

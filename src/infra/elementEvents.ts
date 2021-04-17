@@ -20,7 +20,7 @@ export interface SlapstukEvents<T extends EventTarget> {
   // animationstart: (e: AnimationEvent) => void;
   // auxclick: (e: MouseEvent) => void;
   // beforeinput: (e: InputEvent) => void;
-  // blur: (e: FocusEvent) => void;
+  blur: (e: SlapstukFocusEvent<T>) => void;
   // cancel: (e: Event) => void;
   // canplay: (e: Event) => void;
   // canplaythrough: (e: Event) => void;

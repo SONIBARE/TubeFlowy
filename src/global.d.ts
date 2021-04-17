@@ -13,6 +13,8 @@ type MyEvents = {
   "item-insert-after": Item;
   "item-insert-inside": Item;
   "item-children-changed": Item;
+  "item-rename-stop": Item;
+  "item-rename-start": Item;
 };
 
 type valueof<T> = T[keyof T];

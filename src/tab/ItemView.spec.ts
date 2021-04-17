@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { getByTestId } from "@testing-library/dom";
+import { fireEvent, getByTestId } from "@testing-library/dom";
 import { init, items } from "../domain";
 import { cls, EventsHandler } from "../infra";
 import ItemView from "./ItemView";

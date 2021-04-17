@@ -1,3 +1,4 @@
+import { items } from ".";
 import { EventsHandler } from "../infra";
 
 export default class ItemsStore {
@@ -129,7 +130,14 @@ export default class ItemsStore {
   onItemChildrenChanged = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-children-changed", itemId, cb);
 
+  //TODO: figure out better API for events
+  onItemEvent = (eventName: keyof MyEvents, itemId: string, cb: ItemCallback) =>
+    this.events.addCompoundEventListener(eventName, itemId, cb as any);
+
   //ACTIONS
+  setTitle = (itemId: string, title: string) => {
+    items.getItem(itemId).title = title;
+  };
   itemsLoaded = (items: Items) => {
     this.items = items;
     //no events for now
@@ -220,4 +228,8 @@ export default class ItemsStore {
 
   private childrenChanged = (itemId: string, item: Item) =>
     this.events.dispatchCompundEvent("item-children-changed", itemId, item);
+
+  public createItemEvent = (eventName: keyof MyEvents, item: Item) => {
+    this.events.dispatchCompundEvent(eventName, item.id, item);
+  };
 }

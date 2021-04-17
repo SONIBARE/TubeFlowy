@@ -27,12 +27,41 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
   };
 
   updateRowIcons();
+
+  const startRename = () => {
+    res.getElementsByClassName(cls.rowText)[0].remove();
+    const input = dom.input({
+      testId: "item-titleInput-" + item.id,
+      value: item.title,
+      className: cls.rowTextInput,
+      events: {
+        input: (e) => items.setTitle(item.id, e.currentTarget.value),
+        keydown: (e) => {
+          e.stopPropagation();
+          if (e.key === "Escape" || e.key === "Enter") e.currentTarget.blur();
+        },
+        blur: stopRename,
+      },
+    });
+    res.appendChild(input);
+    input.focus();
+  };
+  const stopRename = () => {
+    const input = res.getElementsByClassName(cls.rowTextInput)[0];
+    if (input) {
+      input.remove();
+      res.appendChild(dom.span({ className: cls.rowText }, item.title));
+    }
+  };
+
   const cleanup = compose(
     items.onItemCollapseExpand(item.id, updateRowIcons),
-    items.onItemChildrenChanged(item.id, updateRowIcons)
+    items.onItemChildrenChanged(item.id, updateRowIcons),
+    items.onItemEvent("item-rename-start", item.id, startRename),
+    items.onItemEvent("item-rename-stop", item.id, stopRename)
   );
 
-  return dom.div(
+  const res = dom.div(
     {
       id: "row-" + item.id,
       className: [cls.treeRow, ("level_" + level) as any],
@@ -46,6 +75,7 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
     itemIcon.render(),
     dom.span({ className: cls.rowText }, item.title)
   );
+  return res;
 };
 
 const viewChevron = (item: Item) =>
@@ -100,6 +130,16 @@ css.hover(cls.treeRow, {
 css.class(cls.rowText, {
   paddingTop: 2,
   lineHeight: 1.6,
+});
+css.class(cls.rowTextInput, {
+  marginTop: 2,
+  lineHeight: 1.6,
+  fontSize: 16,
+  width: "100%",
+  border: "none",
+  outline: "none",
+  padding: 0,
+  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
 });
 
 css.class(cls.chevron, {

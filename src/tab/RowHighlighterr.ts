@@ -16,7 +16,8 @@ export class RowHighliter {
 
   listenToKeys = () => {
     document.addEventListener("keydown", this.onKeyDown);
-    return () => document.removeEventListener("keydown", this.onKeyDown);
+    return () =>
+      document && document.removeEventListener("keydown", this.onKeyDown);
   };
 
   onKeyDown = (e: KeyboardEvent) => {
@@ -93,6 +94,8 @@ export class RowHighliter {
         if (!items.isFolderOpenOnPage(this.selectedItem))
           items.toggleItemVisibility(this.selectedItem);
         else if (this.selectedItem) this.selectFirstChildOf(this.selectedItem);
+      } else if (e.key === "F2") {
+        items.createItemEvent("item-rename-start", this.selectedItem);
       }
     }
   };

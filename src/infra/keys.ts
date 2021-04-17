@@ -71,6 +71,7 @@ export const cls = {
 
   childContainer: "child-container",
   rowText: "row-text",
+  rowTextInput: "row-text-input",
   rowTextVideo: "row-text-video",
 
   squareImage: "square-image",
