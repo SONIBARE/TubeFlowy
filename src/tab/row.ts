@@ -16,7 +16,7 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
   const chevron = viewChevron(item);
   const itemIcon = new FolderIcon(item);
 
-  const onItemCollapse = () => {
+  const updateRowIcons = () => {
     itemIcon.update();
     dom.toggleClass(
       chevron,
@@ -26,8 +26,11 @@ export const row = (item: Item, level: number, onRemove: EmptyFunc) => {
     dom.toggleClass(chevron, cls.chevronOpen, items.isFolderOpenOnPage(item));
   };
 
-  onItemCollapse();
-  const cleanup = items.onItemCollapseExpand(item.id, onItemCollapse);
+  updateRowIcons();
+  const cleanup = compose(
+    items.onItemCollapseExpand(item.id, updateRowIcons),
+    items.onItemChildrenChanged(item.id, updateRowIcons)
+  );
 
   return dom.div(
     {

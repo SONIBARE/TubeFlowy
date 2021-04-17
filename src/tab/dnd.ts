@@ -51,7 +51,7 @@ const onMouseMove = (e: MouseEvent) => {
       if (dist > 5) {
         const icon = new FolderIcon(itemBeingDragged);
         icon.update();
-        dragAvatar = div({ className: cls.dragAvatar }, icon.render());
+        dragAvatar = dom.div({ className: cls.dragAvatar }, icon.render());
         document.body.appendChild(dragAvatar);
         updateDragAvatarPosition(dragAvatar, e);
       }
@@ -92,7 +92,6 @@ const updateDragDestinationPosition = (
     dropPlacement = "before";
   }
 
-  console.log(circleRect.left);
   if (
     mousePosition.x > circleRect.left + spacings.outerRadius * 2 &&
     isOnTheLowerHalf

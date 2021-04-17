@@ -126,6 +126,9 @@ export default class ItemsStore {
   onItemInsertedInside = (itemId: string, cb: ItemCallback) =>
     this.events.addCompoundEventListener("item-insert-inside", itemId, cb);
 
+  onItemChildrenChanged = (itemId: string, cb: ItemCallback) =>
+    this.events.addCompoundEventListener("item-children-changed", itemId, cb);
+
   //ACTIONS
   itemsLoaded = (items: Items) => {
     this.items = items;
@@ -157,6 +160,7 @@ export default class ItemsStore {
     if (parent) {
       parent.children = parent.children.filter((id) => id != item.id);
       this.events.dispatchCompundEvent("item-removed", item.id, item);
+      this.childrenChanged(parent.id, parent);
     }
   };
 
@@ -176,6 +180,7 @@ export default class ItemsStore {
         .map((i) => (i === itemIdToMoveAfter ? [i, itemIdToMove] : [i]))
         .flat();
       this.insertAfter(itemIdToMoveAfter, item);
+      this.childrenChanged(itemToAfterParent.id, itemToAfterParent);
     }
   };
 
@@ -189,6 +194,7 @@ export default class ItemsStore {
         .map((i) => (i === itemIdToMoveBefore ? [itemIdToMove, i] : [i]))
         .flat();
       this.insertBefore(itemIdToMoveBefore, item);
+      this.childrenChanged(targetItemParent.id, targetItemParent);
     }
   };
 
@@ -199,6 +205,7 @@ export default class ItemsStore {
     if (this.isContainer(itemContainer)) {
       itemContainer.children = [item.id].concat(itemContainer.children);
       this.insertInside(itemContainer.id, item);
+      this.childrenChanged(itemContainer.id, itemContainer);
     }
   };
 
@@ -210,4 +217,7 @@ export default class ItemsStore {
 
   private insertInside = (itemId: string, item: Item) =>
     this.events.dispatchCompundEvent("item-insert-inside", itemId, item);
+
+  private childrenChanged = (itemId: string, item: Item) =>
+    this.events.dispatchCompundEvent("item-children-changed", itemId, item);
 }

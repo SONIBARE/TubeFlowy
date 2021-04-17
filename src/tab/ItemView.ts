@@ -37,6 +37,7 @@ export default class ItemView {
   private viewRegularChildren = (): HTMLElement =>
     dom.div(
       {
+        testId: "item-children-" + this.item.id,
         className: [cls.treeRowChildren],
       },
       ItemView.viewItemChildren(this.item, this.level + 1),

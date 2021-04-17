@@ -360,13 +360,21 @@ describe("App features:", () => {
       expect(getTitlesInOrder()).toEqual([folder2.title, folder1.title]);
     });
 
-    xit("opening folder1 and draggning folder2 inside should place folder2 as first child", () => {
-      const getTitlesInOrder = () =>
-        Array.from(document.getElementsByClassName(cls.treeRow)).map(
-          (row) => row.getElementsByClassName(cls.rowText)[0].textContent
-        );
+    it("opening folder1 and draggning folder2 inside should place folder2 as first child", () => {
+      const getTitlesInChildren = (item: Item) =>
+        Array.from(
+          get("item-children-" + item.id).getElementsByClassName(cls.treeRow)
+        ).map((row) => row.getElementsByClassName(cls.rowText)[0].textContent);
 
-      expect(getTitlesInOrder()).toEqual([folder1.title, folder2.title]);
+      const folder2OuterCircle = itemIcon(folder1);
+      folder2OuterCircle.getBoundingClientRect = () => ({ left: 10 } as any);
+
+      clickChevron(folder1);
+      expect(getTitlesInChildren(folder1)).toEqual([
+        folder1_1.title,
+        folder1_2.title,
+        video1_3.title,
+      ]);
 
       startDraggingItem(folder2);
       const rowHeight = 20;
@@ -379,17 +387,19 @@ describe("App features:", () => {
           top: folder1Position,
         } as any);
 
-      const folder1OuterCircle = outerCircle(folder2);
-      folder1OuterCircle.getBoundingClientRect = () => ({ left: 10 } as any);
-
       fireEvent.mouseMove(getRow(folder1), {
         buttons: 1,
-        clientX: 10,
-        clientY: folder1Position + rowHeight / 2 - 1,
+        clientX: 60,
+        clientY: folder1Position + rowHeight / 2 + 1,
       });
 
       fireEvent.mouseUp(document);
-      expect(getTitlesInOrder()).toEqual([folder2.title, folder1.title]);
+      expect(getTitlesInChildren(folder1)).toEqual([
+        folder2.title,
+        folder1_1.title,
+        folder1_2.title,
+        video1_3.title,
+      ]);
     });
   });
 
