@@ -18,6 +18,13 @@
   "bugs": {
     "url": "https://github.com/ilyaivanov/playground/issues"
   },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "./src/tests/setup.ts"
+    ]
+  },
   "homepage": "https://github.com/ilyaivanov/playground#readme",
   "devDependencies": {
     "@testing-library/dom": "^7.29.4",
