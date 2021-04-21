@@ -76,7 +76,10 @@ export class RowHighliter {
         const previousItem = items.getPreviousItem(this.selectedItem);
         if (previousItem) {
           let itemToSelect = previousItem;
-          while (items.isFolderOpenOnPage(itemToSelect)) {
+          while (
+            !items.isEmpty(itemToSelect) &&
+            items.isFolderOpenOnPage(itemToSelect)
+          ) {
             itemToSelect = utils.lastArrayItem(
               items.getChildrenFor(itemToSelect.id)
             );

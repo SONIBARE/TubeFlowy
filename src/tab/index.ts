@@ -35,14 +35,8 @@ class TabView {
 }
 
 export const renderTreeView = (): HTMLElement => {
-  return dom.div({ className: cls.treeTabContainer }, new TabView().render());
+  return new TabView().render();
 };
-
-css.class(cls.treeTabContainer, {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "stretch",
-});
 
 css.class(cls.treeTab, {
   flex: 1,

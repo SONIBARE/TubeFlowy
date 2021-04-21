@@ -1,4 +1,6 @@
 export const cls = {
+  searchHidden: "search-hidden",
+
   //TREE VIEW
   treeViewContainer: "tree-view-container",
   treeRow: "tree-row",
@@ -18,7 +20,7 @@ export const cls = {
   lastBox: "last-box",
   boxRed: "box-red",
 
-  page: "page",
+  tabsContainer: "page",
 
   myPage: "my-page",
   header: "header",
