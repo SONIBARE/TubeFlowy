@@ -1,42 +1,75 @@
-import { renderTreeView } from "./tab";
-import * as domain from "./domain";
-import { cls, css, dom, EventsHandler } from "./infra";
-import { renderPlayerFooter } from "./player";
-import { loadLocalItems } from "./stateLoader";
-import ItemView from "./tab/ItemView";
-import { items } from "./domain";
+import { ui } from "./domain";
+import { cls, css, dom, Styles } from "./infra";
 
-const search = () =>
-  dom.div(
-    {
-      id: "search",
-      className: [cls.treeTab, cls.searchHidden],
-    },
-    ItemView.viewItemChildren(items.getItem("SEARCH"), 0)
+export const viewAppShell = (): Node =>
+  dom.div({ className: cls.pageContainer }, header(), main(), playerFooter());
+
+const header = () => dom.div({ className: cls.header });
+const playerFooter = () => dom.div({ className: cls.playerFooter });
+
+const main = () => dom.div({ className: cls.main }, mainTab(), searchTab());
+
+const mainTab = () => {
+  const tab = dom.div({ testId: "main", className: cls.mainTab });
+  ui.bindToFocus((part) =>
+    dom.toggleClass(tab, cls.tabFocused, part == "main")
   );
-
-export const viewAppShell = (): Node => {
-  const events = new EventsHandler<MyEvents>();
-  domain.init(events);
-
-  domain.items.itemsLoaded(loadLocalItems());
-  domain.items.focusItem("HOME");
-  return dom.div({ className: cls.tabsContainer }, renderTreeView(), search());
+  return tab;
 };
 
-css.class(cls.tabsContainer, {
+const searchTab = () => {
+  const tab = dom.div({ testId: "search", className: cls.searchTab }, "Search");
+  ui.bindToVisilibty((isVisible) =>
+    dom.toggleClass(tab, cls.searchTabHidden, !isVisible)
+  );
+  ui.bindToFocus((part) => {
+    dom.toggleClass(tab, cls.tabFocused, part == "search");
+  });
+  return tab;
+};
+
+const flexRow = (): Styles => ({ display: "flex", flexDirection: "row" });
+
+const flexColumn = (): Styles => ({ display: "flex", flexDirection: "column" });
+
+css.class(cls.pageContainer, {
   height: "100vh",
+  width: "100vw",
   overflow: "hidden",
-  display: "flex",
-  flexDirection: "row",
+  ...flexColumn(),
 });
 
-css.class(cls.treeTabContainer, {
+css.class(cls.header, {
+  height: 60,
+  backgroundColor: "lightGrey",
+});
+
+css.class(cls.playerFooter, {
+  height: 60,
+  backgroundColor: "lightGrey",
+});
+
+css.class(cls.main, {
+  flex: 1,
+  ...flexRow(),
+});
+
+css.class(cls.searchTab, {
+  flex: 1,
+  backgroundColor: "lightYellow",
+  ...css.transition({ marginRight: 200 }),
+});
+
+css.class(cls.searchTabHidden, {
+  marginRight: "-100%",
+});
+
+css.class(cls.mainTab, {
   flex: 1,
 });
 
-css.class(cls.treeTab, {
-  flex: 1,
-  height: "100vh",
-  overflowY: "overlay" as any,
+css.class(cls.tabFocused, {
+  backgroundColor: "pink",
 });
+
+css.tag("body", { margin: 0 });

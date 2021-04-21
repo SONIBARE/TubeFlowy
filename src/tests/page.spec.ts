@@ -1,59 +1,63 @@
-import { ClassName, cls, dom } from "../infra";
-import { fireEvent } from "@testing-library/dom";
+import { cls, dom, EventsHandler } from "../infra";
+import { fireEvent, getByTestId } from "@testing-library/dom";
 import { viewAppShell } from "../page";
+import * as domain from "../domain";
 
-jest.mock("../stateLoader", () => ({
-  loadLocalItems: (): Items => ({
-    HOME: {
-      id: "HOME",
-      type: "folder",
-      title: "Home",
-      children: ["1", "2"],
-    },
-    "1": {
-      id: "1",
-      type: "folder",
-      title: "One",
-      children: [],
-    },
-    "2": {
-      id: "2",
-      type: "folder",
-      title: "Two",
-      children: [],
-    },
-    SEARCH: {
-      id: "SEARCH",
-      type: "search",
-      searchTerm: "",
-      title: "Search",
-      children: ["search1", "search2"],
-    },
-    search1: {
-      id: "search1",
-      type: "folder",
-      title: "Search One",
-      children: [],
-    },
-    search2: {
-      id: "search2",
-      type: "folder",
-      title: "Search Two",
-      children: [],
-    },
-  }),
-}));
+const searchTab = () => get("search");
+const mainTab = () => get("main");
 
-describe("Having an app", () => {
+const get = (id: string) => getByTestId(document.body, id);
+
+const shell = {
+  expect: {
+    searchIsHidden: () => expect(searchTab()).toHaveClass(cls.searchTabHidden),
+    searchIsVisible: () =>
+      expect(searchTab()).not.toHaveClass(cls.searchTabHidden),
+    mainFocused: () => expect(mainTab()).toHaveClass(cls.tabFocused),
+    searchFocused: () => expect(searchTab()).toHaveClass(cls.tabFocused),
+  },
+
+  actions: {
+    toggleSearchTab: () =>
+      fireEvent.keyDown(document, { code: "KeyK", ctrlKey: true }),
+    focusOnSearch: () =>
+      fireEvent.keyDown(document, { code: "Digit2", ctrlKey: true }),
+    focusOnMain: () =>
+      fireEvent.keyDown(document, { code: "Digit1", ctrlKey: true }),
+  },
+};
+
+describe("Having a loaded app", () => {
   beforeEach(() => {
+    const events = new EventsHandler<MyEvents>();
+    domain.init(events);
     dom.setChildren(document.body, viewAppShell());
   });
-  it("by default search is hidden", () =>
-    expectSearchToHaveClass(cls.searchHidden));
+
+  afterEach(domain.cleanup);
+
+  it("by default search tab is hidden", () => shell.expect.searchIsHidden());
+
+  it("by default main tab is focused", () => shell.expect.mainFocused());
+
+  describe("pressing 'show search'", () => {
+    beforeEach(() => shell.actions.toggleSearchTab());
+
+    it("search tab is shown", () => shell.expect.searchIsVisible());
+    it("search tab is focused", () => shell.expect.searchFocused());
+
+    describe("toggling search again", () => {
+      beforeEach(() => shell.actions.toggleSearchTab());
+
+      it("hides search tab", () => shell.expect.searchIsHidden());
+      it("focuses on main", () => shell.expect.mainFocused());
+    });
+
+    describe("switching focus to main", () => {
+      beforeEach(() => shell.actions.focusOnMain());
+
+      it("leaves search tab", () => shell.expect.searchIsVisible());
+      it("focuses on main", () => shell.expect.mainFocused());
+    });
+  });
 });
-
-const expectSearchToHaveClass = (className: ClassName) =>
-  expect(getById("search")).toHaveClass(className);
-
-const getRow = (itemId: string): Element => getById("row-" + itemId) as Element;
-const getById = (id: string): Node => document.getElementById(id)!;

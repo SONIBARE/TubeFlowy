@@ -1,5 +1,18 @@
 //EVENTS
 type MyEvents = {
+  "toggle-search-tab": undefined;
+  "focus-ui-part": UiPart;
+  "show-search": undefined;
+
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
   "items-loaded": Items;
 
   "item-collapse": Item;
@@ -16,6 +29,8 @@ type MyEvents = {
   "item-rename-stop": Item;
   "item-rename-start": Item;
 };
+
+type UiPart = "main" | "search";
 
 type valueof<T> = T[keyof T];
 type Func<T> = (a: T) => void;

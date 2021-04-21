@@ -1,4 +1,4 @@
-import { SlapstukEvents } from "../elementEvents";
+import { SlapstukEvents, SlaptukEvent } from "../elementEvents";
 import { ClassMap, ClassName } from "../keys";
 import { Styles, convertNumericStylesToPixels } from "./style";
 
@@ -98,6 +98,7 @@ export const img = (props: ImgProps): HTMLElement => {
 
 interface ButtonProps extends HtmlElementProps<HTMLButtonElement> {
   text: string;
+  onClick?: Func<SlaptukEvent<HTMLButtonElement>>;
 }
 export const button = (props: ButtonProps): HTMLButtonElement => {
   const elem = document.createElement("button");

@@ -1,6 +1,27 @@
 export const cls = {
-  searchHidden: "search-hidden",
+  //Page layout
+  pageContainer: "page-container",
+  header: "header",
+  playerFooter: "player-footer",
+  main: "main",
+  searchTab: "search-tab",
+  tabFocused: "tab-focused",
+  searchTabHidden: "search-tab-hidden",
+  mainTab: "main-tab",
 
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //LEGACY classes (check what are used and move before this line)
   //TREE VIEW
   treeViewContainer: "tree-view-container",
   treeRow: "tree-row",
@@ -23,7 +44,6 @@ export const cls = {
   tabsContainer: "page",
 
   myPage: "my-page",
-  header: "header",
   headerIcon: "header-icon",
   headerIconInactive: "header-icon-inactive",
   headerIconContainer: "header-icon-container",
@@ -85,7 +105,6 @@ export const cls = {
   chevronInactive: "chevron-inactive",
   chevronOpen: "chevron-open",
 
-  playerFooter: "player-footer",
   yotuubePlayerhidden: "youtube-player-hidden",
 
   searchResults: "search-results",
