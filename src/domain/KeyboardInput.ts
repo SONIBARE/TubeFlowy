@@ -23,5 +23,8 @@ export default class KeyboardInput {
         ui.focus("main");
       }
     }
+    if (e.code == "ArrowDown") {
+      ui.arrowDown();
+    }
   };
 }

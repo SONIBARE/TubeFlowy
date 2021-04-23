@@ -5,10 +5,13 @@ export const cls = {
   playerFooter: "player-footer",
   main: "main",
   searchTab: "search-tab",
+  mainTab: "main-tab",
   tabFocused: "tab-focused",
   searchTabHidden: "search-tab-hidden",
-  mainTab: "main-tab",
 
+  // Selection
+  treeRowHighlight: "tree-row-highlight",
+  rowSelected: "rows-selected",
   //
   //
   //
@@ -35,7 +38,6 @@ export const cls = {
   toggleSearchButton: "toggle-search-button",
   itemGalleryContainer: "item-gallery-container",
   itemGalleryContent: "item-gallery-content",
-  treeRowHighlight: "tree-row-highlight",
 
   box: "box",
   lastBox: "last-box",
@@ -73,7 +75,7 @@ export const cls = {
   rowsContainer: "rows-container",
   pageTitle: "page-title",
   rowsScrollContainer: "rows-scroll-container",
-  rowSelected: "rows-selected",
+
   rowsHide: "rows-hide",
   row: "row",
 

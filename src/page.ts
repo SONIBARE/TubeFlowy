@@ -1,5 +1,7 @@
-import { ui } from "./domain";
+import { items, ui } from "./domain";
 import { cls, css, dom, Styles } from "./infra";
+import { RowSelector } from "./RowSelector";
+import ItemView from "./tab/ItemView";
 
 export const viewAppShell = (): Node =>
   dom.div({ className: cls.pageContainer }, header(), main(), playerFooter());
@@ -7,13 +9,18 @@ export const viewAppShell = (): Node =>
 const header = () => dom.div({ className: cls.header });
 const playerFooter = () => dom.div({ className: cls.playerFooter });
 
-const main = () => dom.div({ className: cls.main }, mainTab(), searchTab());
+const main = () => {
+  const selection = new RowSelector();
+  ui.bindToMainTabSelectionChange((itemId) => selection.selectItem(itemId));
+  return dom.div({ className: cls.main }, mainTab(), searchTab());
+};
 
 const mainTab = () => {
   const tab = dom.div({ testId: "main", className: cls.mainTab });
   ui.bindToFocus((part) =>
     dom.toggleClass(tab, cls.tabFocused, part == "main")
   );
+  tab.appendChild(ItemView.viewItemChildren(items.getItem("HOME"), 0));
   return tab;
 };
 
@@ -56,7 +63,6 @@ css.class(cls.main, {
 
 css.class(cls.searchTab, {
   flex: 1,
-  backgroundColor: "lightYellow",
   ...css.transition({ marginRight: 200 }),
 });
 
@@ -68,8 +74,9 @@ css.class(cls.mainTab, {
   flex: 1,
 });
 
-css.class(cls.tabFocused, {
-  backgroundColor: "pink",
-});
+css.class(cls.tabFocused, {});
 
-css.tag("body", { margin: 0 });
+css.tag("body", {
+  margin: 0,
+  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+});

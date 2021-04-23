@@ -2,7 +2,7 @@ import { EventsHandler } from "../infra";
 import ItemsStore from "./ItemsStore";
 import KeyboardInput from "./KeyboardInput";
 import PlayerStore from "./PlayerStore";
-import UiState from "./Search";
+import UiState from "./UiState";
 
 export let items: ItemsStore;
 export let player: PlayerStore;
