@@ -1,1 +1,1 @@
-export { ClassName } from "./classes";
+export { ClassName, cls } from "./classes";

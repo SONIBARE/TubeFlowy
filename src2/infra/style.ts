@@ -1,4 +1,4 @@
-import { ClassName } from "../designSystem";
+import { ClassName } from "./index";
 
 const s = document.createElement("style");
 document.head.appendChild(s);

@@ -1,22 +1,20 @@
-import { dom, style, css } from "./infra";
+import { store } from "./domain";
+import { dom, style, css, cls } from "./infra";
 
 import "./normalize";
 
-let counter = 0;
-const bind = () => {
-  elem.textContent = counter + "";
-};
-const elem = dom.div({
-  className: "foo",
-  onClick: () => {
-    counter += 1;
-    bind();
-  },
-});
-bind();
-document.body.appendChild(elem);
+const button = () =>
+  dom.button(
+    {
+      className: cls.title,
+      onClick: store.increment,
+    },
+    dom.bind(store.onIncrement, (s) => s + 1 + "!")
+  );
 
-style.selector(".foo", {
+document.body.appendChild(button());
+
+style.class(cls.title, {
   margin: css.margin(60, 20),
   color: "red",
   fontSize: 60,
