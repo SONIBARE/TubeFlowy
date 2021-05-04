@@ -1,11 +1,11 @@
-import { SimpleEventListener } from "../infra/events";
+import * as obs from "../infra/observable";
 
 export default class Store {
   private model = 0;
-  public onIncrement = new SimpleEventListener(() => this.model);
+  public onCounterChange = obs.source<number>(this.model);
 
   public increment = () => {
     this.model += 1;
-    this.onIncrement.notify();
+    this.onCounterChange.change(this.model);
   };
 }

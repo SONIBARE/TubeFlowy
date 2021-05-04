@@ -1,4 +1,5 @@
 import { ClassName } from "./index";
+import * as obs from "./observable";
 
 type ClassDefinitions = {
   className?: ClassName;
@@ -16,39 +17,51 @@ type HTMLElementProps = ClassDefinitions & Events & ElementProps;
 
 type DivProps = HTMLElementProps;
 
-export const div = (
-  props: DivProps,
-  ...children: (string | Node | undefined)[]
-): HTMLElement => {
+export const div = (props: DivProps): HTMLElement => {
   const elem = document.createElement("div");
 
   assignHtmlElementProps(elem, props);
 
-  children.forEach((c) => {
-    if (typeof c === "string") elem.append(c);
-    else if (c) elem.appendChild(c);
-  });
   return elem;
 };
 
-type ButtonProps = HTMLElementProps;
-export const button = <T>(
-  props: ButtonProps,
-  text?: string | Sub<T, string>
-): HTMLElement => {
-  const elem = document.createElement("button");
+type ButtonProps = HTMLElementProps & {
+  //TODO: this any is ugly, but I don't know any way to type this.
+  //creating 100500 generic parameters for ButtonProps for each prop is not an option
+  text?: string | BindDefinition<any, string>;
+};
+export const button = (props: ButtonProps): HTMLElement => {
+  const elem = document.createElement("button", {
+    is: "disposable-button",
+  }) as DisposableButton;
 
   assignHtmlElementProps(elem, props);
 
-  if (text) {
-    if (typeof text === "string") elem.textContent = text;
-    else {
-      const { subject, mapper } = text;
-      subject.subscribe((v) => (elem.textContent = mapper(v)));
-    }
+  if (props.text) {
+    if (typeof props.text === "string") elem.textContent = props.text;
+    else bindToTextContent(elem, props.text);
   }
   return elem;
 };
+
+type BindDefinition<T, T2> = {
+  source: obs.Source<T>;
+  mapper: Func1<T, T2>;
+};
+export const bindTo = <T, T2>(
+  source: obs.Source<T>,
+  mapper: Func1<T, T2>
+): BindDefinition<T, T2> => ({ source, mapper });
+
+class DisposableButton extends HTMLButtonElement {
+  onDisconnected?: Action<void>;
+  disconnectedCallback() {
+    if (this.onDisconnected) this.onDisconnected();
+  }
+}
+customElements.define("disposable-button", DisposableButton, {
+  extends: "button",
+});
 
 const assignHtmlElementProps = (elem: Element, props: HTMLElementProps) => {
   assignClasses(elem, props);
@@ -68,16 +81,13 @@ const assignAttributes = (elem: Element, props: HTMLElementProps) => {
   if (props.id) elem.id = props.id;
 };
 
-type Subject<T> = {
-  subscribe: (cb: Action<T>) => () => void;
+type DisposableElement = {
+  onDisconnected?: Action<void>;
 };
-
-type Sub<T1, T2> = {
-  subject: Subject<T1>;
-  mapper: Func1<T1, T2>;
+const bindToTextContent = (
+  elem: Element & DisposableElement,
+  binding: BindDefinition<{}, string>
+) => {
+  const { source, mapper } = binding;
+  elem.onDisconnected = source.bind((v) => (elem.textContent = mapper(v)));
 };
-
-export const bind = <T1, T2>(
-  subject: Subject<T1>,
-  mapper: Func1<T1, T2>
-): Sub<T1, T2> => ({ subject, mapper });
