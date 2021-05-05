@@ -1,5 +1,5 @@
 import { store } from "./domain";
-import { dom, ClassMap, style, css, cls } from "./infra";
+import { dom, style, css, cls } from "./infra";
 import "./normalize";
 
 const isEven = (n: number) => n % 2 == 0;
