@@ -1,7 +1,20 @@
-export type Source<T> = {
-  bind: (cb: Action<T>) => Action<void>;
+export type Source<T> = ReadonlySource<T> & {
   change: (value: T) => void;
-  value: () => T;
+};
+
+export type ReadonlySource<T> = {
+  bind: (cb: Action<T>) => Action<void>;
+};
+
+export const mapSource = <TSource, TDestination>(
+  source: Source<TSource>,
+  mapper: Func1<TSource, TDestination>
+): ReadonlySource<TDestination> => {
+  return {
+    bind: (cb: Action<TDestination>) => {
+      return source.bind((v) => cb(mapper(v)));
+    },
+  };
 };
 
 export const source = <T>(initialValue?: T): Source<T> => {
@@ -14,8 +27,6 @@ export const source = <T>(initialValue?: T): Source<T> => {
       if (typeof currentValue !== "undefined") cb(currentValue);
       return () => listeners.splice(listeners.indexOf(cb), 1);
     },
-
-    value: () => currentValue,
 
     change: (newVal: T) => {
       currentValue = newVal;

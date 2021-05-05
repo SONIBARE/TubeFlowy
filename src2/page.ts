@@ -1,20 +1,24 @@
 import { store } from "./domain";
-import { dom, style, css, cls } from "./infra";
+import { dom, ClassMap, style, css, cls } from "./infra";
 import "./normalize";
 
-const getLabelForCounter = (s: number) =>
-  s + ` (${s % 2 == 0 ? "even" : "odd"})`;
+const isEven = (n: number) => n % 2 == 0;
+const isOdd = (n: number) => n % 2 != 0;
 
-export const viewCounter = () => {
-  const elem = dom.button({
+const getLabelForCounter = (n: number) =>
+  n + ` (${isEven(n) ? "even" : "odd"})`;
+
+export const viewCounter = () =>
+  dom.button({
     id: "counter",
     className: cls.title,
+    classMap: {
+      even: dom.bindTo(store.onCounterChange, isEven),
+      odd: dom.bindTo(store.onCounterChange, isOdd),
+    },
     onClick: store.increment,
     text: dom.bindTo(store.onCounterChange, getLabelForCounter),
   });
-
-  return elem;
-};
 
 style.class(cls.title, {
   margin: css.margin(60, 20),
