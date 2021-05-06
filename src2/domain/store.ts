@@ -1,11 +1,25 @@
 import * as obs from "../infra/observable";
+import * as core from "./core";
+export { TabName } from "./core";
 
+//Responsibilities of a Store is to accept UI events,
+//call core and call corresponding change events
 export default class Store {
-  private model = 0;
-  public onCounterChange = obs.source(() => this.model);
+  private uiState = core.initialUiState;
 
-  public increment = () => {
-    this.model += 1;
-    this.onCounterChange.change();
+  public onSearchVisibilityChange = obs.source(
+    () => this.uiState.isSearchVisible
+  );
+  public onTabFocus = obs.source(() => this.uiState.tabFocused);
+
+  toggleSearchVisibility = () => {
+    this.uiState = core.toggleSEarchVisibility(this.uiState);
+    this.onSearchVisibilityChange.change();
+    this.onTabFocus.change();
+  };
+
+  focusOnMain = () => {
+    this.uiState = core.toggleSEarchVisibility(this.uiState);
+    this.onTabFocus.change();
   };
 }

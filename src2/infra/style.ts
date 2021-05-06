@@ -1,17 +1,9 @@
 import { ClassName } from "./index";
+import { Styles } from "./Styles";
+export { Styles } from "./Styles";
 
 const s = document.createElement("style");
 document.head.appendChild(s);
-
-type AllStyles = {
-  margin: number | string;
-  color: string;
-  opacity: number;
-  lineHeight: number;
-  fontSize: number;
-};
-
-type Styles = Partial<AllStyles>;
 
 const selector = (selector: string | string[], styles: Styles) => {
   const res = Array.isArray(selector) ? selector.join(", ") : selector;
@@ -37,11 +29,11 @@ const cssToString = (selector: string, props: Styles) => {
 //in other words I add px to every number values expect 'opacity', 'flex' and other
 //and I'm leaving zeros for any value as string without px postfix
 const whitelist: Styles = {
-  // zIndex: 1,
-  // opacity: 1,
-  // flex: 1,
-  // fontWeight: 1,
-  // lineHeight: 1,
+  zIndex: 1,
+  opacity: 1,
+  flex: 1,
+  fontWeight: 1,
+  lineHeight: 1,
 };
 
 const convertVal = (key: string, val: number | string) => {
@@ -51,5 +43,5 @@ const convertVal = (key: string, val: number | string) => {
   return val + "";
 };
 
-const camelToSnakeCase = (str: string) =>
+export const camelToSnakeCase = (str: string) =>
   str.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);

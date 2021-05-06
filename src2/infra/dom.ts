@@ -1,10 +1,11 @@
+import { disposableButton, disposableDiv } from "./disposableElements";
 import { ClassName } from "./index";
 import * as obs from "./observable";
 
 export type ClassMap<T> = Partial<Record<ClassName, T>>;
 
 type ClassDefinitions = {
-  className?: ClassName;
+  className?: ClassName | ClassName[];
   classMap?:
     | ClassMap<boolean | obs.ReadonlySource<boolean>>
     | obs.ReadonlySource<ClassMap<boolean>>;
@@ -20,13 +21,23 @@ type ElementProps = {
 
 type HTMLElementProps = ClassDefinitions & Events & ElementProps;
 
-type DivProps = HTMLElementProps;
+type ElementWithChildren = {
+  children?: (HTMLElement | string)[];
+};
+
+type DivProps = HTMLElementProps & ElementWithChildren;
 
 export const div = (props: DivProps): HTMLDivElement => {
-  const elem = (document.createElement("div") as unknown) as DisposableElement;
+  const elem = disposableDiv();
 
   assignHtmlElementProps(elem, props);
 
+  if (props.children) {
+    props.children.forEach((child) => {
+      if (typeof child === "string") elem.append(child);
+      else elem.appendChild(child);
+    });
+  }
   return (elem as unknown) as HTMLDivElement;
 };
 
@@ -36,9 +47,7 @@ type ButtonProps = HTMLElementProps & {
   text?: string | obs.ReadonlySource<string>;
 };
 export const button = (props: ButtonProps): HTMLElement => {
-  const elem = document.createElement("button", {
-    is: "disposable-button",
-  }) as DisposableButton;
+  const elem = disposableButton();
 
   assignHtmlElementProps(elem, props);
 
@@ -48,16 +57,6 @@ export const button = (props: ButtonProps): HTMLElement => {
   }
   return elem;
 };
-
-class DisposableButton extends HTMLButtonElement {
-  readonly onDisconnected: Action<void>[] = [];
-  disconnectedCallback() {
-    this.onDisconnected.forEach((c) => c());
-  }
-}
-customElements.define("disposable-button", DisposableButton, {
-  extends: "button",
-});
 
 const assignHtmlElementProps = (
   elem: DisposableElement,
@@ -70,7 +69,10 @@ const assignHtmlElementProps = (
 
 const assignClasses = (elem: DisposableElement, props: ClassDefinitions) => {
   const { className, classMap } = props;
-  if (className) elem.classList.add(className);
+  if (className) {
+    if (typeof className === "string") elem.classList.add(className);
+    else className.forEach((c) => elem.classList.add(c));
+  }
 
   if (classMap) {
     if (isBindingDefinition(classMap)) {
@@ -107,10 +109,13 @@ const assignAttributes = (elem: Element, props: HTMLElementProps) => {
   if (props.id) elem.id = props.id;
 };
 
-export const bindTo = <T, T2>(
+export const bindToMap = <T, T2>(
   source: obs.Source<T>,
   mapper: Func1<T, T2>
 ): obs.ReadonlySource<T2> => obs.mapSource(source, mapper);
+
+export const bindTo = <T>(source: obs.Source<T>): obs.ReadonlySource<T> =>
+  source;
 
 type DisposableElement = Element & {
   onDisconnected: Action<void>[];

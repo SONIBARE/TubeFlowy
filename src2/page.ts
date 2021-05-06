@@ -2,33 +2,59 @@ import { store } from "./domain";
 import { dom, style, css, cls } from "./infra";
 import "./normalize";
 
-const isEven = (n: number) => n % 2 == 0;
-const isOdd = (n: number) => n % 2 != 0;
-
-const getLabelForCounter = (n: number) =>
-  n + ` (${isEven(n) ? "even" : "odd"})`;
-
 export const viewCounter = () =>
-  dom.button({
-    id: "counter",
-    className: cls.title,
-    classMap: {
-      even: dom.bindTo(store.onCounterChange, isEven),
-      odd: dom.bindTo(store.onCounterChange, isOdd),
-    },
-    onClick: store.increment,
-    text: dom.bindTo(store.onCounterChange, getLabelForCounter),
+  dom.div({
+    className: cls.pageContainer,
+    children: [
+      dom.div({ className: cls.header }),
+      dom.div({
+        className: cls.main,
+        children: [
+          dom.div({ className: cls.mainTab, children: ["main"] }),
+          dom.div({
+            className: cls.searchTab,
+            classMap: {
+              [cls.searchTabHidden]: dom.bindTo(store.onSearchVisibilityChange),
+            },
+            children: ["search"],
+          }),
+        ],
+      }),
+      dom.div({ className: cls.footer }),
+    ],
   });
 
-style.class(cls.title, {
-  margin: css.margin(60, 20),
-  fontSize: 60,
+style.class(cls.pageContainer, {
+  height: "100vh",
+  width: "100vw",
+  overflow: "hidden",
+  ...css.flexColumn(),
 });
 
-style.class(cls.odd, {
-  color: "red",
+style.class(cls.header, {
+  height: 60,
+  backgroundColor: "lightGrey",
 });
 
-style.class(cls.even, {
-  color: "blue",
+style.class(cls.footer, {
+  height: 60,
+  backgroundColor: "lightGrey",
+});
+
+style.class(cls.main, {
+  flex: 1,
+  ...css.flexRow(),
+});
+
+style.class(cls.mainTab, {
+  flex: 1,
+});
+
+style.class(cls.searchTab, {
+  flex: 1,
+  transition: css.transition({ marginRight: 200 }),
+});
+
+style.class(cls.searchTabHidden, {
+  marginRight: "-100%",
 });
