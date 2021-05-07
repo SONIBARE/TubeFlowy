@@ -1,7 +1,7 @@
 import * as dom from "../dom";
 import * as svg from "../svg";
 
-export const chevron = (props: dom.ReadonlyClassDefinitions): SVGSVGElement =>
+export const chevron = (props: Partial<svg.SvgProps>): SVGSVGElement =>
   svg.svg({
     ...props,
     viewBox: "0 0 256 512",

@@ -17,5 +17,6 @@ export const cls = {
   rowTitle: "row-title",
   rowIcon: "row-icon",
   rowChevron: "row-chevron",
+  rowChevronOpen: "row-chevron-open",
   rowCircleEmpty: "row-circle-empty",
 } as const;

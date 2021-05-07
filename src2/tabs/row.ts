@@ -3,10 +3,18 @@ import * as items from "../domain/items";
 import { cls, colors, css, dom, icons, style, spacings } from "../infra";
 import ItemIcon from "./ItemIcon";
 
-const viewChevron = (item: Item) =>
-  icons.chevron({
+const viewChevron = (item: Item) => {
+  const chevron = icons.chevron({
     className: cls.rowChevron,
+    onClick: () => store.toggleIsItemCollapse(item.id),
   });
+  //TODO: fix memory leak
+  //TODO: figure out declarative way
+  const subscription = store.itemCollapse.bind(item.id, (isOpen) =>
+    dom.updateClass(chevron, cls.rowChevronOpen, isOpen)
+  );
+  return chevron;
+};
 
 const viewRow = (item: Item, level: number) => {
   const icon = new ItemIcon(item);
@@ -56,6 +64,10 @@ style.class(cls.rowChevron, {
   onHover: {
     color: colors.darkPrimary,
   },
+});
+
+style.class(cls.rowChevronOpen, {
+  transform: "rotateZ(90deg)",
 });
 
 style.parentHover(cls.row, cls.rowChevron, { opacity: 1 });

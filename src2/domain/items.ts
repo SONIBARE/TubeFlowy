@@ -95,3 +95,25 @@ export const getChildrenFor = (itemId: string, items: Items): Item[] => {
   if ("children" in item) return item.children.map((id) => getItem(id, items));
   else return [];
 };
+
+export const toggleItemCollapse = (itemId: string, items: Items): Items =>
+  mapItemContainer(itemId, items, (item) => ({
+    isCollapsedInGallery: !item.isCollapsedInGallery,
+  }));
+
+const mapItemContainer = (
+  itemId: string,
+  items: Items,
+  mapper: Func1<ItemContainer, Partial<ItemContainer>>
+): Items => {
+  const item = getItem(itemId, items);
+  //mutate or not mutate - that is the question
+  if (item.type !== "YTvideo") {
+    //@ts-expect-error
+    items[item.id] = {
+      ...item,
+      ...mapper(item),
+    };
+  }
+  return items;
+};

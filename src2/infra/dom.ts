@@ -22,7 +22,7 @@ type ClassDefinitions = {
     | obs.ReadonlySource<ClassMap<boolean>>;
 };
 
-type Events = {
+export type Events = {
   onClick?: () => void;
 };
 
@@ -135,8 +135,9 @@ export const setClassMap = (elem: Element, classDef: ClassMap<boolean>) => {
   });
 };
 
-const assignEvents = (elem: Element, props: Events) => {
+export const assignEvents = <T extends Element>(elem: T, props: Events): T => {
   if (props.onClick) elem.addEventListener("click", props.onClick);
+  return elem;
 };
 
 const assignAttributes = (elem: Element, props: HTMLElementProps) => {

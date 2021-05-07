@@ -1,13 +1,22 @@
-import { ReadonlyClassDefinitions, assignReadonlyClasses } from "./dom";
+import {
+  ReadonlyClassDefinitions,
+  assignReadonlyClasses,
+  Events,
+  assignEvents,
+} from "./dom";
 import { camelToSnakeCase } from "./style";
+type BaseSvg = ReadonlyClassDefinitions & Events;
 
-export interface SvgProps extends ReadonlyClassDefinitions {
+export interface SvgProps extends BaseSvg {
   viewBox: string;
   fill?: string;
   children: SVGElement[];
 }
 export const svg = (props: SvgProps): SVGSVGElement =>
-  appendChildren(assignSvgAttributes(svgElem("svg"), props), props.children);
+  appendChildren(
+    assignEvents(assignSvgAttributes(svgElem("svg"), props), props),
+    props.children
+  );
 
 export interface CircleProps extends ReadonlyClassDefinitions {
   cx: number;

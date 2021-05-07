@@ -28,3 +28,38 @@ export const source = <T>(getter: Func0<T>): Source<T> => {
     change: () => listeners.forEach((cb) => cb(getter())),
   };
 };
+
+export type KeyedSource<T> = {
+  change: (key: string) => void;
+  bind: (key: string, cb: Action<T>) => Subscription<T>;
+};
+
+type Subscription<T> = {
+  unsub: Action<void>;
+  source: Source<T>;
+};
+
+export const keyedSource = <T>(getter: Func1<string, T>): KeyedSource<T> => {
+  const listeners: Record<string, Source<T>[] | undefined> = {};
+
+  return {
+    bind: (key, cb) => {
+      if (!listeners[key]) listeners[key] = [];
+
+      const array = listeners[key]!;
+      const src = source(() => getter(key));
+      const unsub = src.bind(cb);
+      array.push(src);
+      return {
+        source: src,
+        unsub: () => {
+          unsub();
+          listeners[key] = listeners[key]?.filter((c) => c != src);
+        },
+      };
+    },
+
+    change: (key: string) =>
+      listeners[key] && listeners[key]!.forEach((src) => src.change()),
+  };
+};

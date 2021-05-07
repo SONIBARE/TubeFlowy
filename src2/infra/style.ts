@@ -111,4 +111,5 @@ export type Styles = Partial<{
   //Other
   cursor: "pointer";
   userSelect: "none";
+  transform: string;
 }>;

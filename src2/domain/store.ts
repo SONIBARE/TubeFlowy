@@ -25,4 +25,16 @@ export default class Store {
     this.uiState = core.toggleSEarchVisibility(this.uiState);
     this.onTabFocus.change();
   };
+
+  setItems = (items: Items) => (this.itemsState = items);
+
+  public itemCollapse = obs.keyedSource((key) => {
+    const item = this.itemsState[key];
+    if (item.type !== "YTvideo") return !!item.isCollapsedInGallery;
+    return false;
+  });
+  toggleIsItemCollapse(itemId: string) {
+    this.itemsState = items.toggleItemCollapse(itemId, this.itemsState);
+    this.itemCollapse.change(itemId);
+  }
 }
