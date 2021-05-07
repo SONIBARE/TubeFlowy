@@ -1,9 +1,20 @@
 import { disposableButton, disposableDiv } from "./disposableElements";
 import { ClassName } from "./index";
 import * as obs from "./observable";
+import * as svgModule from "./svg";
+export const svg = svgModule.svg;
+export const circle = svgModule.circle;
+export const polygon = svgModule.polygon;
+export const path = svgModule.path;
 
 export type ClassMap<T> = Partial<Record<ClassName, T>>;
 
+//used in SVG (svg can't observe values)
+export type ReadonlyClassDefinitions = {
+  className?: ClassName;
+  classNames?: ClassName[];
+  classMap?: ClassMap<boolean>;
+};
 type ClassDefinitions = {
   className?: ClassName;
   classNames?: ClassName[];
@@ -56,7 +67,6 @@ export const button = (props: ButtonProps): HTMLElement => {
   }
   return elem;
 };
-
 const assignHtmlElementProps = (
   elem: DisposableElement,
   props: HTMLElementProps
@@ -66,7 +76,10 @@ const assignHtmlElementProps = (
   assignAttributes(elem, props);
 };
 
-const assignClasses = (elem: DisposableElement, props: ClassDefinitions) => {
+export const assignClasses = (
+  elem: DisposableElement,
+  props: ClassDefinitions
+) => {
   const { className, classNames, classMap } = props;
   if (className) elem.classList.add(className);
   if (classNames) classNames.forEach((c) => elem.classList.add(c));
@@ -84,6 +97,20 @@ const assignClasses = (elem: DisposableElement, props: ClassDefinitions) => {
       });
     }
   }
+};
+
+export const assignReadonlyClasses = (
+  elem: Element,
+  props: ReadonlyClassDefinitions
+) => {
+  const { className, classNames, classMap } = props;
+  if (className) elem.classList.add(className);
+  if (classNames) classNames.forEach((c) => elem.classList.add(c));
+  if (classMap)
+    Object.entries(classMap).forEach(
+      ([classKey, isSet]) =>
+        isSet && updateClass(elem, classKey as ClassName, isSet)
+    );
 };
 
 export const updateClass = (elem: Element, c: ClassName, isSet: boolean) => {
