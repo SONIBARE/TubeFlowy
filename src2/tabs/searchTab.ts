@@ -5,7 +5,10 @@ export const searchTab = () =>
   dom.div({
     className: cls.searchTab,
     classMap: {
-      [cls.searchTabHidden]: dom.bindTo(store.onSearchVisibilityChange),
+      [cls.searchTabHidden]: dom.bindToMap(
+        store.onSearchVisibilityChange,
+        (isVisible) => !isVisible
+      ),
     },
     children: ["search"],
   });

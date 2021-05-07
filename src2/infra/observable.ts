@@ -25,8 +25,6 @@ export const source = <T>(getter: Func0<T>): Source<T> => {
       return () => listeners.splice(listeners.indexOf(cb), 1);
     },
 
-    change: () => {
-      listeners.forEach((cb) => cb(getter()));
-    },
+    change: () => listeners.forEach((cb) => cb(getter())),
   };
 };

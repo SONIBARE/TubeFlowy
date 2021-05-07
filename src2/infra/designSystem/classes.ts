@@ -16,5 +16,6 @@ export const cls = {
   row: "row",
   rowTitle: "row-title",
   rowIcon: "row-icon",
+  rowChevron: "row-chevron",
   rowCircleEmpty: "row-circle-empty",
 } as const;

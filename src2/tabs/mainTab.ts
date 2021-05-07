@@ -1,3 +1,4 @@
+import { colors } from "../../src/infra";
 import { cls, css, dom, spacings, style } from "../infra";
 import { viewChildren } from "./row";
 
@@ -18,7 +19,7 @@ style.class(cls.mainTab, {
 });
 
 style.class(cls.title, {
-  fontSize: 40,
+  fontSize: 36,
   fontWeight: "bold",
   marginTop: 20,
   marginLeft: spacings.chevronSize + 2,

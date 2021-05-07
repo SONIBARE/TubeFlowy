@@ -1,7 +1,7 @@
 import * as obs from "../infra/observable";
-import * as core from "./core";
+import * as core from "./uiState";
 import * as items from "./items";
-export { TabName } from "./core";
+export { TabName } from "./uiState";
 
 //Responsibilities of a Store is to accept UI events,
 //call core and call corresponding change events
