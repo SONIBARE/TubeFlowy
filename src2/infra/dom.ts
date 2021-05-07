@@ -5,7 +5,8 @@ import * as obs from "./observable";
 export type ClassMap<T> = Partial<Record<ClassName, T>>;
 
 type ClassDefinitions = {
-  className?: ClassName | ClassName[];
+  className?: ClassName;
+  classNames?: ClassName[];
   classMap?:
     | ClassMap<boolean | obs.ReadonlySource<boolean>>
     | obs.ReadonlySource<ClassMap<boolean>>;
@@ -42,8 +43,6 @@ export const div = (props: DivProps): HTMLDivElement => {
 };
 
 type ButtonProps = HTMLElementProps & {
-  //TODO: this any is ugly, but I don't know any way to type this.
-  //creating 100500 generic parameters for ButtonProps for each prop is not an option
   text?: string | obs.ReadonlySource<string>;
 };
 export const button = (props: ButtonProps): HTMLElement => {
@@ -68,11 +67,9 @@ const assignHtmlElementProps = (
 };
 
 const assignClasses = (elem: DisposableElement, props: ClassDefinitions) => {
-  const { className, classMap } = props;
-  if (className) {
-    if (typeof className === "string") elem.classList.add(className);
-    else className.forEach((c) => elem.classList.add(c));
-  }
+  const { className, classNames, classMap } = props;
+  if (className) elem.classList.add(className);
+  if (classNames) classNames.forEach((c) => elem.classList.add(c));
 
   if (classMap) {
     if (isBindingDefinition(classMap)) {

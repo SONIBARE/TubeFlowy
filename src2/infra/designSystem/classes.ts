@@ -9,4 +9,7 @@ export const cls = {
   searchTab: "search-tab",
   searchTabHidden: "search-tab-hidden",
   mainTab: "main-tab",
+
+  title: "title",
+  rowTitle: "row-title",
 } as const;

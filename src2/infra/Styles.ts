@@ -1,24 +1,29 @@
 export type Styles = Partial<{
+  //display
+  opacity: number;
+
   //sizing
   height: number | "100vh";
   width: number | "100vw";
 
   //margins and paddings
-  margin: 0 | string;
+  margin: 0;
   marginRight: number | "-100%";
   marginLeft: number;
   marginTop: number;
   marginBottom: number;
+  padding: 0;
+  paddingRight: number;
+  paddingLeft: number | string;
+  paddingTop: number;
+  paddingBottom: number;
 
-  color: string;
-  opacity: number;
-  lineHeight: number;
-  fontSize: number;
+  //positioning
+  position: "absolute" | "relative";
   zIndex: number;
-  fontWeight: number;
-
   overflow: "hidden" | "auto" | "scroll";
 
+  //flex
   flex: number;
   display: "flex";
   flexDirection: "row" | "column";
@@ -28,4 +33,11 @@ export type Styles = Partial<{
 
   //transitions
   transition: string;
+
+  //typography
+  fontFamily: string;
+  color: string;
+  lineHeight: number;
+  fontSize: number;
+  fontWeight: "bold";
 }>;

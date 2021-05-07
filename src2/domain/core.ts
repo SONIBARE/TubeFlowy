@@ -1,3 +1,4 @@
+//UI config
 export type TabName = "main" | "search";
 
 export const initialUiState = {

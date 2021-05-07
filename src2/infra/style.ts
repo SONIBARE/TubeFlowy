@@ -32,7 +32,7 @@ const whitelist: Styles = {
   zIndex: 1,
   opacity: 1,
   flex: 1,
-  fontWeight: 1,
+  // fontWeight: 1,
   lineHeight: 1,
 };
 

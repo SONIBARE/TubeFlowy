@@ -1,5 +1,6 @@
-import { store } from "./domain";
 import { dom, style, css, cls } from "./infra";
+import { mainTab } from "./tabs/mainTab";
+import { searchTab } from "./tabs/searchTab";
 import "./normalize";
 
 export const viewCounter = () =>
@@ -9,16 +10,7 @@ export const viewCounter = () =>
       dom.div({ className: cls.header }),
       dom.div({
         className: cls.main,
-        children: [
-          dom.div({ className: cls.mainTab, children: ["main"] }),
-          dom.div({
-            className: cls.searchTab,
-            classMap: {
-              [cls.searchTabHidden]: dom.bindTo(store.onSearchVisibilityChange),
-            },
-            children: ["search"],
-          }),
-        ],
+        children: [mainTab(), searchTab()],
       }),
       dom.div({ className: cls.footer }),
     ],
@@ -46,15 +38,6 @@ style.class(cls.main, {
   ...css.flexRow(),
 });
 
-style.class(cls.mainTab, {
-  flex: 1,
-});
-
-style.class(cls.searchTab, {
-  flex: 1,
-  transition: css.transition({ marginRight: 200 }),
-});
-
-style.class(cls.searchTabHidden, {
-  marginRight: "-100%",
+style.selector("body", {
+  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
 });
