@@ -11,5 +11,10 @@ export const cls = {
   mainTab: "main-tab",
 
   title: "title",
+
+  //ROW
+  row: "row",
   rowTitle: "row-title",
+  rowIcon: "row-icon",
+  rowCircleEmpty: "row-circle-empty",
 } as const;

@@ -6,6 +6,9 @@
 //And I'm planning NOT to use disposable elements for each element by default,
 //nly when I'm subscribing to a store events (binding to sources)
 
+//
+//Button
+//
 class DisposableButton extends HTMLButtonElement {
   readonly onDisconnected: Action<void>[] = [];
   disconnectedCallback() {
@@ -16,6 +19,14 @@ customElements.define("disposable-button", DisposableButton, {
   extends: "button",
 });
 
+export const disposableButton = (): DisposableButton =>
+  document.createElement("button", {
+    is: "disposable-button",
+  }) as DisposableButton;
+
+//
+//Div
+//
 class DisposableDiv extends HTMLDivElement {
   readonly onDisconnected: Action<void>[] = [];
   disconnectedCallback() {
@@ -26,12 +37,24 @@ customElements.define("disposable-div", DisposableDiv, {
   extends: "div",
 });
 
-export const disposableButton = (): DisposableButton =>
-  document.createElement("button", {
-    is: "disposable-button",
-  }) as DisposableButton;
-
 export const disposableDiv = (): DisposableDiv =>
   document.createElement("div", {
     is: "disposable-div",
+  }) as DisposableDiv;
+
+//
+//Span
+//
+class DisposableSpan extends HTMLSpanElement {
+  readonly onDisconnected: Action<void>[] = [];
+  disconnectedCallback() {
+    this.onDisconnected.forEach((c) => c());
+  }
+}
+customElements.define("disposable-span", DisposableSpan, {
+  extends: "span",
+});
+export const disposableSpan = (): DisposableSpan =>
+  document.createElement("span", {
+    is: "disposable-span",
   }) as DisposableDiv;

@@ -3,7 +3,7 @@ import { mainTab } from "./tabs/mainTab";
 import { searchTab } from "./tabs/searchTab";
 import "./normalize";
 
-export const viewCounter = () =>
+export const viewPage = () =>
   dom.div({
     className: cls.pageContainer,
     children: [

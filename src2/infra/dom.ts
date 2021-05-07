@@ -1,11 +1,10 @@
-import { disposableButton, disposableDiv } from "./disposableElements";
+import {
+  disposableButton,
+  disposableDiv,
+  disposableSpan,
+} from "./disposableElements";
 import { ClassName } from "./index";
 import * as obs from "./observable";
-import * as svgModule from "./svg";
-export const svg = svgModule.svg;
-export const circle = svgModule.circle;
-export const polygon = svgModule.polygon;
-export const path = svgModule.path;
 
 export type ClassMap<T> = Partial<Record<ClassName, T>>;
 
@@ -34,7 +33,7 @@ type ElementProps = {
 type HTMLElementProps = ClassDefinitions & Events & ElementProps;
 
 type ElementWithChildren = {
-  children?: (HTMLElement | string)[];
+  children?: (Element | string)[];
 };
 
 type DivProps = HTMLElementProps & ElementWithChildren;
@@ -50,7 +49,18 @@ export const div = (props: DivProps): HTMLDivElement => {
       else elem.appendChild(child);
     });
   }
-  return (elem as unknown) as HTMLDivElement;
+  return elem;
+};
+
+type SpanProps = HTMLElementProps & { text: string };
+
+export const span = (props: SpanProps): HTMLSpanElement => {
+  const elem = disposableSpan();
+
+  assignHtmlElementProps(elem, props);
+
+  elem.append(props.text);
+  return elem;
 };
 
 type ButtonProps = HTMLElementProps & {

@@ -27,6 +27,8 @@ export type Styles = Partial<{
   flex: number;
   display: "flex";
   flexDirection: "row" | "column";
+  justifyItems: "flex-start" | "center" | "flex-end";
+  alignItems: "flex-start" | "center" | "flex-end";
 
   //colors
   backgroundColor: string;

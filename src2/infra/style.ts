@@ -14,6 +14,8 @@ export const style = {
   selector,
   class: (className: ClassName, styles: Styles) =>
     selector("." + className, styles),
+  hover: (className: ClassName, styles: Styles) =>
+    selector("." + className + ":hover", styles),
 };
 
 const cssToString = (selector: string, props: Styles) => {
