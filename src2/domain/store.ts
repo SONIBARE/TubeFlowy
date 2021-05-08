@@ -13,35 +13,37 @@ export default class Store {
     () => this.uiState.isSearchVisible
   );
   public onTabFocus = obs.source(() => this.uiState.tabFocused);
-  public mainTabFocus = obs.source(() => this.itemsState["HOME"]);
 
   toggleSearchVisibility = () => {
     this.uiState = core.toggleSEarchVisibility(this.uiState);
-    this.onSearchVisibilityChange.change();
-    this.onTabFocus.change();
+    this.onSearchVisibilityChange.notifyListeners();
+    this.onTabFocus.notifyListeners();
   };
 
   focusOnMain = () => {
     this.uiState = core.toggleSEarchVisibility(this.uiState);
-    this.onTabFocus.change();
+    this.onTabFocus.notifyListeners();
   };
 
-  setItems = (items: Items) => (this.itemsState = items);
+  setItems = (items: Items) => {
+    this.itemsState = items;
+    this.onMainTabNodeFocusChange.notifyListeners();
+  };
 
-  public itemCollapse = obs.keyedSource((key) => {
-    const item = this.itemsState[key];
-    if (item.type !== "YTvideo") return !!item.isCollapsedInGallery;
-    return false;
-  });
+  public onMainTabNodeFocusChange = obs.source(() => "HOME");
+
+  public itemOpen = obs.keyedSource((key) =>
+    items.getItem(key, this.itemsState)
+  );
 
   toggleIsItemCollapse(itemId: string) {
     this.itemsState = items.toggleItemCollapse(itemId, this.itemsState);
-    this.itemCollapse.change(itemId);
+    this.itemOpen.change(itemId);
   }
 
   public onThemeChange = obs.source(() => this.uiState.theme);
   toggleTheme = () => {
     this.uiState = core.toggleTheme(this.uiState);
-    this.onThemeChange.change();
+    this.onThemeChange.notifyListeners();
   };
 }

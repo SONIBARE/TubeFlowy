@@ -45,7 +45,7 @@ style.class(cls.pageContainer, {
 });
 
 style.class(cls.header, {
-  height: spacings.headerHeight,
+  minHeight: spacings.headerHeight,
   themes: {
     dark: { backgroundColor: "#1E1E24" },
     light: { backgroundColor: "lightGrey" },
@@ -53,7 +53,7 @@ style.class(cls.header, {
 });
 
 style.class(cls.footer, {
-  height: spacings.playerFooterHeight,
+  minHeight: spacings.playerFooterHeight,
   themes: {
     dark: { backgroundColor: "#1E1E24" },
     light: { backgroundColor: "lightGrey" },
@@ -63,6 +63,7 @@ style.class(cls.footer, {
 style.class(cls.main, {
   flex: 1,
   ...css.flexRow(),
+  overflow: "hidden",
   themes: {
     dark: { backgroundColor: "#15161E", color: "white" },
     light: { backgroundColor: "white", color: "black" },

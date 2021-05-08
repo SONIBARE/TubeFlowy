@@ -19,7 +19,12 @@ export const cls = {
   row: "row",
   rowTitle: "row-title",
   rowIcon: "row-icon",
+  rowIconEmpty: "row-icon-empty",
+  rowIconOpen: "row-icon-open",
+  rowIconClosed: "row-icon-closed",
   rowChevron: "row-chevron",
   rowChevronOpen: "row-chevron-open",
   rowCircleEmpty: "row-circle-empty",
+  rowCircleOuter: "row-circle-outer",
+  rowCircleFilled: "row-circle-filled",
 } as const;

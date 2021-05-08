@@ -108,16 +108,47 @@ export const getChildrenFor = (itemId: string, items: Items): Item[] => {
   else return [];
 };
 
+export const isOpen = (item: Item) =>
+  isContainer(item) && !item.isCollapsedInGallery;
+
+export const isEmptyAndNoNeedToLoad = (item: Item): boolean =>
+  isEmpty(item) && !isNeedsToBeLoaded(item);
+
+const isEmpty = (item: Item): boolean =>
+  !("children" in item && item.children.length !== 0);
+
+const isNeedsToBeLoaded = (item: Item): boolean =>
+  (isPlaylist(item) && item.children.length == 0 && !item.isLoading) ||
+  (isSearch(item) && item.children.length == 0 && !item.isLoading) ||
+  (isChannel(item) && item.children.length == 0 && !item.isLoading);
+
+const isRoot = (item: Item) => item.id === "HOME" || item.id === "SEARCH";
+
+const isFolder = (item: Item): item is Folder => {
+  return item.type == "folder";
+};
+const isPlaylist = (item: Item): item is YoutubePlaylist => {
+  return item.type == "YTplaylist";
+};
+
+const isVideo = (item: Item): item is YoutubeVideo => {
+  return item.type == "YTvideo";
+};
+
+const isChannel = (item: Item): item is YoutubeChannel => {
+  return item.type == "YTchannel";
+};
+
+const isSearch = (item: Item): item is SearchContainer => {
+  return item.type == "search";
+};
+const isContainer = (item: Item): item is ItemContainer =>
+  item.type !== "YTvideo";
+
 export const toggleItemCollapse = (itemId: string, items: Items): Items =>
   mapItemContainer(itemId, items, (item) => ({
     isCollapsedInGallery: !item.isCollapsedInGallery,
   }));
-
-export const isOpen = (item: Item) =>
-  isContainer(item) && !item.isCollapsedInGallery;
-
-const isContainer = (item: Item): item is ItemContainer =>
-  item.type !== "YTvideo";
 
 const mapItemContainer = (
   itemId: string,

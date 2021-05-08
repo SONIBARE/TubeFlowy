@@ -25,7 +25,7 @@ type Themes = {
   dark: Styles;
 };
 
-type StylesWithOptionalThemes = Styles & {
+export type StylesWithOptionalThemes = Styles & {
   themes?: Themes;
 };
 
@@ -33,17 +33,21 @@ type ElementStyleModifiers = StylesWithOptionalThemes & {
   onHover?: StylesWithOptionalThemes;
 };
 
+type CN = ClassName; //just for being short
+type StThemed = StylesWithOptionalThemes;
+
 export const style = {
   selector,
-  class: (className: ClassName, styles: ElementStyleModifiers) => {
+  class: (className: CN, styles: ElementStyleModifiers) => {
     selector(`.${className}`, styles);
     if (styles.onHover) selector(`.${className}:hover`, styles.onHover);
   },
-  parentHover: (
-    parent: ClassName,
-    child: ClassName,
-    styles: StylesWithOptionalThemes
-  ) => selector(`.${parent}:hover > .${child}`, styles),
+  parentHover: (parent: CN, child: CN, styles: StThemed) =>
+    selector(`.${parent}:hover > .${child}`, styles),
+  parentChild: (parent: CN, child: CN, styles: StThemed) =>
+    selector(`.${parent} .${child}`, styles),
+  parentDirectChild: (parent: CN, child: CN, styles: StThemed) =>
+    selector(`.${parent} > .${child}`, styles),
 };
 
 const cssToString = (selector: string, props: Styles) => {
@@ -81,9 +85,10 @@ export type Styles = Partial<{
   opacity: number;
 
   //sizing
-  height: number | "100vh";
+  height: number | "100vh" | "100%";
   width: number | "100vw";
   minWidth: number;
+  minHeight: number;
 
   //margins and paddings
   margin: 0;
@@ -104,7 +109,7 @@ export type Styles = Partial<{
   bottom: number;
   left: number;
   zIndex: number;
-  overflow: "hidden" | "auto" | "scroll";
+  overflow: "hidden" | "auto" | "scroll" | "overlay";
 
   //flex
   flex: number;

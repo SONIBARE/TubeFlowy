@@ -11,13 +11,13 @@ it("toggling item1 visibility", () => {
     sub2
   `)
   );
-  const sub1Collapse = jest.fn();
-  const sub2Collapse = jest.fn();
-  store.itemCollapse.bind("sub1", sub1Collapse);
-  store.itemCollapse.bind("sub2", sub2Collapse);
-  expect(sub1Collapse).lastCalledWith(false);
-  expect(sub2Collapse).lastCalledWith(false);
+  const sub1Open = jest.fn();
+  const sub2Open = jest.fn();
+  store.itemOpen.bind("sub1", sub1Open);
+  store.itemOpen.bind("sub2", sub2Open);
+  expect(sub1Open).lastCalledWith(true);
+  expect(sub2Open).lastCalledWith(true);
   store.toggleIsItemCollapse("sub1");
-  expect(sub1Collapse).lastCalledWith(true);
-  expect(sub2Collapse).lastCalledWith(false);
+  expect(sub1Open).lastCalledWith(false);
+  expect(sub2Open).lastCalledWith(true);
 });

@@ -1,3 +1,4 @@
+import { dom } from "../../src/infra";
 import {
   disposableButton,
   disposableDiv,
@@ -32,8 +33,9 @@ type ElementProps = {
 
 type HTMLElementProps = ClassDefinitions & Events & ElementProps;
 
+type ChildList = (Node | string)[];
 type ElementWithChildren = {
-  children?: (Node | string)[];
+  children?: ChildList | obs.ReadonlySource<ChildList>;
 };
 
 type DivProps = HTMLElementProps & ElementWithChildren;
@@ -43,11 +45,21 @@ export const div = (props: DivProps): HTMLDivElement => {
 
   assignHtmlElementProps(elem, props);
 
-  if (props.children) {
-    props.children.forEach((child) => {
-      if (typeof child === "string") elem.append(child);
-      else elem.appendChild(child);
-    });
+  const { children } = props;
+  if (children) {
+    const assignChildren = (childs: ChildList) => {
+      dom.removeAllChildren(elem);
+      childs.forEach((child) => {
+        if (typeof child === "string") elem.append(child);
+        else elem.appendChild(child);
+      });
+    };
+
+    if (isSource(children))
+      elem.onDisconnected.push(
+        children.bind((childs) => assignChildren(childs))
+      );
+    else assignChildren(children);
   }
   return elem;
 };
@@ -102,7 +114,7 @@ export const assignClasses = (
   if (classNames) classNames.forEach((c) => elem.classList.add(c));
 
   if (classMap) {
-    if (isBindingDefinition(classMap)) {
+    if (isSource(classMap)) {
       bindToClassMap(elem, classMap);
     } else {
       Object.entries(classMap).forEach(([classKey, isSet]) => {
@@ -124,10 +136,11 @@ export const assignReadonlyClasses = (
   if (className) elem.classList.add(className);
   if (classNames) classNames.forEach((c) => elem.classList.add(c));
   if (classMap)
-    Object.entries(classMap).forEach(
-      ([classKey, isSet]) =>
-        isSet && updateClass(elem, classKey as ClassName, isSet)
-    );
+    Object.entries(classMap).forEach(([classKey, isSet]) => {
+      if (typeof isSet !== "undefined") {
+        updateClass(elem, classKey as ClassName, isSet);
+      }
+    });
 };
 
 export const updateClass = (elem: Element, c: ClassName, isSet: boolean) => {
@@ -186,6 +199,6 @@ const bindToClassMap = (
   elem.onDisconnected.push(binding.bind((v) => setClassMap(elem, v)));
 };
 
-const isBindingDefinition = <T>(val: {}): val is obs.ReadonlySource<T> => {
-  return "bind" in val;
+const isSource = <T>(val: {}): val is obs.ReadonlySource<T> => {
+  return "bind" in val && "onChange" in val;
 };

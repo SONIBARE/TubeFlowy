@@ -10,8 +10,8 @@ const viewChevron = (item: Item) => {
   });
   //TODO: fix memory leak
   //TODO: figure out declarative way to return element and subscription
-  const subscription = store.itemCollapse.bind(item.id, (isOpen) =>
-    dom.updateClass(chevron, cls.rowChevronOpen, isOpen)
+  const subscription = store.itemOpen.bind(item.id, (item) =>
+    dom.updateClass(chevron, cls.rowChevronOpen, items.isOpen(item))
   );
   return chevron;
 };
@@ -22,7 +22,7 @@ const viewItemWithChildren = (item: Item, level: number) => {
     classNames: [cls.row, css.classForLevel(level)],
     children: [
       viewChevron(item),
-      icon.create(),
+      icon.svg,
       dom.span({ className: cls.rowTitle, text: item.title }),
     ],
   });
@@ -30,15 +30,16 @@ const viewItemWithChildren = (item: Item, level: number) => {
     ? dom.div({ children: viewChildren(item.id, level + 1) })
     : undefined;
 
-  const unsub = store.itemCollapse.onChange(item.id, (isCollapsed) => {
-    if (isCollapsed) {
+  const unsub = store.itemOpen.onChange(item.id, (item) => {
+    icon.update(item);
+    if (items.isOpen(item)) {
+      children = dom.div({ children: viewChildren(item.id, level + 1) });
+      row.insertAdjacentElement("afterend", children);
+    } else {
       if (children) {
         children.remove();
         children = undefined;
       }
-    } else {
-      children = dom.div({ children: viewChildren(item.id, level + 1) });
-      row.insertAdjacentElement("afterend", children);
     }
   });
   return dom.fragment([row, children]);
@@ -54,6 +55,7 @@ style.class(cls.row, {
   justifyItems: "center",
   alignItems: "flex-start",
   cursor: "pointer",
+  ...css.paddingVertical(4),
   onHover: {
     themes: {
       light: { backgroundColor: colors.superLight },

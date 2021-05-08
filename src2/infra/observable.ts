@@ -1,5 +1,5 @@
 export type Source<T> = ReadonlySource<T> & {
-  change: () => void;
+  notifyListeners: () => void;
   hasAnyListeners: () => boolean;
 };
 
@@ -32,7 +32,7 @@ export const source = <T>(getter: Func0<T>): Source<T> => {
       listeners.push(cb);
       return () => listeners.splice(listeners.indexOf(cb), 1);
     },
-    change: () => listeners.forEach((cb) => cb(getter())),
+    notifyListeners: () => listeners.forEach((cb) => cb(getter())),
     hasAnyListeners: () => listeners.length > 0,
   };
   return res;
@@ -76,6 +76,6 @@ export const keyedSource = <T>(getter: Func1<string, T>): KeyedSource<T> => {
       };
     },
 
-    change: (key: string) => listeners[key]?.change(),
+    change: (key: string) => listeners[key]?.notifyListeners(),
   };
 };

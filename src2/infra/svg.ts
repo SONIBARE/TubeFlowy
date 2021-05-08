@@ -10,7 +10,7 @@ type BaseSvg = ReadonlyClassDefinitions & Events;
 export interface SvgProps extends BaseSvg {
   viewBox: string;
   fill?: string;
-  children: SVGElement[];
+  children: (SVGElement | undefined)[];
 }
 export const svg = (props: SvgProps): SVGSVGElement =>
   appendChildren(
@@ -83,8 +83,8 @@ const svgElem = <T extends keyof Elems>(name: T): Elems[T] =>
 
 const appendChildren = <T extends SVGElement>(
   elem: T,
-  children: SVGElement[] | undefined
+  children: (SVGElement | undefined)[] | undefined
 ): T => {
-  if (children) children.forEach((child) => elem.appendChild(child));
+  if (children) children.forEach((child) => child && elem.appendChild(child));
   return elem;
 };
