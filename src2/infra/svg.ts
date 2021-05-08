@@ -92,15 +92,9 @@ const assignSvgInlineStyles = (
   return elem;
 };
 
-type Elems = {
-  svg: SVGSVGElement;
-  polygon: SVGPathElement;
-  path: SVGPathElement;
-  circle: SVGCircleElement;
-};
-
-const svgElem = <T extends keyof Elems>(name: T): Elems[T] =>
-  document.createElementNS("http://www.w3.org/2000/svg", name) as Elems[T];
+const svgNamespace = "http://www.w3.org/2000/svg";
+const svgElem = <T extends keyof SVGElementTagNameMap>(name: T) =>
+  document.createElementNS(svgNamespace, name) as SVGElementTagNameMap[T];
 
 const appendChildren = <T extends SVGElement>(
   elem: T,
