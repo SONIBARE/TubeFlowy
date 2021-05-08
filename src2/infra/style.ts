@@ -38,6 +38,9 @@ type StThemed = StylesWithOptionalThemes;
 
 export const style = {
   selector,
+  tag: (tagName: keyof HTMLElementTagNameMap, styles: StThemed) =>
+    selector(`${tagName}`, styles),
+
   class: (className: CN, styles: ElementStyleModifiers) => {
     selector(`.${className}`, styles);
     if (styles.onHover) selector(`.${className}:hover`, styles.onHover);
