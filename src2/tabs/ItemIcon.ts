@@ -33,9 +33,9 @@ export default class ItemIcon {
         [cls.rowIconClosed]:
           !items.isEmptyAndNoNeedToLoad(item) && !items.isOpen(item),
         // [cls.focusCircleSvgPlaying]: player.isPlayingItem(this.item),
-        // [cls.closedContainerImage]:
-        //   !items.isFolderOpenOnPage(item) &&
-        //   (item.type == "YTplaylist" || item.type == "YTchannel"),
+        [cls.rowIconClosedImage]:
+          !items.isOpen(item) &&
+          (item.type == "YTplaylist" || item.type == "YTchannel"),
       },
     });
   };
@@ -45,6 +45,17 @@ export default class ItemIcon {
 
     return svg.svg({
       className: cls.rowIcon,
+      classMap: {
+        [cls.rowIconMedia]: isMedia,
+        [cls.rowIconMediaRound]: item.type == "YTchannel",
+        [cls.rowIconMediaSquare]:
+          item.type == "YTplaylist" || item.type == "YTvideo",
+      },
+      style: {
+        backgroundImage: isMedia
+          ? `url(${items.getImageSrc(item)})`
+          : undefined,
+      },
       viewBox: "0 0 100 100",
       children: [
         this.createCircleAtCenter(cls.rowCircleEmpty, 19),
@@ -63,6 +74,12 @@ export default class ItemIcon {
     svg.circle({ cx: 100 / 2, cy: 100 / 2, className, r });
 }
 
+const uniformShadow = (blur: number, spread: number, color: string) =>
+  `0 0 ${blur}px ${spread}px ${color}`;
+
+const insetBlack = (spread: number, alpha: number) =>
+  `inset 0 0 0 ${spread}px rgba(0,0,0,${alpha.toFixed(2)})`;
+
 style.class(cls.rowIcon, {
   marginRight: spacings.spaceBetweenCircleAndText,
   //   cursor: "pointer",
@@ -72,6 +89,8 @@ style.class(cls.rowIcon, {
   //   backgroundSize: "cover",
   //   backgroundPosition: `50% 50%`,
   color: colors.darkPrimary,
+  backgroundSize: "cover",
+  backgroundPosition: `50% 50%`,
 });
 
 style.class(cls.rowCircleEmpty, {
@@ -98,6 +117,16 @@ style.class(cls.rowCircleFilled, {
     light: { fill: colors.darkPrimary },
   },
   transition: css.transition({ opacity: 200 }),
+});
+style.class(cls.rowIconClosedImage, {
+  boxShadow: uniformShadow(4, 2, "rgba(255,255,255,0.5)"),
+});
+style.class(cls.rowIconMediaRound, {
+  borderRadius: "50%",
+});
+
+style.class(cls.rowIconMediaSquare, {
+  borderRadius: 4,
 });
 
 const opaque: Styles = { opacity: 1 };

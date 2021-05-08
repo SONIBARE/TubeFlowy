@@ -33,6 +33,7 @@ export const paddingVertical = (v: number): Styles => ({
 });
 
 export const classForLevel = levels.classForLevel;
+export const childrenForLevel = levels.childrenForLevel;
 
 export const createScrollStyles = (
   className: ClassName,

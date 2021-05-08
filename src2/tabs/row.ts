@@ -27,13 +27,13 @@ const viewItemWithChildren = (item: Item, level: number) => {
     ],
   });
   let children: Element | undefined = items.isOpen(item)
-    ? dom.div({ children: viewChildren(item.id, level + 1) })
+    ? viewItemChildren(item, level)
     : undefined;
 
   const unsub = store.itemOpen.onChange(item.id, (item) => {
     icon.update(item);
     if (items.isOpen(item)) {
-      children = dom.div({ children: viewChildren(item.id, level + 1) });
+      children = viewItemChildren(item, level);
       row.insertAdjacentElement("afterend", children);
     } else {
       if (children) {
@@ -50,6 +50,17 @@ export const viewChildren = (itemId: string, level = 0): Node[] =>
     .getChildrenFor(itemId, store.itemsState)
     .map((item) => viewItemWithChildren(item, level));
 
+const viewItemChildren = (item: Item, level: number) =>
+  dom.div({
+    className: cls.rowChildren,
+    children: viewChildren(item.id, level + 1).concat(childrenBorder(level)),
+  });
+
+export const childrenBorder = (level: number) =>
+  dom.div({
+    classNames: [cls.rowChildrenBorder, css.childrenForLevel(level)],
+  });
+
 style.class(cls.row, {
   display: "flex",
   justifyItems: "center",
@@ -61,6 +72,21 @@ style.class(cls.row, {
       light: { backgroundColor: colors.superLight },
       dark: { backgroundColor: "#1E1E24" },
     },
+  },
+});
+
+style.class(cls.rowChildren, {
+  position: "relative",
+});
+
+style.class(cls.rowChildrenBorder, {
+  position: "absolute",
+  width: 2,
+  top: 0,
+  bottom: 0,
+  themes: {
+    dark: { backgroundColor: colors.darkPrimary },
+    light: { backgroundColor: colors.lightPrimary },
   },
 });
 

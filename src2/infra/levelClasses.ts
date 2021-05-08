@@ -5,6 +5,9 @@ import { style } from "./style";
 export const classForLevel = (level: number): ClassName =>
   (("level_" + level) as unknown) as ClassName;
 
+export const childrenForLevel = (level: number): ClassName =>
+  (("children-level_" + level) as unknown) as ClassName;
+
 const numberOfLevelsToGenerate = 11;
 
 const borderWidth = 2;
@@ -17,12 +20,12 @@ for (let level = 0; level < numberOfLevelsToGenerate; level++) {
     paddingLeft: `calc(${base} + ${levelPadding})`,
     paddingRight: 20,
   });
-  //   style.class(`children-level_${level}` as any, {
-  //     left: `calc(${base} + ${
-  //       level * spacings.spacePerLevel +
-  //       spacings.chevronSize +
-  //       spacings.outerRadius -
-  //       borderWidth / 2
-  //     }px)`,
-  //   });
+  style.class(`children-level_${level}` as any, {
+    left: `calc(${base} + ${
+      level * spacings.spacePerLevel +
+      spacings.chevronSize +
+      spacings.outerRadius -
+      borderWidth / 2
+    }px)`,
+  });
 }

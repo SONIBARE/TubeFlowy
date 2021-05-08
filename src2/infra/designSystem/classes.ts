@@ -17,11 +17,17 @@ export const cls = {
 
   //ROW
   row: "row",
+  rowChildren: "row-children",
+  rowChildrenBorder: "row-children-border",
   rowTitle: "row-title",
   rowIcon: "row-icon",
   rowIconEmpty: "row-icon-empty",
   rowIconOpen: "row-icon-open",
   rowIconClosed: "row-icon-closed",
+  rowIconClosedImage: "row-icon-closed-image",
+  rowIconMedia: "row-icon-media",
+  rowIconMediaRound: "row-icon-media-round",
+  rowIconMediaSquare: "row-icon-media-square",
   rowChevron: "row-chevron",
   rowChevronOpen: "row-chevron-open",
   rowCircleEmpty: "row-circle-empty",

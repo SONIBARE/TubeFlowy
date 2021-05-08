@@ -107,6 +107,12 @@ export const getChildrenFor = (itemId: string, items: Items): Item[] => {
   if (isContainer(item)) return item.children.map((id) => getItem(id, items));
   else return [];
 };
+export const getImageSrc = (item: Item): string => {
+  if (item.type == "YTvideo")
+    return `https://i.ytimg.com/vi/${item.videoId}/mqdefault.jpg`;
+  else if ("image" in item) return item.image;
+  else return "";
+};
 
 export const isOpen = (item: Item) =>
   isContainer(item) && !item.isCollapsedInGallery;

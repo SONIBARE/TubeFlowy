@@ -4,17 +4,24 @@ import {
   Events,
   assignEvents,
 } from "./dom";
-import { camelToSnakeCase } from "./style";
+import { camelToSnakeCase, Styles } from "./style";
 type BaseSvg = ReadonlyClassDefinitions & Events;
-
+type SvgInlineStyles = Pick<Styles, "backgroundImage">;
 export interface SvgProps extends BaseSvg {
+  style?: SvgInlineStyles;
   viewBox: string;
   fill?: string;
   children: (SVGElement | undefined)[];
 }
 export const svg = (props: SvgProps): SVGSVGElement =>
   appendChildren(
-    assignEvents(assignSvgAttributes(svgElem("svg"), props), props),
+    assignEvents(
+      assignSvgAttributes(
+        assignSvgInlineStyles(svgElem("svg"), props.style),
+        props
+      ),
+      props
+    ),
     props.children
   );
 
@@ -53,6 +60,9 @@ export const path = (props: PathProps) =>
 const svgAttributesIgnored: Record<string, boolean> = {
   children: true,
   className: true,
+  classMap: true,
+  style: true,
+  onClick: true,
 };
 
 const attributesInPascal: Record<string, boolean> = {
@@ -68,6 +78,17 @@ const assignSvgAttributes = <T extends Element>(elem: T, attributes: {}): T => {
       elem.setAttribute(keyConverted, value + "");
     }
   });
+  return elem;
+};
+
+const assignSvgInlineStyles = (
+  elem: SVGSVGElement,
+  styles: SvgInlineStyles | undefined
+): SVGSVGElement => {
+  if (styles) {
+    if (styles.backgroundImage)
+      elem.style.backgroundImage = styles.backgroundImage;
+  }
   return elem;
 };
 

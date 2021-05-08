@@ -107,7 +107,7 @@ export type Styles = Partial<{
   top: number;
   right: number;
   bottom: number;
-  left: number;
+  left: number | string;
   zIndex: number;
   overflow: "hidden" | "auto" | "scroll" | "overlay";
 
@@ -119,7 +119,7 @@ export type Styles = Partial<{
   alignItems: "flex-start" | "center" | "flex-end";
 
   //border
-  borderRadius: number;
+  borderRadius: number | "50%";
 
   //colors
   backgroundColor: string;
@@ -141,6 +141,12 @@ export type Styles = Partial<{
   stroke: string;
   strokeWidth: number;
   fill: string;
+
+  //background
+  backgroundImage: string;
+  backgroundSize: "cover";
+  backgroundPosition: string;
+
   //Other
   cursor: "pointer";
   userSelect: "none";
