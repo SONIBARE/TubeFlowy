@@ -70,6 +70,18 @@ export const initialState: Items = {
     id: "1",
     title: "One",
     type: "folder",
+    children: ["1.1", "1.2"],
+  },
+  "1.1": {
+    id: "1.1",
+    title: "One child 1",
+    type: "folder",
+    children: [],
+  },
+  "1.2": {
+    id: "1.2",
+    title: "One child 2",
+    type: "folder",
     children: [],
   },
   "2": {
@@ -92,7 +104,7 @@ export const getItem = (itemId: string, items: Items): Item => {
 
 export const getChildrenFor = (itemId: string, items: Items): Item[] => {
   const item = getItem(itemId, items);
-  if ("children" in item) return item.children.map((id) => getItem(id, items));
+  if (isContainer(item)) return item.children.map((id) => getItem(id, items));
   else return [];
 };
 
@@ -101,6 +113,12 @@ export const toggleItemCollapse = (itemId: string, items: Items): Items =>
     isCollapsedInGallery: !item.isCollapsedInGallery,
   }));
 
+export const isOpen = (item: Item) =>
+  isContainer(item) && !item.isCollapsedInGallery;
+
+const isContainer = (item: Item): item is ItemContainer =>
+  item.type !== "YTvideo";
+
 const mapItemContainer = (
   itemId: string,
   items: Items,
@@ -108,7 +126,7 @@ const mapItemContainer = (
 ): Items => {
   const item = getItem(itemId, items);
   //mutate or not mutate - that is the question
-  if (item.type !== "YTvideo") {
+  if (isContainer(item)) {
     //@ts-expect-error
     items[item.id] = {
       ...item,

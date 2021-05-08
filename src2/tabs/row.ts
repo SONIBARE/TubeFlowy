@@ -9,16 +9,16 @@ const viewChevron = (item: Item) => {
     onClick: () => store.toggleIsItemCollapse(item.id),
   });
   //TODO: fix memory leak
-  //TODO: figure out declarative way
+  //TODO: figure out declarative way to return element and subscription
   const subscription = store.itemCollapse.bind(item.id, (isOpen) =>
     dom.updateClass(chevron, cls.rowChevronOpen, isOpen)
   );
   return chevron;
 };
 
-const viewRow = (item: Item, level: number) => {
+const viewItemWithChildren = (item: Item, level: number) => {
   const icon = new ItemIcon(item);
-  return dom.div({
+  const row = dom.div({
     classNames: [cls.row, css.classForLevel(level)],
     children: [
       viewChevron(item),
@@ -26,12 +26,28 @@ const viewRow = (item: Item, level: number) => {
       dom.span({ className: cls.rowTitle, text: item.title }),
     ],
   });
+  let children: Element | undefined = items.isOpen(item)
+    ? dom.div({ children: viewChildren(item.id, level + 1) })
+    : undefined;
+
+  const unsub = store.itemCollapse.onChange(item.id, (isCollapsed) => {
+    if (isCollapsed) {
+      if (children) {
+        children.remove();
+        children = undefined;
+      }
+    } else {
+      children = dom.div({ children: viewChildren(item.id, level + 1) });
+      row.insertAdjacentElement("afterend", children);
+    }
+  });
+  return dom.fragment([row, children]);
 };
 
-export const viewChildren = (itemId: string, level = 0) =>
+export const viewChildren = (itemId: string, level = 0): Node[] =>
   items
     .getChildrenFor(itemId, store.itemsState)
-    .map((item) => viewRow(item, level));
+    .map((item) => viewItemWithChildren(item, level));
 
 style.class(cls.row, {
   display: "flex",

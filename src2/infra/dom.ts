@@ -33,7 +33,7 @@ type ElementProps = {
 type HTMLElementProps = ClassDefinitions & Events & ElementProps;
 
 type ElementWithChildren = {
-  children?: (Element | string)[];
+  children?: (Node | string)[];
 };
 
 type DivProps = HTMLElementProps & ElementWithChildren;
@@ -77,6 +77,13 @@ export const button = (props: ButtonProps): HTMLElement => {
   }
   return elem;
 };
+
+export const fragment = (nodes: (Node | undefined)[]): DocumentFragment => {
+  const fragment = document.createDocumentFragment();
+  nodes.forEach((node) => node && fragment.appendChild(node));
+  return fragment;
+};
+
 const assignHtmlElementProps = (
   elem: DisposableElement,
   props: HTMLElementProps

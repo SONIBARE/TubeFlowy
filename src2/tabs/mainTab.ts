@@ -1,4 +1,3 @@
-import { colors } from "../../src/infra";
 import { cls, css, dom, spacings, style } from "../infra";
 import { viewChildren } from "./row";
 
@@ -8,7 +7,7 @@ export const mainTab = () =>
     children: [title()].concat(viewChildren("HOME")),
   });
 
-const title = () =>
+const title = (): Node =>
   dom.div({
     classNames: [cls.title, css.classForLevel(0)],
     children: ["Title"],
