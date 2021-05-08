@@ -38,13 +38,21 @@ style.class(cls.row, {
   justifyItems: "center",
   alignItems: "flex-start",
   cursor: "pointer",
-  onHover: { backgroundColor: colors.superLight },
+  onHover: {
+    themes: {
+      light: { backgroundColor: colors.superLight },
+      dark: { backgroundColor: "#1E1E24" },
+    },
+  },
 });
 
 style.class(cls.rowTitle, {
   paddingTop: 2,
   lineHeight: 1.6,
-  color: colors.darkPrimary,
+  themes: {
+    dark: { color: "white" },
+    light: { color: colors.darkPrimary },
+  },
 });
 
 style.class(cls.rowChevron, {
@@ -53,16 +61,19 @@ style.class(cls.rowChevron, {
   borderRadius: spacings.chevronSize,
   marginTop: spacings.imageSize / 2 - spacings.chevronSize / 2,
   minWidth: spacings.chevronSize,
-  // transition: css.transition({
-  //   transform: timings.itemExpandCollapseDuration,
-  //   opacity: 100,
-  // }),
+  transition: css.transition({
+    transform: 200,
+    opacity: 100,
+  }),
   color: colors.mediumPrimary,
   opacity: 0,
   userSelect: "none",
 
   onHover: {
-    color: colors.darkPrimary,
+    themes: {
+      dark: { color: "white" },
+      light: { color: colors.darkPrimary },
+    },
   },
 });
 

@@ -1,4 +1,4 @@
-import { cls, colors, spacings, style, svg } from "../infra";
+import { cls, colors, spacings, style, svg, ClassName } from "../infra";
 
 export default class ItemIcon {
   svg: SVGElement;
@@ -11,24 +11,12 @@ export default class ItemIcon {
     return svg.svg({
       className: cls.rowIcon,
       viewBox: "0 0 100 100",
-      children: [
-        this.createCircleAtCenter({
-          className: cls.rowCircleEmpty,
-          r: 19,
-          strokeWidth: 2,
-          stroke: colors.darkPrimary,
-          fill: "white",
-        }),
-      ],
+      children: [this.createCircleAtCenter(cls.rowCircleEmpty, 19)],
     });
   }
 
-  createCircleAtCenter = (props: Omit<svg.CircleProps, "cx" | "cy">) =>
-    svg.circle({
-      cx: 100 / 2,
-      cy: 100 / 2,
-      ...props,
-    });
+  createCircleAtCenter = (className: ClassName, r: number) =>
+    svg.circle({ cx: 100 / 2, cy: 100 / 2, className, r });
 }
 
 style.class(cls.rowIcon, {
@@ -40,4 +28,13 @@ style.class(cls.rowIcon, {
   //   backgroundSize: "cover",
   //   backgroundPosition: `50% 50%`,
   color: colors.darkPrimary,
+});
+
+style.class(cls.rowCircleEmpty, {
+  fill: "transparent",
+  strokeWidth: 2,
+  themes: {
+    dark: { stroke: "white" },
+    light: { stroke: colors.darkPrimary },
+  },
 });

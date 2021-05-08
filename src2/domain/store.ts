@@ -33,8 +33,15 @@ export default class Store {
     if (item.type !== "YTvideo") return !!item.isCollapsedInGallery;
     return false;
   });
+
   toggleIsItemCollapse(itemId: string) {
     this.itemsState = items.toggleItemCollapse(itemId, this.itemsState);
     this.itemCollapse.change(itemId);
   }
+
+  public onThemeChange = obs.source(() => this.uiState.theme);
+  toggleTheme = () => {
+    this.uiState = core.toggleTheme(this.uiState);
+    this.onThemeChange.change();
+  };
 }

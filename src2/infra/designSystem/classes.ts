@@ -2,6 +2,9 @@ type valueof<T> = T[keyof T];
 export type ClassName = valueof<typeof cls>;
 
 export const cls = {
+  dark: "dark",
+  light: "light",
+  themeButton: "theme-button",
   pageContainer: "page-container",
   header: "header",
   footer: "footer",

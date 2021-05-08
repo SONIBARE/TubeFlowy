@@ -39,6 +39,8 @@ type Subscription<T> = {
   source: Source<T>;
 };
 
+//TODO: idea is good, implementation is bad
+//rethink implementation
 export const keyedSource = <T>(getter: Func1<string, T>): KeyedSource<T> => {
   const listeners: Record<string, Source<T>[] | undefined> = {};
 

@@ -22,7 +22,7 @@ export interface CircleProps extends ReadonlyClassDefinitions {
   cx: number;
   cy: number;
   r: number;
-  fill: string;
+  fill?: string;
   stroke?: string;
   strokeWidth?: number;
 }

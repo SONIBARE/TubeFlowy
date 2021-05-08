@@ -3,17 +3,34 @@ import { ClassName } from "./index";
 const s = document.createElement("style");
 document.head.appendChild(s);
 
-const selector = (selector: string | string[], styles: Styles) => {
+const selector = (selector: string, styles: StylesWithOptionalThemes) => {
   const res = Array.isArray(selector) ? selector.join(", ") : selector;
   s.innerHTML += cssToString(res, styles);
+
+  if (styles.themes) handleThemes(selector, styles.themes);
 };
 
-const modifiers: Record<string, number> = {
+const handleThemes = (slctr: string, themes: Themes) => {
+  selector(`.dark ${slctr}`, themes.dark);
+  selector(`.light ${slctr}`, themes.light);
+};
+
+const ignoredStyles: Record<string, number> = {
   onHover: 1,
+  themes: 1,
 };
 
-type ElementStyleModifiers = Styles & {
-  onHover?: Styles;
+type Themes = {
+  light: Styles;
+  dark: Styles;
+};
+
+type StylesWithOptionalThemes = Styles & {
+  themes?: Themes;
+};
+
+type ElementStyleModifiers = StylesWithOptionalThemes & {
+  onHover?: StylesWithOptionalThemes;
 };
 
 export const style = {
@@ -22,13 +39,16 @@ export const style = {
     selector(`.${className}`, styles);
     if (styles.onHover) selector(`.${className}:hover`, styles.onHover);
   },
-  parentHover: (parent: ClassName, child: ClassName, styles: Styles) =>
-    selector(`.${parent}:hover > .${child}`, styles),
+  parentHover: (
+    parent: ClassName,
+    child: ClassName,
+    styles: StylesWithOptionalThemes
+  ) => selector(`.${parent}:hover > .${child}`, styles),
 };
 
 const cssToString = (selector: string, props: Styles) => {
   const values = Object.entries(props).map(([key, val]) =>
-    typeof val !== "undefined" && !modifiers[key]
+    typeof val !== "undefined" && !ignoredStyles[key]
       ? `\t${camelToSnakeCase(key)}: ${convertVal(key, val)};`
       : ""
   );
@@ -79,6 +99,10 @@ export type Styles = Partial<{
 
   //positioning
   position: "absolute" | "relative";
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
   zIndex: number;
   overflow: "hidden" | "auto" | "scroll";
 
@@ -108,6 +132,10 @@ export type Styles = Partial<{
   //shadows
   boxShadow: string;
 
+  //svg
+  stroke: string;
+  strokeWidth: number;
+  fill: string;
   //Other
   cursor: "pointer";
   userSelect: "none";
