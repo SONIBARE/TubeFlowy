@@ -33,6 +33,9 @@ export const style = {
     selector(`.${className}`, styles);
     if (styles.onHover) selector(`.${className}:hover`, styles.onHover);
   },
+  after: (className: CN, styles: Styles) => {
+    selector(`.${className}::after`, styles);
+  },
   parentHover: (parent: CN, child: CN, styles: ElementStyleModifiers) =>
     selector(`.${parent}:hover > .${child}`, styles),
   parentChild: (parent: CN, child: CN, styles: ElementStyleModifiers) =>
@@ -104,12 +107,14 @@ export type Styles = Partial<{
 
   //positioning
   position: "absolute" | "relative" | "fixed";
-  top: number;
+  top: number | "100%";
   right: number;
   bottom: number;
   left: number | string;
   zIndex: number;
   overflow: "hidden" | "auto" | "scroll" | "overlay";
+  overflowX: "hidden" | "auto" | "scroll" | "overlay";
+  overflowY: "hidden" | "auto" | "scroll" | "overlay";
 
   //flex
   flex: number;
@@ -148,9 +153,11 @@ export type Styles = Partial<{
   backgroundImage: string;
   backgroundSize: "cover";
   backgroundPosition: string;
+  background: string;
 
   //Other
   cursor: "pointer";
   userSelect: "none";
   transform: string;
+  content: `" "`;
 }>;

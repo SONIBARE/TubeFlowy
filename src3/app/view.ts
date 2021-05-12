@@ -1,6 +1,6 @@
-import { dom, cls, style, cssVar, css } from "../browser";
-import { colors, spacings } from "../designSystem";
-import { renderTree } from "./itemsTree";
+import { dom, cls, style, cssVar, css, ClassName } from "../browser";
+import { spacings, getThemeClassMap } from "../designSystem";
+import { renderTree } from "./tree/itemsTree";
 
 type ViewEvents = {
   toggleTheme: EmptyAction;
@@ -38,10 +38,7 @@ export class View {
   };
 
   public setTheme = (theme: Theme) => {
-    dom.assignClassMap(this.container, {
-      [cls.dark]: theme === "dark",
-      [cls.light]: theme === "white",
-    });
+    dom.assignClassMap(this.container, getThemeClassMap(theme));
     this.toggleThemeButton.textContent = theme === "dark" ? "light" : "dark";
   };
 
@@ -84,11 +81,23 @@ style.class(cls.main, {
   flex: 1,
   display: "flex",
   flexDirection: "row",
+  overflow: "hidden",
 });
 style.class(cls.header, {
+  position: "relative",
   height: spacings.headerHeight,
   transition: css.transition({ backgroundColor: 200 }),
-  backgroundColor: css.useVar(cssVar.menuColor),
+  backgroundColor: css.useVar(cssVar.mainBackground),
+});
+
+style.after(cls.header, {
+  position: "absolute",
+  left: 0,
+  right: 0,
+  top: "100%",
+  height: 4,
+  content: `" "`,
+  background: `linear-gradient( rgba(9, 30, 66, 0.13) 0px, rgba(9, 30, 66, 0.13) 1px, rgba(9, 30, 66, 0.08) 1px, rgba(9, 30, 66, 0) 4px)`,
 });
 
 style.class(cls.footer, {
@@ -96,8 +105,11 @@ style.class(cls.footer, {
   transition: css.transition({ backgroundColor: 200 }),
   backgroundColor: css.useVar(cssVar.menuColor),
 });
+
 style.class(cls.mainTab, {
   flex: 1,
+  overflowY: "overlay",
+  overflowX: "hidden",
 });
 
 style.class(cls.searchTab, {
@@ -106,18 +118,9 @@ style.class(cls.searchTab, {
 });
 style.class(cls.searchTabHidden, { marginRight: "-100%" });
 
-style.class(cls.light, {
-  variables: {
-    "main-background": colors.light.bg,
-    "text-main": colors.light.text,
-    "menu-color": colors.light.menu,
-  },
-});
-
-style.class(cls.dark, {
-  variables: {
-    "main-background": colors.dark.bg,
-    "text-main": colors.dark.text,
-    "menu-color": colors.dark.menu,
+css.createScrollStyles(cls.mainTab, {
+  scrollbar: { width: 8 },
+  thumb: {
+    backgroundColor: css.useVar(cssVar.ambient),
   },
 });

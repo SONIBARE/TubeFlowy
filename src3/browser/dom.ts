@@ -45,7 +45,7 @@ const assignElementProps = <T extends Element>(
 
 const assignChildren = <T extends Element>(
   elem: T,
-  children: (Element | string)[] | undefined
+  children: (Node | string)[] | undefined
 ): T => {
   children?.forEach((c) => {
     if (typeof c === "string") elem.append(c);
@@ -55,7 +55,7 @@ const assignChildren = <T extends Element>(
   return elem;
 };
 type DivProps = ElementProps & {
-  children?: (Element | string)[];
+  children?: (Node | string)[];
 };
 export const div = (props: DivProps) =>
   assignElementProps(
@@ -87,4 +87,10 @@ export const img = (props: ImgProps) => {
   const elem = assignElementProps(document.createElement("img"), props);
   elem.src = props.src;
   return elem;
+};
+
+export const fragment = (nodes: (Node | undefined)[]): DocumentFragment => {
+  const fragment = document.createDocumentFragment();
+  nodes.forEach((node) => node && fragment.appendChild(node));
+  return fragment;
 };

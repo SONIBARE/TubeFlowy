@@ -1,5 +1,5 @@
-import { VariableName } from "./classes";
-import { camelToSnakeCase, Styles } from "./style";
+import { VariableName, ClassName } from "./classes";
+import { camelToSnakeCase, Styles, style } from "./style";
 
 type Transition = PartialRecord<keyof Styles, number>;
 
@@ -9,3 +9,19 @@ export const transition = (transitionDefinition: Transition): string =>
     .join(", ");
 
 export const useVar = (variableName: VariableName) => `var(--${variableName})`;
+
+export const paddingVertical = (v: number): Styles => ({
+  paddingBottom: v,
+  paddingTop: v,
+});
+
+export const createScrollStyles = (
+  className: ClassName,
+  props: {
+    scrollbar: Styles;
+    thumb: Styles;
+  }
+) => {
+  style.selector(`.${className}::-webkit-scrollbar`, props.scrollbar);
+  style.selector(`.${className}::-webkit-scrollbar-thumb`, props.thumb);
+};

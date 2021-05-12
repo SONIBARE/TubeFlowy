@@ -1,5 +1,6 @@
-import { cls, dom, style } from "../browser";
-import { spacings, levels } from "../designSystem";
+import { cls, dom, style } from "../../browser";
+import { spacings, levels } from "../../designSystem";
+import { viewChildren } from "./row";
 
 export const renderTree = (
   container: Element,
@@ -15,13 +16,12 @@ export const renderTree = (
   );
 
   if (item.type !== "YTvideo") {
-    item.children.forEach((id) => {
-      container.appendChild(viewRow(items[id]));
+    const children = viewChildren(rootId, items);
+    children.forEach((child) => {
+      container.appendChild(child);
     });
   }
 };
-
-const viewRow = (item: Item) => dom.div({ children: [item.title] });
 
 style.class(cls.title, {
   fontSize: 36,

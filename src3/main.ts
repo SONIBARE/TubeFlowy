@@ -1,7 +1,9 @@
 import "./normalize";
 import { Controller } from "./app/controller";
 import * as firebase from "./api/firebase";
+import { initThemes } from "./designSystem/colors";
 
+initThemes();
 const controller = new Controller();
 
 firebase.initFirebase(() => {
