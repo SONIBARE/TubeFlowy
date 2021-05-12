@@ -1,5 +1,6 @@
 import { dom, cls, style, cssVar, css } from "../browser";
-import { colors } from "../designSystem";
+import { colors, spacings } from "../designSystem";
+import { renderTree } from "./itemsTree";
 
 type ViewEvents = {
   toggleTheme: EmptyAction;
@@ -37,7 +38,7 @@ export class View {
   };
 
   public setTheme = (theme: Theme) => {
-    dom.assignClasses(this.container, {
+    dom.assignClassMap(this.container, {
       [cls.dark]: theme === "dark",
       [cls.light]: theme === "white",
     });
@@ -45,18 +46,22 @@ export class View {
   };
 
   public setSearchVisilibity = (isVisible: boolean) =>
-    dom.assignClasses(this.searchTab, {
+    dom.assignClassMap(this.searchTab, {
       [cls.searchTabHidden]: !isVisible,
     });
 
   public setTabFocused = (tabName: TabName) => {
     console.warn("setTabFocused is not implemented");
   };
+
+  public focusOnMainTab = (itemId: string, items: Items) => {
+    renderTree(this.mainTab, itemId, items);
+  };
 }
 
 style.class(cls.themeButton, {
   position: "fixed",
-  bottom: 20,
+  bottom: spacings.playerFooterHeight + 20,
   right: 20,
 });
 
@@ -71,19 +76,23 @@ style.class(cls.page, {
   overflow: "hidden",
 });
 
+style.tag("body", {
+  fontFamily: `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+});
+
 style.class(cls.main, {
   flex: 1,
   display: "flex",
   flexDirection: "row",
 });
 style.class(cls.header, {
-  height: 48,
+  height: spacings.headerHeight,
   transition: css.transition({ backgroundColor: 200 }),
   backgroundColor: css.useVar(cssVar.menuColor),
 });
 
 style.class(cls.footer, {
-  height: 48,
+  height: spacings.playerFooterHeight,
   transition: css.transition({ backgroundColor: 200 }),
   backgroundColor: css.useVar(cssVar.menuColor),
 });

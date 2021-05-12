@@ -1,4 +1,5 @@
 export type Model = {
+  items: Items;
   uiOptions: UIOptions;
 };
 
@@ -17,6 +18,7 @@ export const toggleTheme = (model: Model): Model => ({
 });
 
 export const initialModel: Model = {
+  items: {},
   uiOptions: {
     theme: "dark",
     isSearchVisible: false,
@@ -44,3 +46,8 @@ export const toggleSearchVisibility = (model: Model): Model => {
       },
     };
 };
+
+export const setItems = (model: Model, items: Items): Model => ({
+  ...model,
+  items,
+});

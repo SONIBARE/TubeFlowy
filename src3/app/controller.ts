@@ -44,4 +44,9 @@ export class Controller {
     if (prevUi.tabFocused != uiOptions.tabFocused)
       this.viewRef.setTabFocused(uiOptions.tabFocused);
   };
+
+  itemsLoaded = (items: Items) => {
+    this.model = model.setItems(this.model, items);
+    this.viewRef.focusOnMainTab("HOME", this.model.items);
+  };
 }

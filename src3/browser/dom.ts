@@ -1,13 +1,25 @@
 import { ClassName } from "./classes";
 
-type ElementProps = {
-  testId?: string;
+export type ClassDefinitions = {
   className?: ClassName;
   classNames?: ClassName[];
+  classMap?: PartialRecord<ClassName, boolean>;
+};
+export type Events = {
   onClick?: (e: Event) => void;
 };
+type ElementProps = ClassDefinitions &
+  Events & {
+    testId?: string;
+  };
+export const assignClasses = (elem: Element, props: ClassDefinitions) => {
+  if (props.className) elem.classList.add(props.className);
+  if (props.classNames)
+    props.classNames.forEach((cn) => elem.classList.add(cn));
+  if (props.classMap) assignClassMap(elem, props.classMap);
+};
 
-export const assignClasses = (
+export const assignClassMap = (
   elem: Element,
   classMap: PartialRecord<ClassName, boolean>
 ) => {
@@ -16,15 +28,17 @@ export const assignClasses = (
     else elem.classList.remove(className);
   });
 };
+export const assignEvents = <T extends Element>(elem: T, props: Events): T => {
+  if (props.onClick) elem.addEventListener("click", props.onClick);
+  return elem;
+};
 
 const assignElementProps = <T extends Element>(
   elem: T,
   props: ElementProps
 ): T => {
-  if (props.onClick) elem.addEventListener("click", props.onClick);
-  if (props.className) elem.classList.add(props.className);
-  if (props.classNames)
-    props.classNames.forEach((cn) => elem.classList.add(cn));
+  assignClasses(elem, props);
+  assignEvents(elem, props);
   if (props.testId) elem.setAttribute("data-testid", props.testId);
   return elem;
 };

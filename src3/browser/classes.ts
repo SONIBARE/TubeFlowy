@@ -12,6 +12,9 @@ export const cls = {
   searchTab: "search-tab",
   searchTabHidden: "search-tab-hidden",
   themeButton: "theme-button",
+
+  //items tree
+  title: "title",
 } as const;
 
 export type VariableName = valueof<typeof cssVar>;
