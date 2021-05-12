@@ -94,12 +94,12 @@ export type Styles = Partial<{
   minHeight: number;
 
   //margins and paddings
-  margin: 0;
+  margin: number;
   marginRight: number | "-100%";
   marginLeft: number;
   marginTop: number;
   marginBottom: number;
-  padding: 0;
+  padding: number;
   paddingRight: number;
   paddingLeft: number | string;
   paddingTop: number;
@@ -122,6 +122,8 @@ export type Styles = Partial<{
   alignItems: "flex-start" | "center" | "flex-end";
 
   //border
+  border: string;
+  outline: string;
   borderRadius: number | "50%";
 
   //colors
