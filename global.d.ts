@@ -7,3 +7,4 @@ type Func2<T1, T2, T3> = (a: T1, b: T2) => T3;
 type PartialRecord<TKey, TValue> = Partial<Record<TKey, TValue>>;
 
 type Theme = "dark" | "white";
+type TabName = "main" | "search";

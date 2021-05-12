@@ -3,6 +3,7 @@ import { ClassName } from "./classes";
 type ElementProps = {
   testId?: string;
   className?: ClassName;
+  classNames?: ClassName[];
   onClick?: (e: Event) => void;
 };
 
@@ -21,7 +22,9 @@ const assignElementProps = <T extends Element>(
   props: ElementProps
 ): T => {
   if (props.onClick) elem.addEventListener("click", props.onClick);
-  if (props.className) elem.className = props.className;
+  if (props.className) elem.classList.add(props.className);
+  if (props.classNames)
+    props.classNames.forEach((cn) => elem.classList.add(cn));
   if (props.testId) elem.setAttribute("data-testid", props.testId);
   return elem;
 };

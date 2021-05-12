@@ -15,7 +15,7 @@ const ignoredStyles: Record<string, number> = {
 };
 
 type StylesWithVariables = Styles & {
-  variables?: Record<VariableName, string>;
+  variables?: PartialRecord<VariableName, string>;
 };
 
 type ElementStyleModifiers = StylesWithVariables & {
@@ -103,7 +103,7 @@ export type Styles = Partial<{
   paddingBottom: number;
 
   //positioning
-  position: "absolute" | "relative";
+  position: "absolute" | "relative" | "fixed";
   top: number;
   right: number;
   bottom: number;
