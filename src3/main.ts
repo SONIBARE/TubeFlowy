@@ -13,4 +13,5 @@ firebase.initFirebase(() => {
     controller.itemsLoaded(res);
   });
 });
+
 document.body.appendChild(controller.view());

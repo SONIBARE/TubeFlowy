@@ -29,7 +29,6 @@ export class TreeController {
 class ItemWithChildrenController {
   private rowIcon: ItemIcon;
   private row: Element;
-  private children: ItemWithChildrenController[] = [];
   private childrenContainer?: Element;
 
   constructor(
@@ -55,13 +54,10 @@ class ItemWithChildrenController {
 
   private assignChildren = () => {
     const { itemId, store, level } = this;
-    this.children = store.isOpen(itemId)
-      ? ItemWithChildrenController.createForChildren(itemId, store, level + 1)
-      : [];
-
-    if (this.children.length > 0)
+    const renderChildren = ItemWithChildrenController.createForChildren;
+    if (store.isOpen(itemId))
       this.childrenContainer = viewChildren(
-        this.children.map((c) => c.render()),
+        renderChildren(itemId, store, level + 1).map((c) => c.render()),
         level + 1
       );
   };

@@ -1,13 +1,13 @@
 import { TreeController } from "./tree/TreeController";
 import { Store } from "./Store";
-import { View } from "./view";
+import { AppView } from "./AppView";
 
 export class AppController {
-  viewRef: View;
+  viewRef: AppView;
   mainTabController: TreeController;
 
   constructor(public store: Store) {
-    this.viewRef = new View({
+    this.viewRef = new AppView({
       toggleTheme: this.toggleTheme,
     });
     this.mainTabController = new TreeController({

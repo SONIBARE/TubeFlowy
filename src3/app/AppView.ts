@@ -1,10 +1,10 @@
 import { dom, cls, style, cssVar, css } from "../browser";
-import { spacings, getThemeClassMap } from "../designSystem";
+import { spacings, timings, getThemeClassMap } from "../designSystem";
 
 type ViewEvents = {
   toggleTheme: EmptyAction;
 };
-export class View {
+export class AppView {
   private header = dom.div({ className: cls.header });
   private footer = dom.div({ className: cls.footer });
   public mainTab = dom.div({ className: cls.mainTab });
@@ -60,7 +60,10 @@ style.class(cls.themeButton, {
 style.class(cls.page, {
   height: "100vh",
   width: "100vw",
-  transition: css.transition({ backgroundColor: 200, color: 200 }),
+  transition: css.transition({
+    backgroundColor: timings.themeSwitchDuration,
+    color: timings.themeSwitchDuration,
+  }),
   backgroundColor: css.useVar(cssVar.mainBackground),
   color: css.useVar(cssVar.textMain),
   display: "flex",
@@ -81,7 +84,7 @@ style.class(cls.main, {
 style.class(cls.header, {
   position: "relative",
   height: spacings.headerHeight,
-  transition: css.transition({ backgroundColor: 200 }),
+  transition: css.transition({ backgroundColor: timings.themeSwitchDuration }),
   backgroundColor: css.useVar(cssVar.mainBackground),
 });
 
@@ -97,7 +100,7 @@ style.after(cls.header, {
 
 style.class(cls.footer, {
   height: spacings.playerFooterHeight,
-  transition: css.transition({ backgroundColor: 200 }),
+  transition: css.transition({ backgroundColor: timings.themeSwitchDuration }),
   backgroundColor: css.useVar(cssVar.menuColor),
 });
 
@@ -109,7 +112,7 @@ style.class(cls.mainTab, {
 
 style.class(cls.searchTab, {
   flex: 1,
-  transition: css.transition({ marginRight: 200 }),
+  transition: css.transition({ marginRight: timings.searchHideDuration }),
 });
 style.class(cls.searchTabHidden, { marginRight: "-100%" });
 

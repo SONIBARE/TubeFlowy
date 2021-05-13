@@ -3,6 +3,10 @@ import { spacings, timings } from "../../designSystem";
 import * as model from "../model";
 import { Styles } from "../../browser";
 
+const iconSize = spacings.outerRadius * 2;
+const outerRadius = spacings.outerRadius;
+const innerRadius = spacings.innerRadius;
+
 export default class ItemIcon {
   public svg: SVGElement;
 
@@ -42,14 +46,14 @@ export default class ItemIcon {
           ? `url(${model.getImageSrc(item)})`
           : undefined,
       },
-      viewBox: "0 0 100 100",
+      viewBox: `0 0 ${iconSize} ${iconSize}`,
       children: [
-        this.createCircleAtCenter(cls.rowCircleEmpty, 19),
+        this.createCircleAtCenter(cls.rowCircleEmpty, innerRadius),
         !isMedia
-          ? this.createCircleAtCenter(cls.rowCircleOuter, 50)
+          ? this.createCircleAtCenter(cls.rowCircleOuter, outerRadius)
           : undefined,
         !isMedia
-          ? this.createCircleAtCenter(cls.rowCircleInner, 19)
+          ? this.createCircleAtCenter(cls.rowCircleInner, innerRadius)
           : undefined,
         ,
       ],
@@ -57,7 +61,7 @@ export default class ItemIcon {
   }
 
   createCircleAtCenter = (className: ClassName, r: number) =>
-    svg.circle({ cx: 100 / 2, cy: 100 / 2, className, r });
+    svg.circle({ cx: iconSize / 2, cy: iconSize / 2, className, r });
 }
 
 const uniformShadow = (blur: number, spread: number, color: string) =>
@@ -81,9 +85,12 @@ style.class(cls.rowIcon, {
 
 style.class(cls.rowCircleEmpty, {
   fill: "transparent",
-  strokeWidth: 3,
+  strokeWidth: 2,
   stroke: css.useVar(cssVar.accent),
-  transition: css.transition({ opacity: timings.expandCollapseDuration }),
+  transition: css.transition({
+    opacity: timings.expandCollapseDuration,
+    stroke: timings.themeSwitchDuration,
+  }),
 });
 
 style.class(cls.rowCircleOuter, {
