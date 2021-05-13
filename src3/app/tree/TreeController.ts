@@ -13,9 +13,10 @@ export class TreeController {
   private roots: ItemWithChildrenController[] = [];
   constructor(public props: TreeControllerProps) {}
 
-  focus(rootId: string, items: Items) {
+  focus(rootId: string) {
     const { container, store } = this.props;
-    const item = items[rootId];
+    container.innerHTML = ``;
+    const item = store.getItem(rootId);
     container.appendChild(renderTitle(item));
 
     this.roots = ItemWithChildrenController.createForChildren(rootId, store, 0);
@@ -37,7 +38,7 @@ class ItemWithChildrenController {
     public level: number
   ) {
     const item = store.getItem(itemId);
-    this.rowIcon = new ItemIcon(item);
+    this.rowIcon = new ItemIcon(item, store);
 
     const events: RowEvents = { onChevronClick: () => this.onChevronClick() };
     this.row = viewRow(item, events, this.rowIcon, level);

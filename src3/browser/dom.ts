@@ -6,7 +6,7 @@ export type ClassDefinitions = {
   classMap?: PartialRecord<ClassName, boolean>;
 };
 export type Events = {
-  onClick?: (e: Event) => void;
+  onClick?: (e: MouseEvent) => void;
 };
 type ElementProps = ClassDefinitions &
   Events & {
@@ -28,7 +28,9 @@ export const assignClassMap = (
     else elem.classList.remove(className);
   });
 };
+
 export const assignEvents = <T extends Element>(elem: T, props: Events): T => {
+  //@ts-expect-error need to figure out way to handle there types for both HTML and SVG elements
   if (props.onClick) elem.addEventListener("click", props.onClick);
   return elem;
 };

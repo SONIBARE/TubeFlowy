@@ -2,6 +2,7 @@ import { cls, style, svg, ClassName, dom, css, cssVar } from "../../browser";
 import { spacings, timings } from "../../designSystem";
 import * as model from "../model";
 import { Styles } from "../../browser";
+import { Store } from "../Store";
 
 const iconSize = spacings.outerRadius * 2;
 const outerRadius = spacings.outerRadius;
@@ -10,7 +11,7 @@ const innerRadius = spacings.innerRadius;
 export default class ItemIcon {
   public svg: SVGElement;
 
-  constructor(item: Item) {
+  constructor(item: Item, public store: Store) {
     this.svg = this.view(item);
     this.update(item);
   }
@@ -57,6 +58,10 @@ export default class ItemIcon {
           : undefined,
         ,
       ],
+      onClick: (e) => {
+        console.log(e);
+        if (e.ctrlKey) this.store.setMainFocus(item.id);
+      },
     });
   }
 

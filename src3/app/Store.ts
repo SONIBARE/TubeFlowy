@@ -29,4 +29,19 @@ export class Store {
       items: model.toggleItemCollapse(itemId, this.model.items),
     };
   };
+
+  getMainFocus = () => this.model.uiOptions.mainFocus;
+  setMainFocus = (itemId: string) => {
+    const prevFocus = this.getMainFocus();
+    this.model = model.setMainFocus(this.model, itemId);
+    const nextFocus = this.getMainFocus();
+    if (prevFocus != nextFocus && this.onMainFocusChangeCb)
+      this.onMainFocusChangeCb(nextFocus);
+  };
+
+  //Events
+  onMainFocusChangeCb?: Action<string>;
+  public onMainFocusChange(cb: Action<string>) {
+    this.onMainFocusChangeCb = cb;
+  }
 }

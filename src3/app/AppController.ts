@@ -16,6 +16,7 @@ export class AppController {
     });
     this.updateTheme();
     document.addEventListener("keydown", this.onKeyDown);
+    store.onMainFocusChange(this.changeFocusForMain);
   }
 
   toggleTheme = () => {
@@ -53,6 +54,11 @@ export class AppController {
 
   itemsLoaded = (items: Items) => {
     this.store.setItems(items);
-    this.mainTabController.focus("HOME", items);
+    //TODO: get focus from Persisted state
+    this.mainTabController.focus(this.store.getMainFocus());
+  };
+
+  changeFocusForMain = (rootId: string) => {
+    this.mainTabController.focus(rootId);
   };
 }

@@ -7,6 +7,7 @@ type UIOptions = {
   theme: Theme;
   isSearchVisible: boolean;
   tabFocused: TabName;
+  mainFocus: string;
 };
 
 export const toggleTheme = (model: Model): Model => ({
@@ -17,12 +18,21 @@ export const toggleTheme = (model: Model): Model => ({
   },
 });
 
+export const setMainFocus = (model: Model, itemId: string): Model => ({
+  ...model,
+  uiOptions: {
+    ...model.uiOptions,
+    mainFocus: itemId,
+  },
+});
+
 export const initialModel: Model = {
   items: {},
   uiOptions: {
     theme: "dark",
     isSearchVisible: false,
     tabFocused: "main",
+    mainFocus: "HOME",
   },
 };
 
