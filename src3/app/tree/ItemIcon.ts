@@ -13,10 +13,6 @@ export default class ItemIcon {
 
   update = (item: Item) => {
     const isMedia = item.type !== "folder";
-
-    if (item.title === "Music") {
-      console.log("update", model.isOpen(item));
-    }
     dom.assignClassMap(this.svg, {
       [cls.rowIconEmpty]: !isMedia && model.isEmptyAndNoNeedToLoad(item),
       [cls.rowIconOpen]:
@@ -87,13 +83,13 @@ style.class(cls.rowCircleEmpty, {
   fill: "transparent",
   strokeWidth: 3,
   stroke: css.useVar(cssVar.accent),
-  transition: css.transition({ opacity: 200 }),
+  transition: css.transition({ opacity: timings.expandCollapseDuration }),
 });
 
 style.class(cls.rowCircleOuter, {
   fill: css.useVar(cssVar.ambient),
   transition: css.transition({
-    opacity: 200,
+    opacity: timings.expandCollapseDuration,
     fill: timings.themeSwitchDuration,
   }),
 });
@@ -101,7 +97,7 @@ style.class(cls.rowCircleOuter, {
 style.class(cls.rowCircleInner, {
   fill: css.useVar(cssVar.accent),
   transition: css.transition({
-    opacity: 200,
+    opacity: timings.expandCollapseDuration,
     fill: timings.themeSwitchDuration,
   }),
 });

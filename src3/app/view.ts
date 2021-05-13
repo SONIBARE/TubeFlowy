@@ -1,6 +1,5 @@
-import { dom, cls, style, cssVar, css, ClassName } from "../browser";
+import { dom, cls, style, cssVar, css } from "../browser";
 import { spacings, getThemeClassMap } from "../designSystem";
-import { renderTree } from "./tree/itemsTree";
 
 type ViewEvents = {
   toggleTheme: EmptyAction;
@@ -8,7 +7,7 @@ type ViewEvents = {
 export class View {
   private header = dom.div({ className: cls.header });
   private footer = dom.div({ className: cls.footer });
-  private mainTab = dom.div({ className: cls.mainTab });
+  public mainTab = dom.div({ className: cls.mainTab });
   private searchTab = dom.div({
     classNames: [cls.searchTab, cls.searchTabHidden],
   });
@@ -49,10 +48,6 @@ export class View {
 
   public setTabFocused = (tabName: TabName) => {
     console.warn("setTabFocused is not implemented");
-  };
-
-  public focusOnMainTab = (itemId: string, items: Items) => {
-    renderTree(this.mainTab, itemId, items);
   };
 }
 

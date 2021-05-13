@@ -1,10 +1,10 @@
 import "./normalize";
-import { Controller } from "./app/controller";
+import { AppController } from "./app/AppController";
 import * as firebase from "./api/firebase";
 import { initThemes } from "./designSystem/colors";
 
 initThemes();
-const controller = new Controller();
+const controller = new AppController();
 
 firebase.initFirebase(() => {
   firebase.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((state) => {

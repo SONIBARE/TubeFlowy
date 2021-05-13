@@ -1,13 +1,19 @@
 import * as model from "./model";
+import { TreeController } from "./tree/TreeController";
 import { View } from "./view";
 
-export class Controller {
+export class AppController {
   model = model.initialModel;
 
   viewRef: View;
+  mainTabController: TreeController;
+
   constructor() {
     this.viewRef = new View({
       toggleTheme: this.toggleTheme,
+    });
+    this.mainTabController = new TreeController({
+      container: this.viewRef.mainTab,
     });
     this.updateTheme();
     document.addEventListener("keydown", this.onKeyDown);
@@ -47,6 +53,6 @@ export class Controller {
 
   itemsLoaded = (items: Items) => {
     this.model = model.setItems(this.model, items);
-    this.viewRef.focusOnMainTab("HOME", this.model.items);
+    this.mainTabController.focus("HOME", this.model.items);
   };
 }
