@@ -1,35 +1,35 @@
-import * as model from "./model";
 import { TreeController } from "./tree/TreeController";
+import { Store } from "./Store";
 import { View } from "./view";
 
 export class AppController {
-  model = model.initialModel;
-
   viewRef: View;
   mainTabController: TreeController;
 
-  constructor() {
+  constructor(public store: Store) {
     this.viewRef = new View({
       toggleTheme: this.toggleTheme,
     });
     this.mainTabController = new TreeController({
       container: this.viewRef.mainTab,
+      store,
     });
     this.updateTheme();
     document.addEventListener("keydown", this.onKeyDown);
   }
 
   toggleTheme = () => {
-    this.model = model.toggleTheme(this.model);
+    this.store.toggleTheme();
     this.updateTheme();
   };
 
-  updateTheme = () => this.viewRef.setTheme(this.model.uiOptions.theme);
+  updateTheme = () =>
+    this.viewRef.setTheme(this.store.getState().uiOptions.theme);
 
   view = () => this.viewRef.view();
 
   onKeyDown = (e: KeyboardEvent) => {
-    const prevUi = this.model.uiOptions;
+    const prevUi = this.store.getState().uiOptions;
     if (e.code == "Digit1" && e.ctrlKey) {
       e.preventDefault();
 
@@ -39,10 +39,10 @@ export class AppController {
 
     if ((e.code == "Digit2" || e.code == "KeyK") && e.ctrlKey) {
       e.preventDefault();
-      this.model = model.toggleSearchVisibility(this.model);
+      this.store.toggleSearchVisibility();
     }
 
-    const { uiOptions } = this.model;
+    const { uiOptions } = this.store.getState();
 
     if (prevUi.isSearchVisible != uiOptions.isSearchVisible)
       this.viewRef.setSearchVisilibity(uiOptions.isSearchVisible);
@@ -52,7 +52,7 @@ export class AppController {
   };
 
   itemsLoaded = (items: Items) => {
-    this.model = model.setItems(this.model, items);
-    this.mainTabController.focus("HOME", this.model.items);
+    this.store.setItems(items);
+    this.mainTabController.focus("HOME", items);
   };
 }

@@ -1,8 +1,9 @@
 import { cls, css, cssVar, dom, style } from "../../browser";
 import { spacings, levels, timings, icons } from "../../designSystem";
+import * as model from "../model";
 import ItemIcon from "./ItemIcon";
 
-type RowEvents = {
+export type RowEvents = {
   onChevronClick: EmptyAction;
 };
 export const viewRow = (
@@ -13,6 +14,7 @@ export const viewRow = (
 ) =>
   dom.div({
     classNames: [cls.row, levels.classForLevel(level)],
+    classMap: { [cls.rowChevronOpen]: model.isOpen(item) },
     children: [
       icons.chevron({
         onClick: events.onChevronClick,
@@ -21,6 +23,11 @@ export const viewRow = (
       icon.svg,
       dom.span({ className: cls.rowTitle, text: item.title }),
     ],
+  });
+
+export const updateChevron = (row: Element, isItemOpen: boolean) =>
+  dom.assignClassMap(row, {
+    [cls.rowChevronOpen]: isItemOpen,
   });
 
 export const viewChildren = (nodes: Node[], level: number) =>
@@ -82,7 +89,7 @@ style.class(cls.rowChevron, {
   },
 });
 
-style.class(cls.rowChevronOpen, {
+style.parentChild(cls.rowChevronOpen, cls.rowChevron, {
   transform: "rotateZ(90deg)",
 });
 
