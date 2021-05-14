@@ -1,14 +1,17 @@
 import { dom } from "../src3/browser";
 import Events from "./Events";
 
+type CounterEvents = {
+  "change:counter": number;
+};
 class CounterModel {
-  public events = new Events();
+  public events = new Events<CounterEvents>();
 
   public counter = 0;
 
   public increment = () => {
     this.counter += 1;
-    this.events.trigger("change");
+    this.events.trigger("change:counter", this.counter);
   };
 }
 
@@ -28,9 +31,7 @@ class Counter {
     ],
   });
   constructor() {
-    this.model.events.on("change", () =>
-      this.renderCounter(this.model.counter)
-    );
+    this.model.events.on("change:counter", this.renderCounter);
     this.renderCounter(this.model.counter);
   }
 

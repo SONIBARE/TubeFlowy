@@ -1,30 +1,39 @@
-class Events {
-  private events: Record<string, Action<void>[]> = {};
+type Callback<T> = T extends void ? () => void : (param: T) => void;
 
-  public trigger(eventName: string) {
+class Events<T = Record<string, any>> {
+  private events: Record<keyof T, Action<any>[]> = {} as any;
+
+  public trigger = <TKey extends keyof T>(
+    eventName: TKey,
+    payload: T[TKey]
+  ) => {
     const callbacks = this.events[eventName];
 
-    if (callbacks) callbacks.forEach((cb) => cb());
-  }
+    if (callbacks) callbacks.forEach((cb) => cb(payload));
+  };
 
-  public on(eventName: string, cb: Action<void>) {
+  public on<TKey extends keyof T>(eventName: TKey, cb: Callback<T[TKey]>) {
     if (!this.events[eventName]) this.events[eventName] = [];
 
     this.events[eventName].push(cb);
   }
 
-  public off(eventName: string, cb: Action<void>) {
+  public off<TKey extends keyof T>(eventName: TKey, cb: Callback<T[TKey]>) {
     const callbacks = this.events[eventName];
 
     if (callbacks) this.events[eventName] = callbacks.filter((c) => c != cb);
   }
 
   private listeningTo: ListeningTo[] = [];
-  public listenTo(other: Events, eventName: string, cb: Action<void>) {
+  public listenTo<TOther, TKey extends keyof TOther>(
+    other: Events<TOther>,
+    eventName: TKey,
+    cb: Callback<TOther[TKey]>
+  ) {
     other.on(eventName, cb);
     const alreadyListeningToThisEvent = this.getListeningInfo(other);
 
-    const info: ListeningDev = { cb, eventName };
+    const info: ListeningDev = { cb, eventName: eventName as string };
     if (alreadyListeningToThisEvent)
       alreadyListeningToThisEvent.listenening.push(info);
     else this.listeningTo.push({ listenening: [info], event: other });
@@ -50,7 +59,7 @@ type ListeningTo = {
 
 type ListeningDev = {
   eventName: string;
-  cb: Action<void>;
+  cb: Action<any>;
 };
 
 export default Events;
