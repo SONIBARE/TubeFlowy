@@ -45,7 +45,7 @@ export class App {
 
   itemsLoaded = (items: Items) => {
     const home = this.createModel(items["HOME"], items);
-    this.view.mainTab.appendChild(new Tree(home).el);
+    new Tree(home, this.view.mainTab);
   };
 
   createModel = (item: Item, items: Items): ItemModel => {
