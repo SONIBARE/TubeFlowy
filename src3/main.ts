@@ -1,7 +1,7 @@
 import "./normalize";
 import * as firebase from "./api/firebase";
 import { initThemes } from "./designSystem/colors";
-import { App } from "./app/AppController";
+import { App } from "./app/App";
 
 initThemes();
 const app = new App();

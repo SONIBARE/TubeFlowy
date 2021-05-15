@@ -1,20 +1,18 @@
 import { TreeController } from "./tree/TreeController";
 import { AppView } from "./AppView";
 import { UiStateModel } from "../model/UserSettingsModel";
+import { Tree } from "./tree/Tree";
+import { ItemModel } from "../model/ItemModel";
 
 export class App {
-  view: AppView;
+  private view: AppView;
   private model = new UiStateModel();
-  // mainTabController: TreeController;
 
   constructor() {
     this.view = new AppView({
       toggleTheme: this.model.toggleTheme,
     });
-    // this.mainTabController = new TreeController({
-    //   container: this.viewRef.mainTab,
-    //   store: this.store,
-    // });
+
     this.model.on("themeChanged", this.view.setTheme);
     this.view.setTheme(this.model.get("theme"));
 
@@ -46,8 +44,19 @@ export class App {
   };
 
   itemsLoaded = (items: Items) => {
-    // this.store.setItems(items);
-    //TODO: get focus from Persisted state
-    // this.mainTabController.focus(this.store.getMainFocus());
+    const home = this.createModel(items["HOME"], items);
+    this.view.mainTab.appendChild(new Tree(home).el);
+  };
+
+  createModel = (item: Item, items: Items): ItemModel => {
+    const container = item as ItemContainer;
+    return new ItemModel({
+      children:
+        item.type !== "YTvideo"
+          ? item.children.map((id) => this.createModel(items[id], items))
+          : [],
+      title: item.title,
+      isOpenAtMain: !container.isCollapsedInGallery || false,
+    });
   };
 }

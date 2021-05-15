@@ -12,13 +12,8 @@ type ItemEvents = {
 };
 
 export class ItemModel extends Events<ItemEvents> {
-  attributes: ItemProps;
-  constructor(initial: ItemProps) {
+  constructor(private attributes: ItemProps) {
     super();
-    this.attributes = {
-      isOpenAtMain: true,
-      ...initial,
-    };
   }
 
   getTitle = () => this.attributes.title;
@@ -32,8 +27,19 @@ export class ItemModel extends Events<ItemEvents> {
     const newValue = !this.attributes.isOpenAtMain;
     if (newValue) this.attributes.isOpenAtMain = newValue;
     else delete this.attributes.isOpenAtMain;
+
     this.trigger("isOpenChanged", newValue);
   };
 
   getChildren = () => this.attributes.children;
+
+  //TODO:
+  isEmpty = () => this.getChildren().length === 0;
+  getType = () => "folder";
+  getImage = () => "asd";
 }
+
+export type ReadonlyItemModel = Pick<
+  ItemModel,
+  "getTitle" | "isOpen" | "getChildren" | "isEmpty" | "getType" | "getImage"
+>;
