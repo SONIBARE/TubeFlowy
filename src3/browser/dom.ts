@@ -1,5 +1,14 @@
 import { ClassName } from "./classes";
 
+type KnownTarget<T> = {
+  currentTarget: T;
+};
+
+export type EventOn<T extends HTMLElement> = Event & KnownTarget<T>;
+
+export type KeyboardEventOn<T extends HTMLElement> = KeyboardEvent &
+  KnownTarget<T>;
+
 export type ClassDefinitions = {
   className?: ClassName;
   classNames?: ClassName[];
@@ -64,6 +73,24 @@ export const div = (props: DivProps) =>
     assignChildren(document.createElement("div"), props.children),
     props
   );
+
+type InputProps = ElementProps & {
+  onInput?: Action<EventOn<HTMLInputElement>>;
+  onKeyDown?: Action<KeyboardEventOn<HTMLInputElement>>;
+  value?: string;
+  placeholder?: string;
+};
+export const input = (props: InputProps) => {
+  const elem = assignElementProps(document.createElement("input"), props);
+  if (props.onInput)
+    elem.addEventListener("input", props.onInput as Action<Event>);
+  if (props.onKeyDown)
+    elem.addEventListener("keydown", props.onKeyDown as Action<Event>);
+  if (props.value) elem.value = props.value;
+  if (props.placeholder) elem.placeholder = props.placeholder;
+  return elem;
+};
+
 type SpanProps = ElementProps & {
   text: string;
 };

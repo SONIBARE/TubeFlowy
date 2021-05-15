@@ -31,9 +31,9 @@ class Events<T = Record<string, any>> {
     cb: Callback<TOther[TKey]>
   ) {
     other.on(eventName, cb);
-    const alreadyListeningToThisEvent = this.getListeningInfo(other);
+    const info: ListeningInfo = { cb, eventName: eventName as string };
 
-    const info: ListeningDev = { cb, eventName: eventName as string };
+    const alreadyListeningToThisEvent = this.getListeningInfo(other);
     if (alreadyListeningToThisEvent)
       alreadyListeningToThisEvent.listenening.push(info);
     else this.listeningTo.push({ listenening: [info], event: other });
@@ -54,10 +54,10 @@ class Events<T = Record<string, any>> {
 type ListeningTo = {
   event: Events;
 
-  listenening: ListeningDev[];
+  listenening: ListeningInfo[];
 };
 
-type ListeningDev = {
+type ListeningInfo = {
   eventName: string;
   cb: Action<any>;
 };
