@@ -1,17 +1,16 @@
 import "./normalize";
 import * as firebase from "./api/firebase";
 import { initThemes } from "./designSystem/colors";
-import { AppController } from "./app/AppController";
-import { Store } from "./app/Store";
+import { App } from "./app/AppController";
 
 initThemes();
-const controller = new AppController(new Store());
+const app = new App();
 
 firebase.initFirebase(() => {
   firebase.loadUserSettings("nLHkgavG6YXJWlP4YkzJ9t4zW692").then((state) => {
     const res: Items = JSON.parse(state.itemsSerialized);
-    controller.itemsLoaded(res);
+    app.itemsLoaded(res);
   });
 });
 
-document.body.appendChild(controller.view());
+document.body.appendChild(app.container);

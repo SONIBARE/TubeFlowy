@@ -32,9 +32,9 @@ export class AppView {
     ],
   });
 
-  public view = () => {
+  get el() {
     return this.container;
-  };
+  }
 
   public setTheme = (theme: Theme) => {
     dom.assignClassMap(this.container, getThemeClassMap(theme));
@@ -113,6 +113,7 @@ style.class(cls.mainTab, {
 style.class(cls.searchTab, {
   flex: 1,
   transition: css.transition({ marginRight: timings.searchHideDuration }),
+  backgroundColor: "green",
 });
 style.class(cls.searchTabHidden, { marginRight: "-100%" });
 

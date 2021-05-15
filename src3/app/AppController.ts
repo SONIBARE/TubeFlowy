@@ -1,36 +1,37 @@
 import { TreeController } from "./tree/TreeController";
-import { Store } from "./Store";
 import { AppView } from "./AppView";
+import { UiStateModel } from "../model/UserSettingsModel";
 
-export class AppController {
-  viewRef: AppView;
-  mainTabController: TreeController;
+export class App {
+  view: AppView;
+  private model = new UiStateModel();
+  // mainTabController: TreeController;
 
-  constructor(public store: Store) {
-    this.viewRef = new AppView({
-      toggleTheme: this.toggleTheme,
+  constructor() {
+    this.view = new AppView({
+      toggleTheme: this.model.toggleTheme,
     });
-    this.mainTabController = new TreeController({
-      container: this.viewRef.mainTab,
-      store,
-    });
-    this.updateTheme();
+    // this.mainTabController = new TreeController({
+    //   container: this.viewRef.mainTab,
+    //   store: this.store,
+    // });
+    this.model.on("themeChanged", this.view.setTheme);
+    this.view.setTheme(this.model.get("theme"));
+
+    this.model.on("isSearchVisibleChanged", this.view.setSearchVisilibity);
+    this.view.setSearchVisilibity(this.model.get("isSearchVisible"));
+
+    this.model.on("tabFocusedChanged", this.view.setTabFocused);
+    this.view.setTabFocused(this.model.get("tabFocused"));
+
     document.addEventListener("keydown", this.onKeyDown);
-    store.onMainFocusChange(this.changeFocusForMain);
   }
 
-  toggleTheme = () => {
-    this.store.toggleTheme();
-    this.updateTheme();
-  };
-
-  updateTheme = () =>
-    this.viewRef.setTheme(this.store.getState().uiOptions.theme);
-
-  view = () => this.viewRef.view();
+  get container() {
+    return this.view.el;
+  }
 
   onKeyDown = (e: KeyboardEvent) => {
-    const prevUi = this.store.getState().uiOptions;
     if (e.code == "Digit1" && e.ctrlKey) {
       e.preventDefault();
 
@@ -40,25 +41,13 @@ export class AppController {
 
     if ((e.code == "Digit2" || e.code == "KeyK") && e.ctrlKey) {
       e.preventDefault();
-      this.store.toggleSearchVisibility();
+      this.model.toggleSearchVisibility();
     }
-
-    const { uiOptions } = this.store.getState();
-
-    if (prevUi.isSearchVisible != uiOptions.isSearchVisible)
-      this.viewRef.setSearchVisilibity(uiOptions.isSearchVisible);
-
-    if (prevUi.tabFocused != uiOptions.tabFocused)
-      this.viewRef.setTabFocused(uiOptions.tabFocused);
   };
 
   itemsLoaded = (items: Items) => {
-    this.store.setItems(items);
+    // this.store.setItems(items);
     //TODO: get focus from Persisted state
-    this.mainTabController.focus(this.store.getMainFocus());
-  };
-
-  changeFocusForMain = (rootId: string) => {
-    this.mainTabController.focus(rootId);
+    // this.mainTabController.focus(this.store.getMainFocus());
   };
 }
