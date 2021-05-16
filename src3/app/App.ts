@@ -57,6 +57,11 @@ export class App {
       title: item.title,
       type: item.type,
       isOpen: !container.isCollapsedInGallery || false,
+
+      //@ts-expect-error
+      image: item.image,
+      //@ts-expect-error
+      videoId: item.videoId,
     });
   };
 }

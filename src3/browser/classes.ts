@@ -43,4 +43,5 @@ export const cssVar = {
   accent: "accent",
   halfAccent: "half-accent",
   bhHover: "bg-hover",
+  shadowMain: "shadow-main",
 } as const;

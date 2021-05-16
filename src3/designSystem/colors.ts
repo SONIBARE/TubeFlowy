@@ -17,7 +17,7 @@ const darkTheme = {
   halfAccent: "#B8BCBF",
   //Ambient is used for border, outer circle, icons like chevron, anything you non-accent
   ambient: "#4C5155",
-
+  shadowColor: "rgba(255,255,255,0.5)",
   text: "white",
   bg: "#15161E",
   bhHover: "#1E1E24",
@@ -28,6 +28,7 @@ const lightTheme: typeof darkTheme = {
   accent: "rgb(76, 81, 85)",
   halfAccent: "#B8BCBF",
   ambient: "#DCE0E2",
+  shadowColor: "rgba(0,0,0,0.5)",
   text: "black",
   bhHover: "rgba(0,0,0,0.03)",
   bg: "white",
@@ -47,6 +48,7 @@ const assignColorVariables = (
       accent: theme.accent,
       "bg-hover": theme.bhHover,
       "half-accent": theme.halfAccent,
+      "shadow-main": theme.shadowColor,
     },
   });
 };

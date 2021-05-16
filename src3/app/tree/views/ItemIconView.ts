@@ -27,22 +27,23 @@ export default class ItemIconView {
     const isEmpty = item.isEmpty();
     const isOpen = item.get("isOpen");
     const type = item.get("title");
-    const isMedia = type !== "folder";
     dom.assignClassMap(this.svg, {
-      [cls.rowIconEmpty]: !isMedia && isEmpty,
+      [cls.rowIconEmpty]: !item.isMedia() && isEmpty,
       [cls.rowIconOpen]: !isEmpty && isOpen,
       [cls.rowIconClosed]: !isEmpty && !isOpen,
       // [cls.focusCircleSvgPlaying]: player.isPlayingItem(this.item),
-      [cls.rowIconClosedImage]:
-        !isOpen && (type == "YTplaylist" || type == "YTchannel"),
+      [cls.rowIconClosedImage]: !isOpen && item.isMedia(),
     });
   };
 
   private view(item: ReadonlyItemModel) {
     const type = item.get("type");
-    // const image = item.getImage();
-    const isMedia = type !== "folder";
+    const image = item.getImageSrc();
+    const isMedia = item.isMedia();
 
+    if (item.get("title") === "Product Visual Design") {
+      console.log(item.get("type"));
+    }
     return svg.svg({
       className: cls.rowIcon,
       classMap: {
@@ -50,7 +51,7 @@ export default class ItemIconView {
         [cls.rowIconMediaRound]: type == "YTchannel",
         [cls.rowIconMediaSquare]: type == "YTplaylist" || type == "YTvideo",
       },
-      // style: { backgroundImage: isMedia ? `url(${image})` : undefined },
+      style: { backgroundImage: isMedia ? `url(${image})` : undefined },
       viewBox: `0 0 ${iconSize} ${iconSize}`,
       children: [
         this.createCircleAtCenter(cls.rowCircleEmpty, innerRadius),
@@ -118,7 +119,7 @@ style.class(cls.rowCircleInner, {
   }),
 });
 style.class(cls.rowIconClosedImage, {
-  boxShadow: uniformShadow(4, 2, "rgba(255,255,255,0.5)"),
+  boxShadow: uniformShadow(4, 2, css.useVar(cssVar.shadowMain)),
 });
 style.class(cls.rowIconMediaRound, {
   borderRadius: "50%",
