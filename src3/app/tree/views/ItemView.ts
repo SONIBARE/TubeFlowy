@@ -1,5 +1,5 @@
 import { cls, css, cssVar, dom, style } from "../../../browser";
-import { spacings, levels, timings, icons } from "../../../designSystem";
+import { spacings, levels, icons } from "../../../designSystem";
 import { ReadonlyItemModel } from "../../../model/ItemModel";
 import ItemIconView from "./ItemIconView";
 
