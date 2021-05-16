@@ -7,9 +7,9 @@ import {
   dom,
   css,
   cssVar,
-} from "../../browser";
-import { spacings, timings } from "../../designSystem";
-import { ReadonlyItemModel } from "../../model/ItemModel";
+} from "../../../browser";
+import { spacings, timings } from "../../../designSystem";
+import { ReadonlyItemModel } from "../../../model/ItemModel";
 
 const iconSize = spacings.outerRadius * 2;
 const outerRadius = spacings.outerRadius;
@@ -25,8 +25,8 @@ export default class ItemIconView {
 
   update = (item: ReadonlyItemModel) => {
     const isEmpty = item.isEmpty();
-    const isOpen = item.isOpen();
-    const type = item.getType();
+    const isOpen = item.get("isOpen");
+    const type = item.get("title");
     const isMedia = type !== "folder";
     dom.assignClassMap(this.svg, {
       [cls.rowIconEmpty]: !isMedia && isEmpty,
@@ -34,13 +34,13 @@ export default class ItemIconView {
       [cls.rowIconClosed]: !isEmpty && !isOpen,
       // [cls.focusCircleSvgPlaying]: player.isPlayingItem(this.item),
       [cls.rowIconClosedImage]:
-        !item.isOpen && (type == "YTplaylist" || type == "YTchannel"),
+        !isOpen && (type == "YTplaylist" || type == "YTchannel"),
     });
   };
 
   private view(item: ReadonlyItemModel) {
-    const type = item.getType();
-    const image = item.getImage();
+    const type = item.get("type");
+    // const image = item.getImage();
     const isMedia = type !== "folder";
 
     return svg.svg({
@@ -50,9 +50,7 @@ export default class ItemIconView {
         [cls.rowIconMediaRound]: type == "YTchannel",
         [cls.rowIconMediaSquare]: type == "YTplaylist" || type == "YTvideo",
       },
-      style: {
-        backgroundImage: isMedia ? `url(${image})` : undefined,
-      },
+      // style: { backgroundImage: isMedia ? `url(${image})` : undefined },
       viewBox: `0 0 ${iconSize} ${iconSize}`,
       children: [
         this.createCircleAtCenter(cls.rowCircleEmpty, innerRadius),

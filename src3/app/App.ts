@@ -1,4 +1,3 @@
-import { TreeController } from "./tree/TreeController";
 import { AppView } from "./AppView";
 import { UiStateModel } from "../model/UserSettingsModel";
 import { Tree } from "./tree/Tree";
@@ -56,7 +55,8 @@ export class App {
           ? item.children.map((id) => this.createModel(items[id], items))
           : [],
       title: item.title,
-      isOpenAtMain: !container.isCollapsedInGallery || false,
+      type: item.type,
+      isOpen: !container.isCollapsedInGallery || false,
     });
   };
 }

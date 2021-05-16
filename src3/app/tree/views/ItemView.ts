@@ -1,6 +1,6 @@
-import { cls, css, cssVar, dom, style } from "../../browser";
-import { spacings, levels, timings, icons } from "../../designSystem";
-import { ReadonlyItemModel } from "../../model/ItemModel";
+import { cls, css, cssVar, dom, style } from "../../../browser";
+import { spacings, levels, timings, icons } from "../../../designSystem";
+import { ReadonlyItemModel } from "../../../model/ItemModel";
 import ItemIconView from "./ItemIconView";
 
 type ItemViewEvents = {
@@ -19,25 +19,27 @@ export class ItemView {
 
   constructor({ level, model, chevronClicked }: Props) {
     this.chevron = icons.chevron({
-      classMap: { [cls.rowChevronOpen]: model.isOpen() },
+      classMap: { [cls.rowChevronOpen]: model.get("isOpen") },
       onClick: chevronClicked,
       className: cls.rowChevron,
     });
     this.icon = new ItemIconView(model);
-    this.title = dom.span({ text: model.getTitle() });
+    this.title = dom.span({ text: model.get("title") });
 
     this.row = dom.div({
       classNames: [cls.row, levels.classForLevel(level)],
       children: [
         this.chevron,
         this.icon.svg,
-        dom.span({ className: cls.rowTitle, text: model.getTitle() }),
+        dom.span({ className: cls.rowTitle, text: model.get("title") }),
       ],
     });
   }
 
   updateIcons = (model: ReadonlyItemModel) => {
-    dom.assignClassMap(this.chevron, { [cls.rowChevronOpen]: model.isOpen() });
+    dom.assignClassMap(this.chevron, {
+      [cls.rowChevronOpen]: model.get("isOpen"),
+    });
     this.icon.update(model);
   };
 
@@ -55,19 +57,6 @@ style.class(cls.row, {
   onHover: {
     backgroundColor: css.useVar(cssVar.bhHover),
   },
-});
-
-style.class(cls.rowChildren, {
-  position: "relative",
-});
-
-style.class(cls.rowChildrenBorder, {
-  position: "absolute",
-  width: 2,
-  top: 0,
-  bottom: 0,
-  backgroundColor: css.useVar(cssVar.ambient),
-  transition: css.transition({ backgroundColor: timings.themeSwitchDuration }),
 });
 
 style.class(cls.rowTitle, {
