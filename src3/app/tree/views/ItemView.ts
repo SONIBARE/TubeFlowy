@@ -19,7 +19,6 @@ export class ItemView {
 
   constructor({ level, model, chevronClicked }: Props) {
     this.chevron = icons.chevron({
-      classMap: { [cls.rowChevronOpen]: model.get("isOpen") },
       onClick: chevronClicked,
       className: cls.rowChevron,
     });
@@ -34,11 +33,13 @@ export class ItemView {
         dom.span({ className: cls.rowTitle, text: model.get("title") }),
       ],
     });
+    this.updateIcons(model);
   }
 
   updateIcons = (model: ReadonlyItemModel) => {
     dom.assignClassMap(this.chevron, {
       [cls.rowChevronOpen]: model.get("isOpen"),
+      [cls.rowChevronInactive]: model.isEmpty(),
     });
     this.icon.update(model);
   };
@@ -83,8 +84,11 @@ style.class(cls.rowChevron, {
   },
 });
 
+style.parentHover(cls.row, cls.rowChevron, { opacity: 1 });
 style.class(cls.rowChevronOpen, {
   transform: "rotateZ(90deg)",
 });
-
-style.parentHover(cls.row, cls.rowChevron, { opacity: 1 });
+style.class(cls.rowChevronInactive, {
+  pointerEvents: "none",
+  visibility: "hidden",
+});

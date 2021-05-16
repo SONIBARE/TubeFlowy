@@ -29,6 +29,7 @@ export const cls = {
   rowIconMediaSquare: "row-icon-media-square",
   rowChevron: "row-chevron",
   rowChevronOpen: "row-chevron-open",
+  rowChevronInactive: "row-chevron-inactive",
   rowCircleEmpty: "row-circle-empty",
   rowCircleOuter: "row-circle-outer",
   rowCircleInner: "row-circle-inner",

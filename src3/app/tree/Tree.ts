@@ -6,12 +6,13 @@ import { ItemView } from "./views/ItemView";
 export class Tree {
   constructor(public root: ItemModel, private el: Element) {
     root.getChildren().forEach((child) => {
-      this.el.appendChild(new ItemPrensenter(child, 0).container);
+      this.el.appendChild(new Item(child, 0).container);
     });
   }
 }
 
-class ItemPrensenter {
+//TODO: probably better to merge Item and ItemChildren
+class Item {
   view: ItemView;
   children: ItemChildren;
   constructor(public model: ItemModel, public level: number) {
@@ -67,7 +68,7 @@ class ItemChildren {
     const model = this.model;
     const subitems = model
       .getChildren()
-      .map((c) => new ItemPrensenter(c, this.level + 1));
+      .map((c) => new Item(c, this.level + 1));
 
     this.view.render(subitems.map((s) => s.container));
   };

@@ -159,5 +159,7 @@ export type Styles = Partial<{
   cursor: "pointer";
   userSelect: "none";
   transform: string;
+  pointerEvents: "none";
+  visibility: "hidden";
   content: `" "`;
 }>;

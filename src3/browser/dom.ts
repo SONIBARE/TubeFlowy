@@ -56,17 +56,17 @@ const assignElementProps = <T extends Element>(
 
 const assignChildren = <T extends Element>(
   elem: T,
-  children: (Node | string)[] | undefined
+  children: (Node | string | undefined)[] | undefined
 ): T => {
   children?.forEach((c) => {
     if (typeof c === "string") elem.append(c);
-    else elem.appendChild(c);
+    else if (c) elem.appendChild(c);
   });
 
   return elem;
 };
 type DivProps = ElementProps & {
-  children?: (Node | string)[];
+  children?: (Node | string | undefined)[];
 };
 export const div = (props: DivProps) =>
   assignElementProps(
