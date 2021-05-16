@@ -10,6 +10,7 @@ import {
 } from "../../../browser";
 import { spacings, timings } from "../../../designSystem";
 import { ReadonlyItemModel } from "../../../model/ItemModel";
+import { App } from "../../App";
 
 const iconSize = spacings.outerRadius * 2;
 const outerRadius = spacings.outerRadius;
@@ -63,10 +64,7 @@ export default class ItemIconView {
           : undefined,
         ,
       ],
-      onClick: (e) => {
-        console.log("Clicked on item icon, no handler for now assigned", e);
-        // if (e.ctrlKey) this.store.setMainFocus(item.id);
-      },
+      onClick: (e) => App.instance.player.play(item),
     });
   }
 

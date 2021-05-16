@@ -2,15 +2,23 @@ import { AppView } from "./AppView";
 import { UiStateModel } from "../model/UserSettingsModel";
 import { Tree } from "./tree/Tree";
 import { ItemModel } from "../model/ItemModel";
+import Player from "../player/Player";
 
 export class App {
   private view: AppView;
+  public player: Player;
   private model = new UiStateModel();
 
+  //Yes, singleton, I know, I'm a bad person.
+  //But I do not want to pass a lot of props to items to call Player events
+  //maybe global event bus would be much better
+  static instance: App;
   constructor() {
+    App.instance = this;
     this.view = new AppView({
       toggleTheme: this.model.toggleTheme,
     });
+    this.player = new Player(this.view.footer);
 
     this.model.on("themeChanged", this.view.setTheme);
     this.view.setTheme(this.model.get("theme"));
@@ -49,7 +57,7 @@ export class App {
 
   createModel = (item: Item, items: Items): ItemModel => {
     const container = item as ItemContainer;
-    return new ItemModel({
+    const model = new ItemModel({
       children:
         item.type !== "YTvideo"
           ? item.children.map((id) => this.createModel(items[id], items))
@@ -63,5 +71,7 @@ export class App {
       //@ts-expect-error
       videoId: item.videoId,
     });
+    model.getChildren().forEach((child) => child.setParent(model));
+    return model;
   };
 }

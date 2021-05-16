@@ -10,6 +10,9 @@ type ItemAttributes = {
 };
 
 export class ItemModel extends Model<ItemAttributes> {
+  public parent?: ItemModel;
+  setParent = (parent: ItemModel) => (this.parent = parent);
+
   toggleIsOpen = () => this.set("isOpen", !this.get("isOpen"));
 
   getChildren = () => this.get("children") || [];
@@ -28,5 +31,5 @@ export class ItemModel extends Model<ItemAttributes> {
 
 export type ReadonlyItemModel = Pick<
   ItemModel,
-  "get" | "getChildren" | "isEmpty" | "getImageSrc" | "isMedia"
+  "get" | "getChildren" | "isEmpty" | "getImageSrc" | "isMedia" | "parent"
 >;

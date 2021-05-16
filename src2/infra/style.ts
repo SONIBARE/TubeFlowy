@@ -106,7 +106,7 @@ export type Styles = Partial<{
   paddingBottom: number;
 
   //positioning
-  position: "absolute" | "relative";
+  position: "absolute" | "relative" | "fixed";
   top: number;
   right: number;
   bottom: number;

@@ -46,3 +46,8 @@ export const cssVar = {
   bhHover: "bg-hover",
   shadowMain: "shadow-main",
 } as const;
+
+export type ElementId = valueof<typeof ids>;
+export const ids = {
+  youtubeFrame: "youtube-frame",
+} as const;

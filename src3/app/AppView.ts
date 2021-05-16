@@ -6,7 +6,7 @@ type ViewEvents = {
 };
 export class AppView {
   private header = dom.div({ className: cls.header });
-  private footer = dom.div({ className: cls.footer });
+  public footer = dom.div({ className: cls.footer });
   public mainTab = dom.div({ className: cls.mainTab });
   private searchTab = dom.div({
     classNames: [cls.searchTab, cls.searchTabHidden],
@@ -96,12 +96,6 @@ style.after(cls.header, {
   height: 4,
   content: `" "`,
   background: `linear-gradient( rgba(9, 30, 66, 0.13) 0px, rgba(9, 30, 66, 0.13) 1px, rgba(9, 30, 66, 0.08) 1px, rgba(9, 30, 66, 0) 4px)`,
-});
-
-style.class(cls.footer, {
-  height: spacings.playerFooterHeight,
-  transition: css.transition({ backgroundColor: timings.themeSwitchDuration }),
-  backgroundColor: css.useVar(cssVar.menuColor),
 });
 
 style.class(cls.mainTab, {

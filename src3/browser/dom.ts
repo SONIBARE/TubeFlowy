@@ -1,4 +1,4 @@
-import { ClassName } from "./classes";
+import { ClassName, ElementId } from "./classes";
 
 type KnownTarget<T> = {
   currentTarget: T;
@@ -20,6 +20,7 @@ export type Events = {
 type ElementProps = ClassDefinitions &
   Events & {
     testId?: string;
+    id?: ElementId;
   };
 export const assignClasses = (elem: Element, props: ClassDefinitions) => {
   if (props.className) elem.classList.add(props.className);
@@ -51,6 +52,7 @@ const assignElementProps = <T extends Element>(
   assignClasses(elem, props);
   assignEvents(elem, props);
   if (props.testId) elem.setAttribute("data-testid", props.testId);
+  if (props.id) elem.id = props.id;
   return elem;
 };
 

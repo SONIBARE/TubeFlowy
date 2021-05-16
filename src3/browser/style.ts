@@ -1,4 +1,4 @@
-import { ClassName, VariableName } from "./classes";
+import { ClassName, ElementId, VariableName } from "./classes";
 
 const s = document.createElement("style");
 document.head.appendChild(s);
@@ -26,21 +26,25 @@ type CN = ClassName; //just for being short
 
 export const style = {
   selector,
-  tag: (tagName: keyof HTMLElementTagNameMap, styles: ElementStyleModifiers) =>
+  tag: (tagName: keyof HTMLElementTagNameMap, styles: StylesWithVariables) =>
     selector(`${tagName}`, styles),
 
   class: (className: CN, styles: ElementStyleModifiers) => {
     selector(`.${className}`, styles);
     if (styles.onHover) selector(`.${className}:hover`, styles.onHover);
   },
+  id: (id: ElementId, styles: ElementStyleModifiers) => {
+    selector(`#${id}`, styles);
+    if (styles.onHover) selector(`#${id}:hover`, styles.onHover);
+  },
   after: (className: CN, styles: Styles) => {
     selector(`.${className}::after`, styles);
   },
-  parentHover: (parent: CN, child: CN, styles: ElementStyleModifiers) =>
+  parentHover: (parent: CN, child: CN, styles: StylesWithVariables) =>
     selector(`.${parent}:hover > .${child}`, styles),
-  parentChild: (parent: CN, child: CN, styles: ElementStyleModifiers) =>
+  parentChild: (parent: CN, child: CN, styles: StylesWithVariables) =>
     selector(`.${parent} .${child}`, styles),
-  parentDirectChild: (parent: CN, child: CN, styles: ElementStyleModifiers) =>
+  parentDirectChild: (parent: CN, child: CN, styles: StylesWithVariables) =>
     selector(`.${parent} > .${child}`, styles),
 };
 
