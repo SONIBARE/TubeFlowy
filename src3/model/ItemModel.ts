@@ -2,7 +2,7 @@ import Model from "./Model";
 
 type ItemAttributes = {
   title: string;
-  isOpen?: boolean;
+  isOpen: boolean;
   children?: ItemModel[];
   type: string;
   image?: string;

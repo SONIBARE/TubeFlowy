@@ -5,71 +5,73 @@ import { ItemView } from "./views/ItemView";
 
 export class Tree {
   constructor(public root: ItemModel, private el: Element) {
-    root.getChildren().forEach((child) => {
+    this.focusOn(root);
+  }
+
+  focusOn = (model: ItemModel) => {
+    model.getChildren().forEach((child) => {
       this.el.appendChild(new Item(child, 0).container);
     });
-  }
+  };
 }
 
-//TODO: probably better to merge Item and ItemChildren
+//
+//
+//
+//
+//
+//
+//
 class Item {
   view: ItemView;
-  children: ItemChildren;
+  childrenView: ChildrenView;
+  subitems: Item[] = [];
   constructor(public model: ItemModel, public level: number) {
     this.view = new ItemView({
       level,
       model,
       chevronClicked: model.toggleIsOpen,
     });
-    model.on("isOpenChanged", () => this.view.updateIcons(model));
-
-    this.children = new ItemChildren(model, level, this.view.row);
+    //handling this memory leak in unsub
+    model.on("isOpenChanged", this.onItemOpenChanged);
+    this.childrenView = new ChildrenView(level);
+    if (model.get("isOpen")) this.renderChildren();
   }
 
   get container(): Node {
     if (this.model.get("isOpen"))
-      return dom.fragment([this.view.row, this.children.view.el]);
+      return dom.fragment([this.view.row, this.childrenView.el]);
     else return this.view.row;
   }
-}
 
-class ItemChildren {
-  view: ChildrenView;
-  constructor(
-    private model: ItemModel,
-    private level: number,
-    private renderAfterElemenet: Element
-  ) {
-    this.view = new ChildrenView(level);
-    if (model.get("isOpen")) this.renderChildren();
-
-    //memory leak, use listenTo instead. Try to find this memory leak using tools
-    model.on("isOpenChanged", this.updateChildren);
-  }
+  onItemOpenChanged = () => {
+    this.view.updateIcons(this.model);
+    this.updateChildren(this.model.get("isOpen"));
+  };
 
   updateChildren = (isOpen: boolean) => {
     if (isOpen) this.show();
-    else this.view.hide();
+    else {
+      this.childrenView.hide();
+      this.subitems.forEach((s) => s.unsub());
+    }
+  };
+
+  unsub = () => {
+    this.model.off("isOpenChanged", this.onItemOpenChanged);
+    this.subitems.forEach((s) => s.unsub());
   };
 
   show = () => {
     this.renderChildren();
-    if (this.renderAfterElemenet.isConnected)
-      this.renderAfterElemenet.insertAdjacentElement("afterend", this.view.el);
-    else
-      console.warn(
-        `Tried to append children after a non-connected item. Check show for children of '${this.model.get(
-          "title"
-        )}'`
-      );
+    const insertAfter = this.view.row;
+    insertAfter.insertAdjacentElement("afterend", this.childrenView.el);
   };
 
   renderChildren = () => {
     const model = this.model;
-    const subitems = model
-      .getChildren()
-      .map((c) => new Item(c, this.level + 1));
+    this.subitems = model.getChildren().map((c) => new Item(c, this.level + 1));
 
-    this.view.render(subitems.map((s) => s.container));
+    this.childrenView.render(this.subitems.map((s) => s.container));
   };
 }
