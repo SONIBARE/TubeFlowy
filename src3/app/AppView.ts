@@ -5,10 +5,10 @@ type ViewEvents = {
   toggleTheme: EmptyAction;
 };
 export class AppView {
-  private header = dom.div({ className: cls.header });
-  public footer = dom.div({ className: cls.footer });
-  public mainTab = dom.div({ className: cls.mainTab });
-  private searchTab = dom.div({
+  header = dom.div({ className: cls.header });
+  footer = dom.div({ className: cls.footer });
+  mainTab = dom.div({ className: cls.mainTab });
+  searchTab = dom.div({
     classNames: [cls.searchTab, cls.searchTabHidden],
   });
 

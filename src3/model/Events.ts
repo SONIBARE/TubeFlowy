@@ -1,7 +1,7 @@
 type Callback<T> = T extends void ? () => void : (param: T) => void;
 
 class Events<T = Record<string, any>> {
-  private events: Record<keyof T, Action<any>[]> = {} as any;
+  events: Record<keyof T, Action<any>[]> = {} as any;
 
   public trigger = <TKey extends keyof T>(
     eventName: TKey,

@@ -3,10 +3,12 @@ import { UiStateModel } from "../model/UserSettingsModel";
 import { Tree } from "./tree/Tree";
 import { ItemModel } from "../model/ItemModel";
 import Player from "../player/Player";
+import { addRootItemModel } from "../tests/callbackWatcher";
 
 export class App {
-  private view: AppView;
+  public view: AppView;
   public player: Player;
+  mainTree?: Tree;
   private model = new UiStateModel();
 
   //Yes, singleton, I know, I'm a bad person.
@@ -51,16 +53,17 @@ export class App {
   };
 
   itemsLoaded = (items: Items) => {
-    const home = this.createModel(items["HOME"], items);
-    new Tree(home, this.view.mainTab);
+    const home = App.createModel(items["HOME"], items);
+    addRootItemModel(home);
+    this.mainTree = new Tree(home, this.view.mainTab);
   };
 
-  createModel = (item: Item, items: Items): ItemModel => {
+  static createModel = (item: Item, items: Items): ItemModel => {
     const container = item as ItemContainer;
     const model = new ItemModel({
       children:
         item.type !== "YTvideo"
-          ? item.children.map((id) => this.createModel(items[id], items))
+          ? item.children.map((id) => App.createModel(items[id], items))
           : [],
       title: item.title,
       type: item.type,
