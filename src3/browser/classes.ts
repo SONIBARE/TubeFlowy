@@ -49,6 +49,11 @@ export const cls = {
   searchTab: "search-tab",
   searchTabHidden: "search-tab-hidden",
   searchInput: "search-input",
+
+  //DND
+  dragAvatar: "drag-avatar",
+  dragDestination: "drag-destination",
+  dragDestinationBulp: "drag-destination-bulp",
 } as const;
 
 export type VariableName = valueof<typeof cssVar>;

@@ -16,6 +16,8 @@ export type ClassDefinitions = {
 };
 export type Events = {
   onClick?: (e: MouseEvent) => void;
+  onMouseDown?: (e: MouseEvent) => void;
+  onMouseMove?: (e: MouseEvent) => void;
   onEnter?: (e: Event) => void;
   onLeave?: (e: Event) => void;
 };
@@ -44,6 +46,10 @@ export const assignClassMap = (
 export const assignEvents = <T extends Element>(elem: T, props: Events): T => {
   //@ts-expect-error need to figure out way to handle there types for both HTML and SVG elements
   if (props.onClick) elem.addEventListener("click", props.onClick);
+  //@ts-expect-error
+  if (props.onMouseDown) elem.addEventListener("mousedown", props.onMouseDown);
+  //@ts-expect-error
+  if (props.onMouseMove) elem.addEventListener("mousemove", props.onMouseMove);
   if (props.onLeave) elem.addEventListener("mouseleave", props.onLeave);
   if (props.onEnter) elem.addEventListener("mouseenter", props.onEnter);
   return elem;

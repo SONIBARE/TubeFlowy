@@ -7,12 +7,14 @@ import { addRootItemModelToMemoryLeakDetector } from "../tests/callbackWatcher";
 import FocusModel from "./focusModel";
 import Header from "./Header";
 import Search from "./Search";
+import Dnd from "./Dnd";
 
 export class App {
   public header: Header;
   public view: AppView;
   public player: Player;
   public search: Search;
+  public dnd: Dnd;
   mainTree?: Tree;
   private model = new UiStateModel();
 
@@ -32,6 +34,7 @@ export class App {
       model: this.model,
       focusModel: this.focusModel,
     });
+    this.dnd = new Dnd(this.view.el);
     console.log(this.focusModel);
     this.header = new Header(this.view.header, this.focusModel);
     this.model.on("themeChanged", this.view.setTheme);

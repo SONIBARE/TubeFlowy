@@ -114,9 +114,9 @@ style.after(cls.header, {
   left: 0,
   right: 0,
   top: "100%",
-  height: 4,
+  height: 6,
   content: `" "`,
-  background: `linear-gradient( rgba(9, 30, 66, 0.13) 0px, rgba(9, 30, 66, 0.13) 1px, rgba(9, 30, 66, 0.08) 1px, rgba(9, 30, 66, 0) 4px)`,
+  boxShadow: `#000000 0 6px 6px -6px inset`,
 });
 
 //First three icons

@@ -9,7 +9,7 @@ import {
   cssVar,
 } from "../../../browser";
 import { spacings, timings } from "../../../designSystem";
-import { ReadonlyItemModel } from "../../../model/ItemModel";
+import { ItemModel, ReadonlyItemModel } from "../../../model/ItemModel";
 import { App } from "../../App";
 
 const iconSize = spacings.outerRadius * 2;
@@ -21,7 +21,10 @@ export type ItemIconEvents = {
 export default class ItemIconView {
   public svg: SVGElement;
 
-  constructor(model: ReadonlyItemModel, private events: ItemIconEvents) {
+  constructor(
+    private model: ReadonlyItemModel,
+    private events: ItemIconEvents
+  ) {
     this.svg = this.view(model);
     this.update(model);
   }
@@ -70,6 +73,9 @@ export default class ItemIconView {
       onClick: (e) => {
         if (e.ctrlKey) this.events.onFocus();
         else App.instance.player.play(item);
+      },
+      onMouseDown: (e) => {
+        App.instance.dnd.onItemMouseDown(this.model as ItemModel, e);
       },
     });
   }

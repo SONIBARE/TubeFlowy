@@ -1,6 +1,7 @@
 import { cls, css, cssVar, dom, style } from "../../../browser";
 import { spacings, levels, icons } from "../../../designSystem";
 import { ItemModel, ReadonlyItemModel } from "../../../model/ItemModel";
+import { App } from "../../App";
 import ItemIconView from "./ItemIconView";
 
 type ItemViewEvents = {
@@ -35,6 +36,8 @@ export class ItemView {
         this.icon.svg,
         dom.span({ className: cls.rowTitle, text: model.get("title") }),
       ],
+      onMouseMove: (e) =>
+        App.instance.dnd.onItemMouseMove(model as ItemModel, e),
     });
     this.updateIcons(model);
   }

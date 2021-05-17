@@ -55,6 +55,7 @@ class Item {
       level,
       model,
       chevronClicked: model.toggleIsOpen,
+
       onFocus: () => props.onFocus(model),
     });
     //handling this memory leak in unsub
