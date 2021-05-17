@@ -5,7 +5,6 @@ export const cls = {
   dark: "dark",
   light: "light",
   page: "page",
-  header: "header",
   footer: "footer",
   main: "main",
   mainTab: "main-tab",
@@ -33,6 +32,19 @@ export const cls = {
   rowCircleEmpty: "row-circle-empty",
   rowCircleOuter: "row-circle-outer",
   rowCircleInner: "row-circle-inner",
+
+  //header
+  header: "header",
+  headerIconContainer: "header-icon-container",
+  headerIcon: "header-icon",
+  headerBackIcon: "header-icon-back",
+  headerPathText: "header-path-text",
+  headerPathSeparator: "header-path-separator",
+  headerPathSeparatorIcon: "header-path-separator-icon",
+  headerContextMenu: "header-context-menu",
+  headerContextMenuVisible: "header-context-menu-visible",
+  headerContextMenuItem: "header-context-menu-item",
+  headerContextMenuItemActive: "header-context-menu-item-active",
 } as const;
 
 export type VariableName = valueof<typeof cssVar>;
@@ -43,7 +55,7 @@ export const cssVar = {
   ambient: "ambient",
   accent: "accent",
   halfAccent: "half-accent",
-  bhHover: "bg-hover",
+  backgroundHover: "bg-hover",
   shadowMain: "shadow-main",
 } as const;
 

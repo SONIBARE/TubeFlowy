@@ -18,25 +18,31 @@ type StylesWithVariables = Styles & {
   variables?: PartialRecord<VariableName, string>;
 };
 
-type ElementStyleModifiers = StylesWithVariables & {
+type CompoundStyles = StylesWithVariables & {
   onHover?: Styles;
+  active?: Styles;
 };
 
 type CN = ClassName; //just for being short
+
+const handleCompoundStyles = (
+  elementSelector: string,
+  styles: CompoundStyles
+) => {
+  selector(elementSelector, styles);
+  if (styles.onHover) selector(`${elementSelector}:hover`, styles.onHover);
+  if (styles.active) selector(`${elementSelector}:active`, styles.active);
+};
 
 export const style = {
   selector,
   tag: (tagName: keyof HTMLElementTagNameMap, styles: StylesWithVariables) =>
     selector(`${tagName}`, styles),
 
-  class: (className: CN, styles: ElementStyleModifiers) => {
-    selector(`.${className}`, styles);
-    if (styles.onHover) selector(`.${className}:hover`, styles.onHover);
-  },
-  id: (id: ElementId, styles: ElementStyleModifiers) => {
-    selector(`#${id}`, styles);
-    if (styles.onHover) selector(`#${id}:hover`, styles.onHover);
-  },
+  class: (className: CN, styles: CompoundStyles) =>
+    handleCompoundStyles(`.${className}`, styles),
+  id: (id: ElementId, styles: CompoundStyles) =>
+    handleCompoundStyles(`#${id}`, styles),
   after: (className: CN, styles: Styles) => {
     selector(`.${className}::after`, styles);
   },
@@ -103,7 +109,7 @@ export type Styles = Partial<{
   marginLeft: number;
   marginTop: number;
   marginBottom: number;
-  padding: number;
+  padding: number | string;
   paddingRight: number;
   paddingLeft: number | string;
   paddingTop: number;
@@ -124,13 +130,16 @@ export type Styles = Partial<{
   flex: number;
   display: "flex";
   flexDirection: "row" | "column";
-  justifyItems: "flex-start" | "center" | "flex-end";
+  justifyContent: "flex-start" | "center" | "flex-end";
+  alignSelf: "stretch";
   alignItems: "flex-start" | "center" | "flex-end";
 
   //border
   border: string;
   outline: string;
   borderRadius: number | "50%";
+  borderBottomLeftRadius: number;
+  borderBottomRightRadius: number;
 
   //colors
   backgroundColor: string;
@@ -163,7 +172,7 @@ export type Styles = Partial<{
   cursor: "pointer";
   userSelect: "none";
   transform: string;
-  pointerEvents: "none";
+  pointerEvents: "none" | "all";
   visibility: "hidden";
   content: `" "`;
 }>;

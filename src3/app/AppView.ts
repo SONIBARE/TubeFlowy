@@ -81,22 +81,6 @@ style.class(cls.main, {
   flexDirection: "row",
   overflow: "hidden",
 });
-style.class(cls.header, {
-  position: "relative",
-  height: spacings.headerHeight,
-  transition: css.transition({ backgroundColor: timings.themeSwitchDuration }),
-  backgroundColor: css.useVar(cssVar.mainBackground),
-});
-
-style.after(cls.header, {
-  position: "absolute",
-  left: 0,
-  right: 0,
-  top: "100%",
-  height: 4,
-  content: `" "`,
-  background: `linear-gradient( rgba(9, 30, 66, 0.13) 0px, rgba(9, 30, 66, 0.13) 1px, rgba(9, 30, 66, 0.08) 1px, rgba(9, 30, 66, 0) 4px)`,
-});
 
 style.class(cls.mainTab, {
   flex: 1,

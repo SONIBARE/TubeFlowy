@@ -6,11 +6,13 @@ import { ItemView } from "./views/ItemView";
 import TreeTitleView from "./views/TreeTitleView";
 
 export class Tree {
-  constructor(private el: Element, private focus: FocusModel) {
-    this.focusOn(this.focus.get("mainTabFocusNode"));
+  constructor(private el: Element, private focusModel: FocusModel) {
+    const mainFocus = this.focusModel.get("mainTabFocusNode");
+    if (mainFocus) this.focus(mainFocus);
+    focusModel.on("mainTabFocusNodeChanged", this.focus);
   }
 
-  focusOn = (model: ItemModel) => {
+  focus = (model: ItemModel) => {
     this.el.innerHTML = ``;
     if (!model.isRoot())
       this.el.appendChild(new TreeTitleView(model.get("title")).el);
@@ -20,11 +22,14 @@ export class Tree {
         new Item({
           level: 0,
           model: child,
-          onFocus: this.focusOn,
+          onFocus: this.onFocus,
         })
     );
     rootItems.forEach((item) => this.el.appendChild(item.container));
   };
+
+  onFocus = (model: ItemModel) =>
+    this.focusModel.set("mainTabFocusNode", model);
 }
 
 //

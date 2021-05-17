@@ -15,6 +15,14 @@ export const paddingVertical = (v: number): Styles => ({
   paddingTop: v,
 });
 
+export const paddingHorizontal = (v: number): Styles => ({
+  paddingLeft: v,
+  paddingRight: v,
+});
+
+export const padding = (v: number, h?: number): string =>
+  h ? `${v}px ${h}px` : `${v}px`;
+
 export const createScrollStyles = (
   className: ClassName,
   props: {

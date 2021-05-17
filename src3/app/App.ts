@@ -5,14 +5,16 @@ import { ItemModel } from "../model/ItemModel";
 import Player from "../player/Player";
 import { addRootItemModelToMemoryLeakDetector } from "../tests/callbackWatcher";
 import FocusModel from "./focusModel";
+import Header from "./Header";
 
 export class App {
+  public header: Header;
   public view: AppView;
   public player: Player;
   mainTree?: Tree;
   private model = new UiStateModel();
 
-  public focusModel?: FocusModel;
+  public focusModel = new FocusModel();
   //Yes, singleton, I know, I'm a bad person.
   //But I do not want to pass a lot of props to items to call Player events
   //maybe global event bus would be much better
@@ -23,7 +25,8 @@ export class App {
       toggleTheme: this.model.toggleTheme,
     });
     this.player = new Player(this.view.footer);
-
+    console.log(this.focusModel);
+    this.header = new Header(this.view.header, this.focusModel);
     this.model.on("themeChanged", this.view.setTheme);
     this.view.setTheme(this.model.get("theme"));
 
@@ -56,7 +59,8 @@ export class App {
 
   itemsLoaded = (items: Items) => {
     const home = App.createModel(items["HOME"], items);
-    this.focusModel = new FocusModel({ mainTabFocusNode: home });
+    this.header.init(home);
+    this.focusModel.set("mainTabFocusNode", home);
     addRootItemModelToMemoryLeakDetector(home);
     this.mainTree = new Tree(this.view.mainTab, this.focusModel);
   };

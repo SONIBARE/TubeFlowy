@@ -54,12 +54,10 @@ export class ItemView {
 
 style.class(cls.row, {
   display: "flex",
-  justifyItems: "center",
-  alignItems: "flex-start",
   cursor: "pointer",
   ...css.paddingVertical(4),
   onHover: {
-    backgroundColor: css.useVar(cssVar.bhHover),
+    backgroundColor: css.useVar(cssVar.backgroundHover),
   },
 });
 
