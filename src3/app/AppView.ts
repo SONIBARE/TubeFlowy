@@ -88,13 +88,6 @@ style.class(cls.mainTab, {
   overflowX: "hidden",
 });
 
-style.class(cls.searchTab, {
-  flex: 1,
-  transition: css.transition({ marginRight: timings.searchHideDuration }),
-  backgroundColor: "green",
-});
-style.class(cls.searchTabHidden, { marginRight: "-100%" });
-
 css.createScrollStyles(cls.mainTab, {
   scrollbar: { width: 8 },
   thumb: {

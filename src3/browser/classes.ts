@@ -8,8 +8,7 @@ export const cls = {
   footer: "footer",
   main: "main",
   mainTab: "main-tab",
-  searchTab: "search-tab",
-  searchTabHidden: "search-tab-hidden",
+
   themeButton: "theme-button",
 
   //items tree
@@ -22,7 +21,7 @@ export const cls = {
   rowIconEmpty: "row-icon-empty",
   rowIconOpen: "row-icon-open",
   rowIconClosed: "row-icon-closed",
-  rowIconClosedImage: "row-icon-closed-image",
+  rowIconClosedContainer: "row-icon-closed-image",
   rowIconMedia: "row-icon-media",
   rowIconMediaRound: "row-icon-media-round",
   rowIconMediaSquare: "row-icon-media-square",
@@ -45,6 +44,11 @@ export const cls = {
   headerContextMenuVisible: "header-context-menu-visible",
   headerContextMenuItem: "header-context-menu-item",
   headerContextMenuItemActive: "header-context-menu-item-active",
+
+  //Search
+  searchTab: "search-tab",
+  searchTabHidden: "search-tab-hidden",
+  searchInput: "search-input",
 } as const;
 
 export type VariableName = valueof<typeof cssVar>;

@@ -35,7 +35,8 @@ export default class ItemIconView {
       [cls.rowIconOpen]: !isEmpty && isOpen,
       [cls.rowIconClosed]: !isEmpty && !isOpen,
       // [cls.focusCircleSvgPlaying]: player.isPlayingItem(this.item),
-      [cls.rowIconClosedImage]: !isOpen && item.isMedia(),
+      [cls.rowIconClosedContainer]:
+        !isOpen && item.isMedia() && !item.isEmpty(),
     });
   };
 
@@ -121,7 +122,7 @@ style.class(cls.rowCircleInner, {
     fill: timings.themeSwitchDuration,
   }),
 });
-style.class(cls.rowIconClosedImage, {
+style.class(cls.rowIconClosedContainer, {
   boxShadow: uniformShadow(4, 2, css.useVar(cssVar.shadowMain)),
 });
 style.class(cls.rowIconMediaRound, {

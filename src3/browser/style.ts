@@ -99,9 +99,10 @@ export type Styles = Partial<{
 
   //sizing
   height: number | "100vh" | "100%";
-  width: number | "100vw";
+  width: number | string;
   minWidth: number;
   minHeight: number;
+  boxSizing: "border-box";
 
   //margins and paddings
   margin: number;

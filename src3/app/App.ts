@@ -6,11 +6,13 @@ import Player from "../player/Player";
 import { addRootItemModelToMemoryLeakDetector } from "../tests/callbackWatcher";
 import FocusModel from "./focusModel";
 import Header from "./Header";
+import Search from "./Search";
 
 export class App {
   public header: Header;
   public view: AppView;
   public player: Player;
+  public search: Search;
   mainTree?: Tree;
   private model = new UiStateModel();
 
@@ -25,6 +27,11 @@ export class App {
       toggleTheme: this.model.toggleTheme,
     });
     this.player = new Player(this.view.footer);
+    this.search = new Search({
+      container: this.view.searchTab,
+      model: this.model,
+      focusModel: this.focusModel,
+    });
     console.log(this.focusModel);
     this.header = new Header(this.view.header, this.focusModel);
     this.model.on("themeChanged", this.view.setTheme);
