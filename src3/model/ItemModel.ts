@@ -27,6 +27,8 @@ export class ItemModel extends Model<ItemAttributes> {
   };
 
   isMedia = () => !!this.getImageSrc();
+
+  isRoot = () => !this.parent;
 }
 
 export type ReadonlyItemModel = Pick<

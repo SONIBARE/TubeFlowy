@@ -1,10 +1,11 @@
 import { cls, css, cssVar, dom, style } from "../../../browser";
 import { spacings, levels, icons } from "../../../designSystem";
-import { ReadonlyItemModel } from "../../../model/ItemModel";
+import { ItemModel, ReadonlyItemModel } from "../../../model/ItemModel";
 import ItemIconView from "./ItemIconView";
 
 type ItemViewEvents = {
   chevronClicked: EmptyAction;
+  onFocus: EmptyAction;
 };
 type Props = ItemViewEvents & {
   model: ReadonlyItemModel;
@@ -17,12 +18,14 @@ export class ItemView {
   title: Element;
   row: Element;
 
-  constructor({ level, model, chevronClicked }: Props) {
+  constructor({ level, model, chevronClicked, onFocus }: Props) {
     this.chevron = icons.chevron({
       onClick: chevronClicked,
       className: cls.rowChevron,
     });
-    this.icon = new ItemIconView(model);
+    this.icon = new ItemIconView(model, {
+      onFocus,
+    });
     this.title = dom.span({ text: model.get("title") });
 
     this.row = dom.div({

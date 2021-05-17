@@ -15,11 +15,13 @@ import { App } from "../../App";
 const iconSize = spacings.outerRadius * 2;
 const outerRadius = spacings.outerRadius;
 const innerRadius = spacings.innerRadius;
-
+export type ItemIconEvents = {
+  onFocus: EmptyAction;
+};
 export default class ItemIconView {
   public svg: SVGElement;
 
-  constructor(model: ReadonlyItemModel) {
+  constructor(model: ReadonlyItemModel, private events: ItemIconEvents) {
     this.svg = this.view(model);
     this.update(model);
   }
@@ -64,7 +66,10 @@ export default class ItemIconView {
           : undefined,
         ,
       ],
-      onClick: (e) => App.instance.player.play(item),
+      onClick: (e) => {
+        if (e.ctrlKey) this.events.onFocus();
+        else App.instance.player.play(item);
+      },
     });
   }
 

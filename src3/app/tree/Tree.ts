@@ -1,17 +1,29 @@
 import { dom } from "../../browser";
 import { ItemModel } from "../../model/ItemModel";
+import FocusModel from "../focusModel";
 import ChildrenView from "./views/ChildrenView";
 import { ItemView } from "./views/ItemView";
+import TreeTitleView from "./views/TreeTitleView";
 
 export class Tree {
-  constructor(public root: ItemModel, private el: Element) {
-    this.focusOn(root);
+  constructor(private el: Element, private focus: FocusModel) {
+    this.focusOn(this.focus.get("mainTabFocusNode"));
   }
 
   focusOn = (model: ItemModel) => {
-    model.getChildren().forEach((child) => {
-      this.el.appendChild(new Item(child, 0).container);
-    });
+    this.el.innerHTML = ``;
+    if (!model.isRoot())
+      this.el.appendChild(new TreeTitleView(model.get("title")).el);
+
+    const rootItems = model.getChildren().map(
+      (child) =>
+        new Item({
+          level: 0,
+          model: child,
+          onFocus: this.focusOn,
+        })
+    );
+    rootItems.forEach((item) => this.el.appendChild(item.container));
   };
 }
 
@@ -22,15 +34,23 @@ export class Tree {
 //
 //
 //
+type ItemProps = {
+  onFocus: Action<ItemModel>;
+  model: ItemModel;
+  level: number;
+};
+
 class Item {
   view: ItemView;
   childrenView: ChildrenView;
   subitems: Item[] = [];
-  constructor(public model: ItemModel, public level: number) {
+  constructor(public props: ItemProps) {
+    const { model, level } = this.props;
     this.view = new ItemView({
       level,
       model,
       chevronClicked: model.toggleIsOpen,
+      onFocus: () => props.onFocus(model),
     });
     //handling this memory leak in unsub
     model.on("isOpenChanged", this.onItemOpenChanged);
@@ -39,14 +59,14 @@ class Item {
   }
 
   get container(): Node {
-    if (this.model.get("isOpen"))
+    if (this.props.model.get("isOpen"))
       return dom.fragment([this.view.row, this.childrenView.el]);
     else return this.view.row;
   }
 
   onItemOpenChanged = () => {
-    this.view.updateIcons(this.model);
-    this.updateChildren(this.model.get("isOpen"));
+    this.view.updateIcons(this.props.model);
+    this.updateChildren(this.props.model.get("isOpen"));
   };
 
   updateChildren = (isOpen: boolean) => {
@@ -58,7 +78,7 @@ class Item {
   };
 
   unsub = () => {
-    this.model.off("isOpenChanged", this.onItemOpenChanged);
+    this.props.model.off("isOpenChanged", this.onItemOpenChanged);
     this.subitems.forEach((s) => s.unsub());
   };
 
@@ -69,8 +89,15 @@ class Item {
   };
 
   renderChildren = () => {
-    const model = this.model;
-    this.subitems = model.getChildren().map((c) => new Item(c, this.level + 1));
+    const model = this.props.model;
+    this.subitems = model.getChildren().map(
+      (c) =>
+        new Item({
+          ...this.props,
+          level: this.props.level + 1,
+          model: c,
+        })
+    );
 
     this.childrenView.render(this.subitems.map((s) => s.container));
   };
