@@ -75,16 +75,16 @@ class Dnd {
   };
 
   drop = () => {
-    const { itemBeingDragged, itemUnder, dropPlacement } = this;
-    if (itemBeingDragged && itemUnder) {
-      if (dropPlacement === "after")
-        //TODO: implement collections (aggregate for model with some events) via TDD
-        items.moveItemAfter(itemBeingDragged.id, itemUnder.id);
-      if (dropPlacement === "before")
-        items.moveItemBefore(itemBeingDragged.id, itemUnder.id);
-      if (dropPlacement === "inside")
-        items.moveItemInside(itemBeingDragged.id, itemUnder.id);
-    }
+    // const { itemBeingDragged, itemUnder, dropPlacement } = this;
+    // if (itemBeingDragged && itemUnder) {
+    //   if (dropPlacement === "after")
+    //     //TODO: implement collections (aggregate for model with some events) via TDD
+    //     items.moveItemAfter(itemBeingDragged.id, itemUnder.id);
+    //   if (dropPlacement === "before")
+    //     items.moveItemBefore(itemBeingDragged.id, itemUnder.id);
+    //   if (dropPlacement === "inside")
+    //     items.moveItemInside(itemBeingDragged.id, itemUnder.id);
+    // }
   };
 
   updateDragDestinationPosition = (
