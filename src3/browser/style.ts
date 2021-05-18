@@ -118,7 +118,7 @@ export type Styles = Partial<{
 
   //positioning
   position: "absolute" | "relative" | "fixed";
-  top: number | "100%";
+  top: number | "100%" | string;
   right: number;
   bottom: number;
   left: number | string;

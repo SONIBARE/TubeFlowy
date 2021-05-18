@@ -1,4 +1,5 @@
 import { ClassName, ElementId } from "./classes";
+import { Styles } from "./style";
 
 type KnownTarget<T> = {
   currentTarget: T;
