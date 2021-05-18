@@ -69,9 +69,9 @@ class Clock {
     this.minutes = { left: new Column(5), right: new Column(9) };
     this.hours = { left: new Column(2), right: new Column(9) };
 
-    this.positionTwoColumnsGroup(this.seconds, 160);
+    this.positionTwoColumnsGroup(this.seconds, 170);
     this.positionTwoColumnsGroup(this.minutes, 0);
-    this.positionTwoColumnsGroup(this.hours, -160);
+    this.positionTwoColumnsGroup(this.hours, -170);
 
     this.appendGroup(this.seconds);
     this.appendGroup(this.minutes);
@@ -107,7 +107,7 @@ class Clock {
   };
 
   positionTwoColumnsGroup = (group: ColGroup, atX: number) => {
-    const offset = COL_WIDTH / 2 + 10;
+    const offset = COL_WIDTH / 2 + 12;
     group.left.el.style.left = `calc(100vw / 2 + ${atX}px - ${offset}px)`;
     group.right.el.style.left = `calc(100vw / 2 + ${atX}px + ${offset}px)`;
   };
@@ -131,7 +131,7 @@ style.class("column" as ClassName, {
   borderRadius: 6,
   position: "absolute",
   top: `calc(100vh / 2 - 100px)`,
-  boxShadow: "5px 5px 20px rgba(0,0,0,0.4), -5px -5px 15px white",
+  boxShadow: "5px 5px 20px 4px rgba(0,0,0,0.6), -5px -5px 15px 2px white",
   transition: css.transition({ transform: TRANSITION_TIME }),
 });
 
