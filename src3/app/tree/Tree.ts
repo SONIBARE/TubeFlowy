@@ -26,7 +26,6 @@ export class Tree {
         })
     );
 
-    console.log(model, rootItems);
     rootItems.forEach((item) => this.el.appendChild(item.container));
   };
 
@@ -72,15 +71,16 @@ class Item {
     else return this.view.row;
   }
 
-  onItemOpenChanged = () => {
+  onItemOpenChanged = (isOpen: boolean) => {
     this.view.updateIcons(this.props.model);
-    this.updateChildren(this.props.model.get("isOpen"));
+    this.updateChildren(isOpen);
   };
 
   updateChildren = (isOpen: boolean) => {
     if (isOpen) this.show();
     else {
       this.childrenView.hide();
+      this.unlistenToChildCollectionUpdates();
       this.subitems.forEach((s) => s.unsub());
     }
   };
@@ -88,6 +88,7 @@ class Item {
   unsub = () => {
     this.props.model.off("isOpenChanged", this.onItemOpenChanged);
     this.subitems.forEach((s) => s.unsub());
+    this.unlistenToChildCollectionUpdates();
   };
 
   show = () => {
@@ -98,6 +99,7 @@ class Item {
 
   renderChildren = () => {
     const model = this.props.model;
+
     this.subitems = model.mapChild(
       (c) =>
         new Item({
@@ -108,5 +110,21 @@ class Item {
     );
 
     this.childrenView.render(this.subitems.map((s) => s.container));
+    this.listenToChildCollectionUpdates();
+  };
+
+  listenToChildCollectionUpdates = () => {
+    const childCollection = this.props.model.get("children")!;
+    if (childCollection) childCollection.on("remove", this.onRemoveChild);
+  };
+
+  unlistenToChildCollectionUpdates = () => {
+    const childCollection = this.props.model.get("children")!;
+    if (childCollection) childCollection.off("remove", this.onRemoveChild);
+  };
+
+  onRemoveChild = (options: { item: ItemModel; index: number }) => {
+    const { item, index } = options;
+    console.log("removing ", item, index);
   };
 }

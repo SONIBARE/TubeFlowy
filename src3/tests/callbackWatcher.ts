@@ -19,6 +19,18 @@ const initShortcuts = () => {
           (count, arr) => count + arr.length,
           0
         );
+        const childCollection = model.get("children");
+        if (childCollection) {
+          callbacksCount += Object.values(childCollection.events).reduce(
+            (count, arr) => count + arr.length,
+            0
+          );
+          Object.entries(childCollection.events).forEach(([key, value]) => {
+            callbacksCountByEvents[key] =
+              (callbacksCountByEvents[key] || 0) + value.length;
+          });
+        }
+
         Object.entries(model.events).forEach(([key, value]) => {
           callbacksCountByEvents[key] =
             (callbacksCountByEvents[key] || 0) + value.length;

@@ -92,7 +92,6 @@ export class App {
       //@ts-expect-error
       videoId: item.videoId,
     });
-    console.log(model);
     model.forEachChild((child) => child.setParent(model));
     return model;
   };
