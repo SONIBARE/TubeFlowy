@@ -18,16 +18,9 @@ class Player {
   };
 
   playeNextTrack = () => {
-    console.log("playeNextTrack");
     if (this.currentItemPlayed) {
-      const parent = this.currentItemPlayed.parent;
-      if (parent) {
-        const children = parent.getChildren() as ReadonlyItemModel[];
-        const index = children.indexOf(this.currentItemPlayed);
-        if (index < children.length - 1) {
-          this.play(children[index + 1]);
-        }
-      }
+      const next = this.currentItemPlayed.getNextItem();
+      if (next) this.play(next);
     }
   };
 }

@@ -1,10 +1,10 @@
 import { AppView } from "./AppView";
 import { UiStateModel } from "../model/UserSettingsModel";
 import { Tree } from "./tree/Tree";
-import { ItemModel } from "../model/ItemModel";
+import { ItemCollection, ItemModel } from "../model/ItemModel";
 import Player from "../player/Player";
 import { addRootItemModelToMemoryLeakDetector } from "../tests/callbackWatcher";
-import FocusModel from "./focusModel";
+import FocusModel from "./FocusModel";
 import Header from "./Header";
 import Search from "./Search";
 import Dnd from "./Dnd";
@@ -35,7 +35,6 @@ export class App {
       focusModel: this.focusModel,
     });
     this.dnd = new Dnd(this.view.el);
-    console.log(this.focusModel);
     this.header = new Header(this.view.header, this.focusModel);
     this.model.on("themeChanged", this.view.setTheme);
     this.view.setTheme(this.model.get("theme"));
@@ -80,8 +79,10 @@ export class App {
     const model = new ItemModel({
       children:
         item.type !== "YTvideo"
-          ? item.children.map((id) => App.createModel(items[id], items))
-          : [],
+          ? new ItemCollection(
+              item.children.map((id) => App.createModel(items[id], items))
+            )
+          : undefined,
       title: item.title,
       type: item.type,
       isOpen: !container.isCollapsedInGallery || false,
@@ -91,7 +92,8 @@ export class App {
       //@ts-expect-error
       videoId: item.videoId,
     });
-    model.getChildren().forEach((child) => child.setParent(model));
+    console.log(model);
+    model.forEachChild((child) => child.setParent(model));
     return model;
   };
 }

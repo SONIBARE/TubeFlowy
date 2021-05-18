@@ -1,9 +1,9 @@
 import { findYoutubeVideos, ResponseItem } from "../api/youtubeRequest";
 import { cls, css, style, dom, cssVar } from "../browser";
 import { timings, levels } from "../designSystem";
-import { ItemModel } from "../model/ItemModel";
+import { ItemCollection, ItemModel } from "../model/ItemModel";
 import { UiStateModel } from "../model/UserSettingsModel";
-import FocusModel from "./focusModel";
+import FocusModel from "./FocusModel";
 import { Tree } from "./tree/Tree";
 
 type Props = {
@@ -41,7 +41,7 @@ class Search {
           isOpen: true,
           title: "Search",
           type: "folder",
-          children: response.items.map(mapReponseItem),
+          children: new ItemCollection(response.items.map(mapReponseItem)),
         });
         //TODO: Bug here, Tree assumes main focus context
         const tree = new Tree(this.searchContent, this.props.focusModel);

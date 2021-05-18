@@ -1,6 +1,6 @@
 import { dom } from "../../browser";
 import { ItemModel } from "../../model/ItemModel";
-import FocusModel from "../focusModel";
+import FocusModel from "../FocusModel";
 import ChildrenView from "./views/ChildrenView";
 import { ItemView } from "./views/ItemView";
 import TreeTitleView from "./views/TreeTitleView";
@@ -17,7 +17,7 @@ export class Tree {
     if (!model.isRoot())
       this.el.appendChild(new TreeTitleView(model.get("title")).el);
 
-    const rootItems = model.getChildren().map(
+    const rootItems = model.mapChild(
       (child) =>
         new Item({
           level: 0,
@@ -25,6 +25,8 @@ export class Tree {
           onFocus: this.onFocus,
         })
     );
+
+    console.log(model, rootItems);
     rootItems.forEach((item) => this.el.appendChild(item.container));
   };
 
@@ -96,7 +98,7 @@ class Item {
 
   renderChildren = () => {
     const model = this.props.model;
-    this.subitems = model.getChildren().map(
+    this.subitems = model.mapChild(
       (c) =>
         new Item({
           ...this.props,

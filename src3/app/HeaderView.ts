@@ -77,7 +77,7 @@ class HeaderView {
         );
       };
 
-      model.getChildren().forEach((c) => addItem(c));
+      model.forEachChild((c) => addItem(c));
 
       contextMenu.classList.add(cls.headerContextMenuVisible);
     };
@@ -117,6 +117,7 @@ style.after(cls.header, {
   height: 6,
   content: `" "`,
   boxShadow: `#000000 0 6px 6px -6px inset`,
+  zIndex: 5,
 });
 
 //First three icons

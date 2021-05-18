@@ -23,7 +23,7 @@ const initShortcuts = () => {
           callbacksCountByEvents[key] =
             (callbacksCountByEvents[key] || 0) + value.length;
         });
-        model.getChildren().forEach(traverseModel);
+        model.forEachChild(traverseModel);
       };
       itemModels.forEach(traverseModel);
       console.log(

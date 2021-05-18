@@ -1,5 +1,5 @@
 import { ItemModel } from "../model/ItemModel";
-import FocusModel from "./focusModel";
+import FocusModel from "./FocusModel";
 import HeaderView from "./HeaderView";
 
 class Header {
