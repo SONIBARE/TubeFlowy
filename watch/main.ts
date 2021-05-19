@@ -29,7 +29,7 @@ class Column {
         .addEventListener("finish", () => {
           this.focusCircle.style.top = digit * COL_WIDTH - FOCUS_PADDING + "px";
           this.focusCircle.animate([{ opacity: 0 }, { opacity: 1 }], {
-            duration: TRANSITION_TIME / 3,
+            duration: TRANSITION_TIME / 2,
           });
         });
     }
@@ -57,6 +57,7 @@ class Column {
 type ColGroup = {
   left: Column;
   right: Column;
+  time: number;
 };
 class Clock {
   el = dom.div({ className: "page" });
@@ -65,13 +66,13 @@ class Clock {
   minutes: ColGroup;
   hours: ColGroup;
   constructor() {
-    this.seconds = { left: new Column(5), right: new Column(9) };
-    this.minutes = { left: new Column(5), right: new Column(9) };
-    this.hours = { left: new Column(2), right: new Column(9) };
+    this.seconds = { left: new Column(5), right: new Column(9), time: 0 };
+    this.minutes = { left: new Column(5), right: new Column(9), time: 0 };
+    this.hours = { left: new Column(2), right: new Column(9), time: 0 };
 
-    this.positionTwoColumnsGroup(this.seconds, 170);
-    this.positionTwoColumnsGroup(this.minutes, 0);
-    this.positionTwoColumnsGroup(this.hours, -170);
+    this.setGroupLeftPositionGroup(this.seconds, 170);
+    this.setGroupLeftPositionGroup(this.minutes, 0);
+    this.setGroupLeftPositionGroup(this.hours, -170);
 
     this.appendGroup(this.seconds);
     this.appendGroup(this.minutes);
@@ -86,33 +87,30 @@ class Clock {
     this.el.appendChild(colGroup.right.el);
   };
 
-  s = 0;
-  m = 0;
-  h = 0;
   tick = () => {
     const time = new Date();
-    if (this.s != time.getSeconds()) {
-      this.s = time.getSeconds();
-      this.setColGroupTime(this.seconds, this.s);
+    if (this.seconds.time != time.getSeconds()) {
+      this.seconds.time = time.getSeconds();
+      this.updateTimeForGroup(this.seconds);
     }
-    if (this.m != time.getMinutes()) {
-      this.m = time.getMinutes();
-      this.setColGroupTime(this.minutes, this.m);
+    if (this.minutes.time != time.getMinutes()) {
+      this.minutes.time = time.getMinutes();
+      this.updateTimeForGroup(this.minutes);
     }
-    if (this.h != time.getHours()) {
-      this.h = time.getHours();
-      this.setColGroupTime(this.hours, this.h);
+    if (this.hours.time != time.getHours()) {
+      this.hours.time = time.getHours();
+      this.updateTimeForGroup(this.hours);
     }
     requestAnimationFrame(this.tick);
   };
 
-  positionTwoColumnsGroup = (group: ColGroup, atX: number) => {
+  setGroupLeftPositionGroup = (group: ColGroup, atX: number) => {
     const offset = COL_WIDTH / 2 + 12;
     group.left.el.style.left = `calc(100vw / 2 + ${atX}px - ${offset}px)`;
     group.right.el.style.left = `calc(100vw / 2 + ${atX}px + ${offset}px)`;
   };
 
-  setColGroupTime = ({ left, right }: ColGroup, time: number) => {
+  updateTimeForGroup = ({ left, right, time }: ColGroup) => {
     left.highlightDigit(Math.floor(time / 10));
     right.highlightDigit(time % 10);
   };
