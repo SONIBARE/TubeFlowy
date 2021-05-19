@@ -113,7 +113,7 @@ export type Styles = Partial<{
   padding: number | string;
   paddingRight: number;
   paddingLeft: number | string;
-  paddingTop: number;
+  paddingTop: number | string;
   paddingBottom: number;
 
   //positioning
@@ -129,9 +129,10 @@ export type Styles = Partial<{
 
   //flex
   flex: number;
-  display: "flex";
+  display: "flex" | "inline-block";
   flexDirection: "row" | "column";
   justifyContent: "flex-start" | "center" | "flex-end";
+  flexWrap: "wrap";
   alignSelf: "stretch";
   alignItems: "flex-start" | "center" | "flex-end";
 
@@ -139,6 +140,8 @@ export type Styles = Partial<{
   border: string;
   outline: string;
   borderRadius: number | "50%";
+  borderTopRightRadius: number;
+  borderTopLeftRadius: number;
   borderBottomLeftRadius: number;
   borderBottomRightRadius: number;
 
@@ -173,6 +176,7 @@ export type Styles = Partial<{
   cursor: "pointer";
   userSelect: "none";
   transform: string;
+  transformOrigin: string;
   pointerEvents: "none" | "all";
   visibility: "hidden";
   content: `" "`;
