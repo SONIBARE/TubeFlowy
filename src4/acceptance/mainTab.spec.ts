@@ -1,15 +1,26 @@
 import { fireEvent, getByTestId } from "@testing-library/dom";
 import App from "../app/App";
-import { resetModels } from "../app/store";
 import { cls } from "../infra";
 
-it("Pressing ctrl+2 shows search bar", () => {
-  resetModels();
-  document.body.appendChild(new App().el);
-  expect(searchTab()).toHaveClass(cls.searchTabHidden);
+describe("Having an app with a default state", () => {
+  let app: App;
+  beforeEach(() => {
+    document.body.innerHTML = ``;
+    app = new App();
+    document.body.appendChild(app.el);
+  });
 
-  shortcuts.ctrlAnd2();
-  expect(searchTab()).not.toHaveClass(cls.searchTabHidden);
+  afterEach(() => app.cleanup());
+
+  it("search bar is hidden", () =>
+    expect(searchTab()).toHaveClass(cls.searchTabHidden));
+
+  describe("pressing ctrl+2", () => {
+    beforeEach(() => shortcuts.ctrlAnd2());
+
+    it("shows search bar", () =>
+      expect(searchTab()).not.toHaveClass(cls.searchTabHidden));
+  });
 });
 
 const searchTab = () => getByTestId(document.body, "search-tab");

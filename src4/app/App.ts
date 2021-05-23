@@ -1,16 +1,24 @@
+import { UiStateModel } from "../model/UserSettingsModel";
 import { AppView } from "./AppView";
-import { uiModel } from "./store";
 
 class App {
   view: AppView;
+  val = 1;
 
+  static uiModel: UiStateModel;
   constructor() {
     this.view = new AppView({
       toggleTheme: () => null,
     });
 
+    App.uiModel = new UiStateModel();
+    App.uiModel.on("isSearchVisibleChanged", this.view.setSearchVisilibity);
     document.addEventListener("keydown", this.onKeyDown);
-    uiModel.on("isSearchVisibleChanged", this.view.setSearchVisilibity);
+  }
+
+  //used only in  testing, not expecting to unmount App for now in prod
+  cleanup() {
+    document.removeEventListener("keydown", this.onKeyDown);
   }
 
   get el() {
@@ -31,7 +39,7 @@ class App {
 
     if ((e.code == "Digit2" || e.code == "KeyK") && e.ctrlKey) {
       e.preventDefault();
-      uiModel.toggleSearchVisibility();
+      App.uiModel.toggleSearchVisibility();
     }
   };
 }
