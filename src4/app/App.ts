@@ -1,10 +1,12 @@
+import { ItemModel, ItemCollection } from "../model/ItemModel";
 import { UiStateModel } from "../model/UserSettingsModel";
 import { AppView } from "./AppView";
+import { Tree } from "./tree/Tree";
 
 class App {
   view: AppView;
   val = 1;
-
+  home?: ItemModel;
   static uiModel: UiStateModel;
   constructor() {
     this.view = new AppView({
@@ -41,6 +43,38 @@ class App {
       e.preventDefault();
       App.uiModel.toggleSearchVisibility();
     }
+  };
+  itemsLoaded = (items: Items) => {
+    const home = App.createModel(items["HOME"], items);
+    const tree = new Tree(this.view.mainTab);
+    tree.focus(home);
+    // this.renderItems(home);
+    // this.header.init(home);
+    // this.focusModel.set("mainTabFocusNode", home);
+    // addRootItemModelToMemoryLeakDetector(home);
+    // this.mainTree = new Tree(this.view.mainTab, this.focusModel);
+  };
+
+  static createModel = (item: Item, items: Items): ItemModel => {
+    const container = item as ItemContainer;
+    const model = new ItemModel({
+      children:
+        item.type !== "YTvideo"
+          ? new ItemCollection(
+              item.children.map((id) => App.createModel(items[id], items))
+            )
+          : undefined,
+      title: item.title,
+      type: item.type,
+      isOpen: !container.isCollapsedInGallery || false,
+
+      //@ts-expect-error
+      image: item.image,
+      //@ts-expect-error
+      videoId: item.videoId,
+    });
+    model.forEachChild((child) => child.setParent(model));
+    return model;
   };
 }
 
