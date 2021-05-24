@@ -4,3 +4,6 @@ dist
 package-lock.json
 src/api/config.ts
 playground
+src2/api/config.ts
+src3/api/config.ts
+src4/api/config.ts
