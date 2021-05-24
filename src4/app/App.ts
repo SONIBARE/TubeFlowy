@@ -10,11 +10,12 @@ class App {
   static uiModel: UiStateModel;
   constructor() {
     this.view = new AppView({
-      toggleTheme: () => null,
+      toggleTheme: () => App.uiModel.toggleTheme(),
     });
 
     App.uiModel = new UiStateModel();
     App.uiModel.on("isSearchVisibleChanged", this.view.setSearchVisilibity);
+    App.uiModel.on("themeChanged", this.view.setTheme);
     document.addEventListener("keydown", this.onKeyDown);
   }
 

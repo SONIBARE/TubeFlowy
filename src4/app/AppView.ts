@@ -13,8 +13,11 @@ export class AppView {
     testId: "search-tab",
   });
 
-  constructor(public events: ViewEvents) {}
+  constructor(public events: ViewEvents) {
+    this.setTheme("dark");
+  }
   private toggleThemeButton = dom.button({
+    testId: "theme-toggler",
     className: cls.themeButton,
     text: "",
     onClick: this.events.toggleTheme,

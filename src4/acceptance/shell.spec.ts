@@ -28,6 +28,22 @@ describe("Having an app with a default state", () => {
         expect(searchTab()).toHaveClass(cls.searchTabHidden));
     });
   });
+
+  describe("by default ", () => {
+    it("theme is dark", () => expect(app.el).toHaveClass(cls.dark));
+
+    describe("toggling theme", () => {
+      beforeEach(() => fireEvent.click(themeToggler()));
+      it("switches to light theme", () =>
+        expect(app.el).toHaveClass(cls.light));
+
+      describe("toggling theme again", () => {
+        beforeEach(() => fireEvent.click(themeToggler()));
+        it("switches to dark theme", () =>
+          expect(app.el).toHaveClass(cls.dark));
+      });
+    });
+  });
 });
 
 const shortcuts = {
@@ -38,3 +54,4 @@ const shortcuts = {
 };
 
 const searchTab = () => getByTestId(document.body, "search-tab");
+const themeToggler = () => getByTestId(document.body, "theme-toggler");
